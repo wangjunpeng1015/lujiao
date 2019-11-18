@@ -1,6 +1,6 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, register } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
+import { router, resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
@@ -35,7 +35,16 @@ const actions = {
       })
     })
   },
-
+  register({ commit }, info) {
+    const { username, password } = info
+    return new Promise((resolve, reject) => {
+      register({ username: username.trim(), password: password }).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {

@@ -18,7 +18,7 @@
       el-input(v-model='form.username', placeholder='Username', name='username', type='text', tabindex='1', auto-complete='on')
     .btn
         .wrap-btn
-        el-button(:loading='loading', type='primary', @click.native.prevent='handleLogin') 注 册
+        el-button(:loading='loading', type='primary', @click.native.prevent='handleRegister') 注 册
     
 </template>
 
@@ -58,6 +58,7 @@ export default {
         }
       ],
       form: {
+        type: "0",
         username: "admin",
         password: "111111"
       },
@@ -93,15 +94,15 @@ export default {
         this.$refs.password.focus();
       });
     },
-    handleLogin() {
+    handleRegister() {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true;
           this.$store
-            .dispatch("user/login", this.form)
+            .dispatch("user/register", this.form)
             .then(() => {
-              this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
+              this.$router.push("/login");
             })
             .catch(() => {
               this.loading = false;
@@ -164,6 +165,7 @@ $light_gray: #eee;
       transition: all 0.4s;
     }
     button {
+      border: none;
       outline: none;
       padding: 0 10px;
       background: transparent;
