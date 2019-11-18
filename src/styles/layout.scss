@@ -1,0 +1,263 @@
+html,
+body,
+div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+body,
+html {
+  // overflow: hidden;
+  // height: 100%;
+  font-family: Microsoft YaHei, Avenir Next, Helvetica Neue, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  // background: #fafafa;
+}
+
+// @font-face {
+//   font-family: fangzheng;
+//   src: url('./方正正中黑简体.ttf')
+// }
+
+li {
+  list-style: none;
+}
+
+//滚动条样式
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+  -webkit-border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  height: 5px;
+  background-color: #aeb6d5;
+  -webkit-border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  width: 5px;
+  background-color: #aeb6d5;
+  -webkit-border-radius: 3px;
+  flex-direction: row-reverse;
+  justify-content: flex-end
+}
+
+// flex
+@mixin flex {
+  display: flex;
+}
+
+@mixin flex-between {
+  @include flex;
+  justify-content: space-between;
+}
+
+@mixin flex-around {
+  @include flex;
+  justify-content: space-around;
+}
+
+@mixin flex-center {
+  @include flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin column {
+  @include flex;
+  flex-direction: column;
+}
+
+@mixin column-between {
+  @include column;
+  justify-content: space-between;
+}
+
+@mixin column-around {
+  @include column;
+  justify-content: space-around;
+}
+
+@mixin column-center {
+  @include column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin column-scroll {
+  flex: 1;
+  overflow: auto;
+}
+
+.point {
+  cursor: pointer;
+}
+
+.layout-row {
+  // @include flex;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+
+  @for $i from 1 through 100 {
+    >.flex-#{$i} {
+      max-width: #{$i+'%'};
+      min-height: 100%;
+      // flex:$i 0 $i+%;
+      flex:0 0 #{$i+'%'};
+    }
+  }
+}
+
+.layout-row__between {
+  @include flex-between;
+}
+
+.layout-row__around {
+  @include flex-around;
+}
+
+.layout-column {
+  // @include column;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
+  @for $i from 1 through 100 {
+    >.flex-#{$i} {
+      min-width: 100%;
+      max-height: #{$i+'%'};
+      flex:$i 0 #{$i+'%'};
+      // flex:0 0 $i+%;
+    }
+  }
+}
+
+.layout-column__between {
+  @include column-between;
+}
+
+.layout-column__around {
+  @include column-around;
+}
+
+.layout-column__scroll {
+  flex-direction: column;
+  @include flex;
+  @include column-scroll
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.center {
+  text-align: center;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.font-12 {
+  font-size: 12px;
+}
+.font-16 {
+  font-size: 16px;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.align-center {
+  align-items: center
+}
+
+.flex {
+  flex: 1
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
