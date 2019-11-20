@@ -1,31 +1,38 @@
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
-      <router-view :key="key" />
+      <router-view :key="key"/>
     </transition>
   </section>
 </template>
 
 <script>
 export default {
-  name: 'AppMain',
+  name: "AppMain",
   computed: {
     key() {
-      return this.$route.path
+      return this.$route.path;
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .app-main {
+  /* margin: 10px 20px 0; */
   /*50 = navbar  */
   min-height: calc(100vh - 50px);
-  width: 100%;
   position: relative;
   overflow: hidden;
 }
-.fixed-header+.app-main {
+.app-main > div {
+  border-radius: 10px;
+  padding: 10px;
+  margin: 20px;
+  height: calc(100vh - 90px);
+  box-shadow: 4px 4px 6px 6px #666;
+}
+.fixed-header + .app-main {
   padding-top: 50px;
 }
 </style>

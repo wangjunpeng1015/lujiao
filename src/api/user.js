@@ -1,15 +1,16 @@
 import request from '@/utils/request'
-
+import Qs from 'qs'
 export function login(data) {
   return request({
-    url: '/user/login',
+    url: '/login',
     method: 'post',
-    data
+    data: Qs.stringify(data)
   })
 }
+//注册
 export function register(data) {
   return request({
-    url: '/user/register',
+    url: '/base/user',
     method: 'post',
     data
   })
@@ -17,9 +18,8 @@ export function register(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/user/info',
+    url: '/base/user/getCurrentUser',
     method: 'get',
-    params: { token }
   })
 }
 

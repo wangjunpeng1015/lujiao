@@ -31,17 +31,18 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
+  //登录
   {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
+  //注册
   {
     path: '/register',
     component: () => import('@/views/register/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -56,10 +57,22 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
-
+  //订单
+  {
+    path: '/orders',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'orders',
+        component: () => import('@/views/orders/index'),
+        meta: { title: '订单管理', icon: 'form' }
+      }
+    ]
+  },
   {
     path: '/example',
     component: Layout,

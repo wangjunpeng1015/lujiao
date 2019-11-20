@@ -1,21 +1,25 @@
 <template lang="pug">
 .register-container
-  el-form.login-form(ref='form', :model='form', :rules='loginRules', auto-complete='on', label-position='left')
+  el-form.login-form(ref='form', :model='form', :rules='loginRules',label-width="90px" auto-complete='on', label-position='left')
     .title-container.center
       h3.title 自助申请商户
-    el-form-item(label="结算方式" prop='username')
-      el-select(v-model='form.type', placeholder='请选择结算方式' style="width:100%")
-        el-option(v-for='item in options', :key='item.value', :label='item.label', :value='item.value')
-    el-form-item(label="账号"  prop='username')
-      el-input(v-model='form.username', placeholder='Username', name='username', type='text', tabindex='1', auto-complete='on')
-    el-form-item(label="密码"  prop='password')
-      el-input(v-model='form.password', placeholder='Password', type="password" name='password', auto-complete='on')
-    el-form-item(label="真实姓名"  prop='username')
-      el-input(v-model='form.username', placeholder='Username', name='username', type='text', tabindex='1', auto-complete='on')
-    el-form-item(label="QQ"  prop='username')
-      el-input(v-model='form.username', placeholder='Username', name='username', type='text', tabindex='1', auto-complete='on')
-    el-form-item(label="邀请人-ID"  prop='username')
-      el-input(v-model='form.username', placeholder='Username', name='username', type='text', tabindex='1', auto-complete='on')
+    el-form-item(label="结算方式" prop='settlementWay')
+      el-select(v-model='form.settlementWay', placeholder='请选择结算方式' style="width:100%")
+        el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
+    el-form-item(label="账号"  prop='account')
+      el-input(v-model='form.account', placeholder='账号', name='account', type='text',  auto-complete='on')
+    el-form-item(label="密码"  prop='pwd')
+      el-input(v-model='form.pwd', placeholder='密码', type="password" name='pwd', auto-complete='on')
+    el-form-item(label="真实姓名"  prop='realName')
+      el-input(v-model='form.realName', placeholder='Username', name='realName', type='text', , auto-complete='on')
+    el-form-item(label="您的域名"  prop='webSiteDomain')
+      el-input(v-model='form.webSiteDomain', placeholder='用于成功后回调', name='webSiteDomain', type='text', , auto-complete='on')
+    el-form-item(label="手机号"  prop='phone')
+      el-input(v-model='form.phone', placeholder='手机号', name='phone', type='text',  auto-complete='on')
+    el-form-item(label="邀请人-ID"  prop='pId')
+      el-input(v-model='form.pId', placeholder='邀请人-ID', name='pId', type='text',  auto-complete='on')
+    .tips.right
+      router-link(to='/login') 商户登录
     .btn
         .wrap-btn
         el-button(:loading='loading', type='primary', @click.native.prevent='handleRegister') 注 册
@@ -24,51 +28,46 @@
 
 <script>
 import { validUsername } from "@/utils/validate";
-
 export default {
   name: "register",
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error("Please enter the correct user name"));
-      } else {
-        callback();
-      }
-    };
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error("The password can not be less than 6 digits"));
-      } else {
-        callback();
-      }
-    };
+    // const validateUsername = (rule, value, callback) => {
+    //   if (!validUsername(value)) {
+    //     callback(new Error("Please enter the correct user name"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
+    // const validatePassword = (rule, value, callback) => {
+    //   if (value.length < 6) {
+    //     callback(new Error("The password can not be less than 6 digits"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {
-      options: [
-        {
-          value: "0",
-          label: "支付宝"
-        },
-        {
-          value: "1",
-          label: "微信"
-        },
-        {
-          value: "3",
-          label: "银行卡"
-        }
-      ],
       form: {
-        type: "0",
-        username: "admin",
-        password: "111111"
+        settlementWay: "0",
+        account: "",
+        pwd: "",
+        realName: "",
+        webSiteDomain: "",
+        phone: "",
+        pId: ""
       },
       loginRules: {
-        username: [
-          { required: true, trigger: "blur", validator: validateUsername }
+        settlementWay: [
+          { required: true, trigger: "blur", message: "请选择结算方式" }
         ],
-        password: [
-          { required: true, trigger: "blur", validator: validatePassword }
-        ]
+        account: [{ required: true, trigger: "blur", message: "请输入账号" }],
+        pwd: [{ required: true, trigger: "blur", message: "请输入密码" }],
+        realName: [
+          { required: true, trigger: "blur", message: "请输入真实姓名" }
+        ],
+        webSiteDomain: [
+          { required: true, trigger: "blur", message: "请输入域名" }
+        ],
+        phone: [{ required: true, trigger: "blur", message: "请输入手机号" }]
       },
       loading: false,
       passwordType: "password",
@@ -83,17 +82,12 @@ export default {
       immediate: true
     }
   },
+  computed: {
+    payWay() {
+      return this.$store.state.settings.payWay;
+    }
+  },
   methods: {
-    showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
-      } else {
-        this.passwordType = "password";
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus();
-      });
-    },
     handleRegister() {
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -127,6 +121,11 @@ $light_gray: #eee;
   .title-container .title {
     margin-bottom: 40px;
     font-size: 30px;
+  }
+  .tips {
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 10px;
   }
   .login-form {
     position: relative;
