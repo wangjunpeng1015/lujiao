@@ -7,3 +7,10 @@ export function getOrdersList(data) {
         data
     })
 }
+export function getSettlementList(data) {
+    return request({
+        url: '/settlement/list',
+        method: 'post',
+        data
+    })
+}

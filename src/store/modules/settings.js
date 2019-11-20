@@ -3,17 +3,18 @@ import { getConfig } from '@/api/index'
 const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
+  website: 'http://wangjunpeng.online',
   payWay: [
     {
-      value: "0",
+      value: "支付宝",
       label: "支付宝"
     },
     {
-      value: "1",
+      value: "微信",
       label: "微信"
     },
     {
-      value: "3",
+      value: "银行卡",
       label: "银行卡"
     }],
   dict: null,

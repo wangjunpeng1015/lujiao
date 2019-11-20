@@ -69,7 +69,7 @@ audio,
 video {
   padding: 0;
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 body,
@@ -161,7 +161,6 @@ li {
   flex: 1;
   overflow: auto;
 }
-
 .point {
   cursor: pointer;
 }
@@ -236,15 +235,17 @@ li {
   cursor: pointer;
 }
 
-.font-12 {
-  font-size: 12px;
-}
-.font-16 {
-  font-size: 16px;
+@for $i from 12 through 100 {
+  .font-#{$i} {
+    font-size: #{$i+'px'};
+  }
 }
 
 .justify-center {
   justify-content: center;
+}
+.justify-end {
+  justify-content: flex-end;
 }
 
 .align-center {
@@ -259,6 +260,12 @@ li {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.red{
+  color: red;
+}
+.green{
+  color: green;
 }
 .wjp-tools{
    >div{

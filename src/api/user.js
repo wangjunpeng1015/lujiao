@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import Qs from 'qs'
+//登录
 export function login(data) {
   return request({
     url: '/login',
@@ -15,17 +16,24 @@ export function register(data) {
     data
   })
 }
-
+//用户登录记录
+export function getloginLog() {
+  return request({
+    url: '/loginlog/list',
+    method: 'get',
+  })
+}
+//用户信息
 export function getInfo(token) {
   return request({
     url: '/base/user/getCurrentUser',
     method: 'get',
   })
 }
-
+//退出
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/logout',
     method: 'post'
   })
 }

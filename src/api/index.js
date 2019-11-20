@@ -6,3 +6,16 @@ export function getConfig() {
         method: 'get',
     })
 }
+export function getHead() {
+    return request({
+        url: '/home/head',
+        method: 'get',
+    })
+}
+export function getBody(data) {
+    return request({
+        url: '/home/body',
+        method: 'post',
+        data
+    })
+}

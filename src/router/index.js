@@ -73,6 +73,32 @@ export const constantRoutes = [
       }
     ]
   },
+  //订单
+  {
+    path: '/settlement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'settlement',
+        component: () => import('@/views/settlement/index'),
+        meta: { title: '结算管理', icon: 'form' }
+      }
+    ]
+  },
+  //订单
+  {
+    path: '/record',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'record',
+        component: () => import('@/views/record/index'),
+        meta: { title: '登录记录', icon: 'form' }
+      }
+    ]
+  },
   {
     path: '/example',
     component: Layout,

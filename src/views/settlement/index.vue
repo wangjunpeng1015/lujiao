@@ -1,26 +1,23 @@
 <template lang="pug">
 .orders-container
     .wjp-tools.layout-row
-        el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
+        el-select(v-model='type', placeholder='结算方式' clearable @change="getTableData")
           el-option(v-for='item in settings.payWay', :key='item.value', :label='item.label', :value='item.value')
-        el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData")
-          el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-input(v-model='orderNo',@enter="getTableData" placeholder='订单号' style="width:200px;")
+        el-input(v-model='userName',@enter="getTableData" placeholder='姓名' style="width:200px;")
+        el-input(v-model='account',@enter="getTableData" placeholder='结算账号' style="width:200px;")
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content
         el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
-            el-table-column(fixed prop='id', label='id', width='50')
-            //- el-table-column(prop='name', label='订单号', )
-            el-table-column(prop='orderNum', label='商户订单号', )
-            el-table-column(prop='webSite', label='网站', )
-            el-table-column(prop='orderName', label='名称', )
-            el-table-column(prop='money', label='金额',)
-            el-table-column(prop='payWay', label='方式',)
+            el-table-column(prop='account', label='账号', )
+            el-table-column(prop='userName', label='姓名', )
+            el-table-column(prop='settlementWay', label='结算方式', )
+            el-table-column(prop='settlementMoney', label='结算金额',)
+            el-table-column(prop='poundage', label='手续费',)
+            el-table-column(prop='settlementIR', label='利率',)
             el-table-column(prop='createTime', label='创建时间',)
-            el-table-column(prop='endTime', label='结束时间',)
-            el-table-column(prop='payStatusDictValue', label='状态',)
+            el-table-column(prop='settlementStatus', label='状态',)
                 template(slot-scope='scope')
-                    span(:class="[scope.row.payStatusDictValue=='支付成功'?'green':'red']") {{ scope.row.payStatusDictValue }}
+                    span(:class="[scope.row.settlementStatus?'green':'red']") {{ scope.row.settlementStatus?'成功':'失败' }}
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(
@@ -37,7 +34,8 @@
 </template>
 
 <script>
-import { getOrdersList } from "@/api/order";
+import { debounce } from "lodash";
+import { getSettlementList } from "@/api/order";
 import { mapGetters, mapState } from "vuex";
 export default {
   name: "orders",
@@ -45,8 +43,8 @@ export default {
     return {
       loading: false,
       type: "",
-      state: "",
-      orderNo: "", //搜索订单号
+      userName: "",
+      account: "", //
       tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
@@ -67,16 +65,13 @@ export default {
   methods: {
     getTableData() {
       this.loading = true;
-      getOrdersList({
+      getSettlementList({
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          // userId: this.userinfo.id, //商户id
-          orderNum: this.orderNo, //订单号
-          payWay: this.type, //支付方式
-          payStatus: this.state, //支付状态
-          minMoney: "", //最小金额
-          maxMoney: "" //最大金额
+          userName: this.userName, //姓名
+          settlementWay: this.type, //支付方式
+          account: this.account //账号
         }
       })
         .then(res => {
