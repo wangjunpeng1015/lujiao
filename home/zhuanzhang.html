@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>鹿角支付-个人转账</title>
+</head>
+<body>
+</body>
+<script>
+    function ready(callback) {
+      if (window.AlipayJSBridge) {
+        callback && callback();
+      } else {
+        document.addEventListener('AlipayJSBridgeReady', callback, false);
+      }
+    }
+    function pay() {
+      let params = window.location.search.split('?')[1].split('&')
+      let config = {}
+      params.forEach(function (item) {
+        config[item.split('=')[0]] = item.split('=')[1]
+      })
+      // 暂时手动设置
+      config = {
+        uid: '2088502115132635',
+        amount: config.amount.toString(),
+        remark: 'EU39135'
+      }
+      if (!config.amount || !config.remark || !config.uid) {
+        $.alert('参数错误,请检查参数')
+        return false
+      }
+      let param = {
+        actionType: 'scan',
+        u: config.uid,
+        a: config.amount,
+        m: config.remark,
+        biz_data: {
+          s: 'money',
+          u: config.uid,
+          a: config.amount,
+          m: config.remark
+        }
+      }
+      AlipayJSBridge.call('startApp', {
+        appId: '20000123',
+        param: param
+      }, function (e) {
+        if (e.errorCode > 0) {
+          alert(JSON.stringify(a));
+        }
+      });
+    }
+    
+    ready(function() {
+        pay()
+    });
+</script>
+</html>
