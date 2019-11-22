@@ -4,19 +4,6 @@ const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
   website: 'http://wangjunpeng.online',
-  payWay: [
-    {
-      value: "支付宝",
-      label: "支付宝"
-    },
-    {
-      value: "微信",
-      label: "微信"
-    },
-    {
-      value: "银行卡",
-      label: "银行卡"
-    }],
   dict: null,
   showSettings: showSettings,
   fixedHeader: fixedHeader,

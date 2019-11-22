@@ -3,19 +3,21 @@
   el-form.login-form(ref='form', :model='form', :rules='loginRules',label-width="90px" auto-complete='on', label-position='left')
     .title-container.center
       h3.title 自助申请商户
-    el-form-item(label="结算方式" prop='settlementWay')
-      el-select(v-model='form.settlementWay', placeholder='请选择结算方式' style="width:100%")
-        el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
     el-form-item(label="账号"  prop='account')
       el-input(v-model='form.account', placeholder='账号', name='account', type='text',  auto-complete='on')
     el-form-item(label="密码"  prop='pwd')
       el-input(v-model='form.pwd', placeholder='密码', type="password" name='pwd', auto-complete='on')
     el-form-item(label="真实姓名"  prop='realName')
-      el-input(v-model='form.realName', placeholder='Username', name='realName', type='text', , auto-complete='on')
+      el-input(v-model='form.realName', placeholder='真实姓名', name='realName', type='text', , auto-complete='on')
     el-form-item(label="您的域名"  prop='webSiteDomain')
       el-input(v-model='form.webSiteDomain', placeholder='用于成功后回调', name='webSiteDomain', type='text', , auto-complete='on')
     el-form-item(label="手机号"  prop='phone')
       el-input(v-model='form.phone', placeholder='手机号', name='phone', type='text',  auto-complete='on')
+    el-form-item(label="结算方式" prop='settlementWay')
+      el-select(v-model='form.settlementWay', placeholder='请选择结算方式' style="width:100%")
+        el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
+    el-form-item(label="结算账号"  prop='settlementAccount')
+      el-input(v-model='form.settlementAccount', placeholder='结算账号', name='settlementAccount', type='text', , auto-complete='on')
     el-form-item(label="邀请人-ID"  prop='pId')
       el-input(v-model='form.pId', placeholder='邀请人-ID', name='pId', type='text',  auto-complete='on')
     .tips.right
@@ -27,27 +29,39 @@
 </template>
 
 <script>
-import { validUsername } from "@/utils/validate";
+import { validPassword } from "@/utils/validate";
 export default {
   name: "register",
   data() {
-    // const validateUsername = (rule, value, callback) => {
-    //   if (!validUsername(value)) {
-    //     callback(new Error("Please enter the correct user name"));
-    //   } else {
-    //     callback();
-    //   }
-    // };
-    // const validatePassword = (rule, value, callback) => {
-    //   if (value.length < 6) {
-    //     callback(new Error("The password can not be less than 6 digits"));
-    //   } else {
-    //     callback();
-    //   }
-    // };
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (validPassword(this.form.pwd)) {
+          callback();
+        } else {
+          callback(new Error("密码包含 数字,英文,字符中的两种以上，长度6-20"));
+        }
+      }
+    };
     return {
+      payWay: [
+        {
+          value: "支付宝",
+          label: "支付宝"
+        },
+        {
+          value: "微信",
+          label: "微信"
+        },
+        {
+          value: "银行卡",
+          label: "银行卡"
+        }
+      ],
       form: {
-        settlementWay: "0",
+        settlementWay: "",
+        settlementAccount: "",
         account: "",
         pwd: "",
         realName: "",
@@ -56,11 +70,10 @@ export default {
         pId: ""
       },
       loginRules: {
-        settlementWay: [
-          { required: true, trigger: "blur", message: "请选择结算方式" }
-        ],
+        settlementWay: [{ trigger: "blur", message: "请选择结算方式" }],
+        settlementAccount: [{ trigger: "blur", message: "请输入结算账号" }],
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
-        pwd: [{ required: true, trigger: "blur", message: "请输入密码" }],
+        pwd: [{ required: true, validator: validatePass, trigger: "blur" }],
         realName: [
           { required: true, trigger: "blur", message: "请输入真实姓名" }
         ],
@@ -82,11 +95,7 @@ export default {
       immediate: true
     }
   },
-  computed: {
-    payWay() {
-      return this.$store.state.settings.payWay;
-    }
-  },
+  computed: {},
   methods: {
     handleRegister() {
       this.$refs.form.validate(valid => {

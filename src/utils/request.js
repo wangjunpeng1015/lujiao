@@ -65,6 +65,16 @@ service.interceptors.response.use(
           })
         })
       }
+      if (res.code == "000") {
+        Message({
+          message: '账号过期，请重新登录！',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        store.dispatch('user/resetToken').then(() => {
+          location.reload()
+        })
+      }
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res

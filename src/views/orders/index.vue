@@ -2,7 +2,7 @@
 .orders-container
     .wjp-tools.layout-row
         el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
-          el-option(v-for='item in settings.payWay', :key='item.value', :label='item.label', :value='item.value')
+          el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-input(v-model='orderNo',@enter="getTableData" placeholder='订单号' style="width:200px;")
@@ -59,6 +59,9 @@ export default {
     ...mapGetters(["userinfo"]),
     status() {
       return this.settings.dict && this.settings.dict.PayStatus.dicts;
+    },
+    payWay() {
+      return this.settings.dict && this.settings.dict.PayWay.dicts;
     }
   },
   mounted() {

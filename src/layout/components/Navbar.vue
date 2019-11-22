@@ -9,25 +9,50 @@
     <breadcrumb class="breadcrumb-container"/>
 
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
-        <div class="avatar-wrapper">
+      <el-dropdown class="avatar-container" trigger="hover">
+        <span>{{ userinfo.account }}</span>
+        <!-- <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom"/>
-        </div>
+        </div>-->
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">退出</span>
+            <span @click="edit">修改信息</span>
+          </el-dropdown-item>
+          <el-dropdown-item divided>
+            <span @click="logout">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog title="修改密码" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="旧密码" prop="oldPassword">
+          <el-input v-model="ruleForm.oldPassword"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input v-model="ruleForm.newPassword"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { validPassword } from "@/utils/validate";
 import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
@@ -37,13 +62,42 @@ export default {
     Breadcrumb,
     Hamburger
   },
+  data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (validPassword(this.ruleForm.pwd)) {
+          callback();
+        } else {
+          callback(new Error("密码包含 数字,英文,字符中的两种以上，长度6-20"));
+        }
+      }
+    };
+    return {
+      dialogVisible: true,
+      ruleForm: {
+        newPassword: "",
+        oldPassword: ""
+      },
+      rules: {
+        oldPassword: [
+          { required: true, message: "请输入旧密码", trigger: "blur" }
+        ],
+        newPassword: [
+          { required: true, validator: validatePass, trigger: "blur" }
+        ]
+      }
+    };
+  },
   computed: {
-    ...mapGetters(["sidebar"])
+    ...mapGetters(["sidebar", "userinfo"])
   },
   methods: {
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
+    edit() {},
     async logout() {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);

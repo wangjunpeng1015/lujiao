@@ -18,3 +18,6 @@ export function validUsername(str) {
   const valid_map = ['admin', 'editor']
   return valid_map.indexOf(str.trim()) >= 0
 }
+export function validPassword(str) {
+  return /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,20}$/.test(str)
+}

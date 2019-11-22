@@ -1,13 +1,13 @@
 <template lang="pug">
-.orders-container
+.orders-container.layout-column
     .wjp-tools.layout-row
-        el-select(v-model='type', placeholder='结算方式' clearable @change="getTableData")
-          el-option(v-for='item in settings.payWay', :key='item.value', :label='item.label', :value='item.value')
+        el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
+          el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-input(v-model='userName',@enter="getTableData" placeholder='姓名' style="width:200px;")
         el-input(v-model='account',@enter="getTableData" placeholder='结算账号' style="width:200px;")
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
-    .wjp-content
-        el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
+    .wjp-content.flex.layout-column
+        el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
             el-table-column(prop='account', label='账号', )
             el-table-column(prop='userName', label='姓名', )
             el-table-column(prop='settlementWay', label='结算方式', )
@@ -55,8 +55,8 @@ export default {
   computed: {
     ...mapState(["settings"]),
     ...mapGetters(["userinfo"]),
-    status() {
-      return this.settings.dict && this.settings.dict.PayStatus.dicts;
+    payWay() {
+      return this.settings.dict && this.settings.dict.PayWay.dicts;
     }
   },
   mounted() {
