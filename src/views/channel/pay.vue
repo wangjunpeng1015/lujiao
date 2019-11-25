@@ -1,130 +1,106 @@
 <template lang="pug">
-.dashboard-container
-  el-row.box-card(type="flex" justify="center" align="middle" :gutter="20")
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" )
-      el-card
-        .title 订单总数
-        .num {{ list.orders }}
-        .unit 笔
-        .field
-          span 当前时间
-          span {{ nowTime }}
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
-      el-card
-        .title 商户数量
-        .num {{ list.merchants }}
-        .unit 位
-        .field
-          span 当前版本
-          span {{ version }}
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
-      el-card
-        .title 总计余额
-        .num {{ list.aggregate }}
-        .unit 元
-        .field
-          span(@click="copy") 推荐好友  
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
-      el-card
-        .title 结算余额
-        .num {{ list.settlementMoney }}
-        .unit 元
-        .field
-          span 程序购买
-          span {{ }}
-  .wjp-title
-    el-divider(content-position='left') 收益查询
-  .wjp-tools.layout-row.align-center.justify-end
-    Date-picker.time-picker(@change="getBody" ,:date.sync="time")
-  el-row(type="flex" justify="center" align="middle")
-    el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
-      svg.iconfont(aria-hidden='true')
-        use(xlink:href='#icon-zhifubao')
-      .money {{ body.length>0 && body.find(item=>item.name=='微信').sum }} ￥
-    el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
-      svg.iconfont(aria-hidden='true')
-        use(xlink:href='#icon-weixin')
-      .money {{ body.length>0 && body.find(item=>item.name=='支付宝').sum }} ￥
-    //- el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
-    //-   svg.iconfont(aria-hidden='true' style="width:200px")
-    //-     use(xlink:href='#icon-yinhangqia')
-    //-   .money(style="margin-left:0") {{ 4 }} ￥
-    el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
-      span.font-60 总计
-      .money {{ body.length>0 && Number(body.find(item=>item.name=='支付宝').sum)+Number(body.find(item=>item.name=='微信').sum) }} ￥
-  .line
+.pay-container.layout-column
+  .wjp-content.layout-column.flex
+      el-table.wjp-table(v-loading="loading" :data='payWay', style='width: 100%', height='250')
+        el-table-column(fixed prop='id', label='id', width='50')
+        el-table-column(prop='dictValueDisplayName', label='支付名称')
+        el-table-column(prop='optional_1', label='支付类型')
+        el-table-column(label='编辑')
+          template(slot-scope='scope')
+            el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
+        el-table-column(label='操作')
+          template(slot-scope='scope')
+            el-switch(v-model='scope.row.optional_2', :active-text="scope.row.optional_2?'启用':'禁用'")
+  el-dialog(title='配置', :visible.sync='visible', width='40%')
+    el-form(:model='form', :rules='rules', ref='form', label-width='100px')
+      el-form-item(label='活动名称', prop='name')
+        el-input(v-model='form.name')
+      el-form-item(label='活动区域', prop='region')
+        el-select(v-model='form.region', placeholder='请选择活动区域')
+          el-option(label='区域一', value='shanghai')
+          el-option(label='区域二', value='beijing')
+      el-form-item(label='活动时间', required='')
+        el-col(:span='11')
+          el-form-item(prop='date1')
+            el-date-picker(type='date', placeholder='选择日期', v-model='form.date1', style='width: 100%;')
+        el-col.line(:span='2') -
+        el-col(:span='11')
+          el-form-item(prop='date2')
+            el-time-picker(placeholder='选择时间', v-model='form.date2', style='width: 100%;')
+      el-form-item(label='即时配送', prop='delivery')
+        el-switch(v-model='form.delivery')
+      el-form-item(label='活动性质', prop='type')
+        el-checkbox-group(v-model='form.type')
+          el-checkbox(label='美食/餐厅线上活动', name='type')
+          el-checkbox(label='地推活动', name='type')
+          el-checkbox(label='线下主题活动', name='type')
+          el-checkbox(label='单纯品牌曝光', name='type')
+      el-form-item(label='特殊资源', prop='resource')
+        el-radio-group(v-model='form.resource')
+          el-radio(label='线上品牌商赞助')
+          el-radio(label='线下场地免费')
+      el-form-item(label='活动形式', prop='desc')
+        el-input(type='textarea', v-model='form.desc')
+      el-form-item
+        el-button(type='primary', @click="submitForm('form')") 立即创建
+        el-button(@click="resetForm('form')") 重置
+  span.dialog-footer(slot='footer')
+    el-button(@click='cancel') 取 消
+    el-button(type='primary', @click='visible = false') 确 定
+
 </template>
 
 <script>
-import echarts from "echarts";
-import { drawLine } from "@/utils/echarts";
-import DatePicker from "@/components/DatePicker";
-import { getHead, getBody } from "@/api/index";
-import { mapGetters } from "vuex";
-import dayjs from "dayjs";
-let line;
+import {} from "@/api/pay";
+import { getPays } from "@/api/pay";
+import { mapGetters, mapState } from "vuex";
+import { cloneDeep } from "lodash";
 export default {
-  name: "Dashboard",
-  components: {
-    DatePicker
-  },
+  name: "pay",
   computed: {
-    ...mapGetters(["userinfo"])
+    ...mapGetters(["userinfo"]),
+    ...mapState(["settings"]),
+    payWay() {
+      if (this.settings.dict) {
+        this.settings.dict.PayWay.dicts;
+      } else {
+      }
+    }
   },
   data() {
     return {
-      version: "1.0.0",
-      time: [
-        dayjs()
-          .subtract(0, "day")
-          .format("YYYY-MM-DD"),
-        dayjs().format("YYYY-MM-DD")
-      ],
-      nowTime: new dayjs().format("YYYY-MM-DD HH:mm:ss"),
-      list: {
-        orders: 0,
-        merchants: 0,
-        aggregate: 0,
-        settlementMoney: 0
-      },
-      body: []
+      loading: false,
+      visible: true,
+      form: {},
+      rules: {},
+      choose: null,
+      tableData: [
+        {
+          orderNum: "fds"
+        }
+      ]
     };
   },
   created() {
-    this.getHead();
-    this.getBody();
+    // this.pays();
   },
-  mounted() {
-    this.$nextTick(() => {
-      line = echarts.init(this.$el.querySelector(".line"));
-      this.setOption();
-    });
-  },
+  mounted() {},
   methods: {
-    setOption() {
-      let data = drawLine();
-      line.setOption(data, true);
+    edit(data) {
+      this.visible = true;
+      this.$refs.form.resetFields();
+      this.choose = cloneDeep(data);
     },
-    copy() {
-      // `${website}/#/register?pid=${userinfo.id}`
-    },
-    getHead() {
-      getHead()
-        .then(res => {
-          this.list = res.data;
-        })
-        .catch(err => {});
-    },
-    getBody() {
-      getBody({
-        startTime: this.time[0],
-        endTime: this.time[1]
-      })
-        .then(res => {
-          this.body = res.data;
-        })
-        .catch(err => {});
+    cancel() {
+      this.visible = false;
     }
+    // pays() {
+    //   pays()
+    //     .then(res => {
+    //       this.tableData = res.data;
+    //     })
+    //     .catch(err => {});
+    // }
   }
 };
 </script>

@@ -40,18 +40,18 @@
     el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
       svg.iconfont(aria-hidden='true')
         use(xlink:href='#icon-zhifubao')
-      .money {{ body.length>0 && body.find(item=>item.name=='微信').sum }} ￥
+      .money {{ wxSum}} ￥
     el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
       svg.iconfont(aria-hidden='true')
         use(xlink:href='#icon-weixin')
-      .money {{ body.length>0 && body.find(item=>item.name=='支付宝').sum }} ￥
+      .money {{ aliSum }} ￥
     //- el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
     //-   svg.iconfont(aria-hidden='true' style="width:200px")
     //-     use(xlink:href='#icon-yinhangqia')
     //-   .money(style="margin-left:0") {{ 4 }} ￥
     el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
       span.font-60 总计
-      .money {{ body.length>0 && Number(body.find(item=>item.name=='支付宝').sum)+Number(body.find(item=>item.name=='微信').sum) }} ￥
+      .money {{ Number(wxSum)+Number(aliSum) }} ￥
   .line
 </template>
 
@@ -89,6 +89,16 @@ export default {
       },
       body: []
     };
+  },
+  computed: {
+    wxSum() {
+      let obj = this.body.find(item => item.name == "微信");
+      return obj ? obj.sum : 0;
+    },
+    aliSum() {
+      let obj = this.body.find(item => item.name == "支付宝");
+      return obj ? obj.sum : 0;
+    }
   },
   created() {
     this.getHead();

@@ -20,7 +20,7 @@
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
-            <span @click="edit">修改信息</span>
+            <span @click="edit">修改密码</span>
           </el-dropdown-item>
           <el-dropdown-item divided>
             <span @click="logout">退出</span>
@@ -45,7 +45,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="changePassword">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -66,16 +66,17 @@ export default {
     const validatePass = (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请输入密码"));
+      } else if (value == this.ruleForm.oldPassword) {
+        callback(new Error("两次输入密码一致!"));
+      }
+      if (validPassword(this.ruleForm.newPassword)) {
+        callback();
       } else {
-        if (validPassword(this.ruleForm.pwd)) {
-          callback();
-        } else {
-          callback(new Error("密码包含 数字,英文,字符中的两种以上，长度6-20"));
-        }
+        callback(new Error("密码包含 数字,英文,字符中的两种以上，长度6-20"));
       }
     };
     return {
-      dialogVisible: true,
+      dialogVisible: false,
       ruleForm: {
         newPassword: "",
         oldPassword: ""
@@ -97,7 +98,20 @@ export default {
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
-    edit() {},
+    edit() {
+      this.dialogVisible = true;
+      this.$refs.ruleForm.resetFields();
+    },
+    changePassword() {
+      this.$store
+        .dispatch("user/changePassword", this.ruleForm)
+        .then(res => {
+          this.$router.push("/login");
+        })
+        .catch(err => {
+          this.$message.error(err);
+        });
+    },
     async logout() {
       await this.$store.dispatch("user/logout");
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);

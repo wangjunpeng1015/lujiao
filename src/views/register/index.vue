@@ -5,10 +5,10 @@
       h3.title 自助申请商户
     el-form-item(label="账号"  prop='account')
       el-input(v-model='form.account', placeholder='账号', name='account', type='text',  auto-complete='on')
-    el-form-item(label="密码"  prop='pwd')
-      el-input(v-model='form.pwd', placeholder='密码', type="password" name='pwd', auto-complete='on')
-    el-form-item(label="真实姓名"  prop='realName')
-      el-input(v-model='form.realName', placeholder='真实姓名', name='realName', type='text', , auto-complete='on')
+    el-form-item(label="密码"  prop='userPassword')
+      el-input(v-model='form.userPassword', placeholder='密码', type="password" name='userPassword', auto-complete='on')
+    el-form-item(label="真实姓名"  prop='userName')
+      el-input(v-model='form.userName', placeholder='真实姓名', name='userName', type='text', , auto-complete='on')
     el-form-item(label="您的域名"  prop='webSiteDomain')
       el-input(v-model='form.webSiteDomain', placeholder='用于成功后回调', name='webSiteDomain', type='text', , auto-complete='on')
     el-form-item(label="手机号"  prop='phone')
@@ -37,7 +37,7 @@ export default {
       if (value === "") {
         callback(new Error("请输入密码"));
       } else {
-        if (validPassword(this.form.pwd)) {
+        if (validPassword(this.form.userPassword)) {
           callback();
         } else {
           callback(new Error("密码包含 数字,英文,字符中的两种以上，长度6-20"));
@@ -63,8 +63,8 @@ export default {
         settlementWay: "",
         settlementAccount: "",
         account: "",
-        pwd: "",
-        realName: "",
+        userPassword: "",
+        userName: "",
         webSiteDomain: "",
         phone: "",
         pId: ""
@@ -73,8 +73,10 @@ export default {
         settlementWay: [{ trigger: "blur", message: "请选择结算方式" }],
         settlementAccount: [{ trigger: "blur", message: "请输入结算账号" }],
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
-        pwd: [{ required: true, validator: validatePass, trigger: "blur" }],
-        realName: [
+        userPassword: [
+          { required: true, validator: validatePass, trigger: "blur" }
+        ],
+        userName: [
           { required: true, trigger: "blur", message: "请输入真实姓名" }
         ],
         webSiteDomain: [

@@ -104,13 +104,13 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/channel/pay',
     name: 'channel',
-    meta: { title: '通道支付', icon: 'example' },
+    meta: { title: '支付通道', icon: 'example' },
     children: [
       {
         path: 'pay',
         name: 'pay',
         component: () => import('@/views/channel/pay'),
-        meta: { title: '支付接口配置', icon: 'table' }
+        meta: { title: '支付通道配置', icon: 'table' }
       },
       {
         path: 'tree',

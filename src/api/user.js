@@ -30,6 +30,14 @@ export function getInfo(token) {
     method: 'get',
   })
 }
+//修改密码
+export function changePassword(data) {
+  return request({
+    url: '/base/user/password',
+    method: 'put',
+    data
+  })
+}
 //退出
 export function logout() {
   return request({
