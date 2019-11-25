@@ -28,7 +28,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-dialog title="修改密码" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+    <el-dialog title="修改密码" :visible.sync="dialogVisible" width="30%">
       <el-form
         :model="ruleForm"
         :rules="rules"

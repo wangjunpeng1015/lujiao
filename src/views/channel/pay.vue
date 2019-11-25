@@ -1,58 +1,61 @@
 <template lang="pug">
 .pay-container.layout-column
+  .wjp-tools.layout-row
+    //- el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
+    //- el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+    //- el-input(v-model='userName',@enter="getTableData" placeholder='姓名' style="width:200px;")
+    //- el-input(v-model='account',@enter="getTableData" placeholder='结算账号' style="width:200px;")
+    el-button(type='primary' @click="addModal = true") 添 加
+    //- el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.layout-column.flex
-      el-table.wjp-table(v-loading="loading" :data='payWay', style='width: 100%', height='250')
-        el-table-column(fixed prop='id', label='id', width='50')
-        el-table-column(prop='dictValueDisplayName', label='支付名称')
-        el-table-column(prop='optional_1', label='支付类型')
-        el-table-column(label='编辑')
-          template(slot-scope='scope')
-            el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
-        el-table-column(label='操作')
-          template(slot-scope='scope')
-            el-switch(v-model='scope.row.optional_2', :active-text="scope.row.optional_2?'启用':'禁用'")
+    el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
+      el-table-column(fixed prop='id', label='id', width='50')
+      el-table-column(prop='dictValueDisplayName', label='支付名称')
+      el-table-column(prop='optional_1', label='支付类型')
+      el-table-column(label='编辑')
+        template(slot-scope='scope')
+          el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
+      el-table-column(label='操作')
+        template(slot-scope='scope')
+          el-switch(v-model='scope.row.use', :active-text="scope.row.use?'启用':'禁用'")
+  //添加/修改
   el-dialog(title='配置', :visible.sync='visible', width='40%')
     el-form(:model='form', :rules='rules', ref='form', label-width='100px')
-      el-form-item(label='活动名称', prop='name')
-        el-input(v-model='form.name')
-      el-form-item(label='活动区域', prop='region')
-        el-select(v-model='form.region', placeholder='请选择活动区域')
-          el-option(label='区域一', value='shanghai')
-          el-option(label='区域二', value='beijing')
-      el-form-item(label='活动时间', required='')
-        el-col(:span='11')
-          el-form-item(prop='date1')
-            el-date-picker(type='date', placeholder='选择日期', v-model='form.date1', style='width: 100%;')
-        el-col.line(:span='2') -
-        el-col(:span='11')
-          el-form-item(prop='date2')
-            el-time-picker(placeholder='选择时间', v-model='form.date2', style='width: 100%;')
-      el-form-item(label='即时配送', prop='delivery')
-        el-switch(v-model='form.delivery')
-      el-form-item(label='活动性质', prop='type')
-        el-checkbox-group(v-model='form.type')
-          el-checkbox(label='美食/餐厅线上活动', name='type')
-          el-checkbox(label='地推活动', name='type')
-          el-checkbox(label='线下主题活动', name='type')
-          el-checkbox(label='单纯品牌曝光', name='type')
-      el-form-item(label='特殊资源', prop='resource')
-        el-radio-group(v-model='form.resource')
-          el-radio(label='线上品牌商赞助')
-          el-radio(label='线下场地免费')
-      el-form-item(label='活动形式', prop='desc')
-        el-input(type='textarea', v-model='form.desc')
-      el-form-item
-        el-button(type='primary', @click="submitForm('form')") 立即创建
-        el-button(@click="resetForm('form')") 重置
-  span.dialog-footer(slot='footer')
-    el-button(@click='cancel') 取 消
-    el-button(type='primary', @click='visible = false') 确 定
+      el-form-item(label='选择开启通道', prop='' v-if="isAdd")
+        el-select(v-model='form.id', placeholder='开启通道')
+          el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //个人转账
+      div(v-if="form.id == 6 || form.id ==7")
+        el-upload.upload-demo(:file-list='qrcodes', list-type='picture')
+          el-button(size='small', type='primary') 点击上传
+      //个人付款
+      div(v-if="form.id == 8")
+        el-form-item(label='appid', prop='name')
+          el-input(v-model='form.appId' placeholder="请填写appId")
+      //银行卡
+      div(v-if="form.id == 10")
+        el-form-item(label='appid', prop='name')
+          el-input(v-model='form.appId' placeholder="请填写appId")
+      //当面付
+      div(v-if="for.id == 5")
+        el-form-item(label='appid', prop='name')
+          el-input(v-model='form.appId' placeholder="请填写appId")
+        el-form-item(label='商户号(pid)', prop='pid')
+          el-input(v-model='form.pid' placeholder="请填写商户号（pid）")
+        el-form-item(label='私钥', prop='privateKey')
+          el-input(v-model='form.privateKey' placeholder="请填写私钥")
+        el-form-item(label='公钥', prop='publickKey')
+          el-input(v-model='form.publickKey' placeholder="请填写公钥")
+        el-form-item(label='阿里公钥', prop='alipayPublicKey')
+          el-input(v-model='form.alipayPublicKey' placeholder="RSA")
+    span.dialog-footer(slot='footer')
+      el-button(@click='cancel') 取 消
+      el-button(type='primary', @click='submitForm') 确 定
 
 </template>
 
 <script>
-import {} from "@/api/pay";
-import { getPays } from "@/api/pay";
+import { getPays, updateUse } from "@/api/pay";
 import { mapGetters, mapState } from "vuex";
 import { cloneDeep } from "lodash";
 export default {
@@ -62,8 +65,11 @@ export default {
     ...mapState(["settings"]),
     payWay() {
       if (this.settings.dict) {
-        this.settings.dict.PayWay.dicts;
+        let pay = this.settings.dict.PayWay.dicts;
+        const ids = this.dqyhpz.map(item => item.payWayDictId);
+        return pay.filter(item => !ids.includes(item.id));
       } else {
+        return [];
       }
     }
   },
@@ -71,36 +77,46 @@ export default {
     return {
       loading: false,
       visible: true,
+      qrcodes: [],
       form: {},
+      addForm: {},
       rules: {},
       choose: null,
-      tableData: [
-        {
-          orderNum: "fds"
-        }
-      ]
+      dqyhpz: [],
+      tableData: []
     };
   },
   created() {
-    // this.pays();
+    this.getPays();
   },
   mounted() {},
   methods: {
     edit(data) {
       this.visible = true;
-      this.$refs.form.resetFields();
       this.choose = cloneDeep(data);
     },
     cancel() {
       this.visible = false;
-    }
-    // pays() {
-    //   pays()
-    //     .then(res => {
-    //       this.tableData = res.data;
-    //     })
-    //     .catch(err => {});
-    // }
+      this.choose = null;
+      this.$refs.form.resetFields();
+    },
+    submitForm() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    getPays() {
+      getPays()
+        .then(res => {
+          this.dqyhpz = res.data;
+        })
+        .catch(err => {});
+    },
+    dicChange() {}
   }
 };
 </script>
