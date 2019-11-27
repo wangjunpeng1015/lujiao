@@ -1,5 +1,10 @@
 import echarts from 'echarts'
-export const drawLine = () => {
+export const drawLine = (data) => {
+    // {
+    //     name: ['xxx','rrr'],
+    //     data: [[1,2],[3,4]],
+    //     xAxis:[],
+    // }
     let option;
     option = {
         color: ["#ed9d3c", '#4fd7fd'],
@@ -20,7 +25,7 @@ export const drawLine = () => {
         },
         legend: {
             selectedMode: false,//取消图例上的点击事件
-            data: ['支付宝', '微信'],
+            data: data.name,
             textStyle: {
                 fontSize: '12',
                 color: '#000'
@@ -29,7 +34,7 @@ export const drawLine = () => {
         xAxis: [
             {
                 type: 'category',
-                data: ['K4310', 'K43102', 'K52001', 'H2021', 'H2021'],
+                data: data.xAxis,
                 axisLabel: {
                     // rotate: 45,//斜体字可不用
                     textStyle: {
@@ -57,25 +62,11 @@ export const drawLine = () => {
                 },
             }
         ],
-        series: [
-            {
-                name: '支付宝',
+        series: data.data.map((item, i) => {
+            return {
+                name: data.name[i],
                 type: 'bar',
-                stack: '排名',
-                data: [120, 132, 101, 134, 90],
-                markPoint: {
-                    data: [
-                        { type: 'max', name: '最大值' },
-                        { type: 'min', name: '最小值' }
-                    ]
-                },
-                barWidth: 8
-            },
-            {
-                name: '微信',
-                type: 'bar',
-                stack: '排名',
-                data: [220, 182, 191, 234, 290],
+                data: item,
                 markPoint: {
                     data: [
                         { type: 'max', name: '最大值' },
@@ -88,8 +79,8 @@ export const drawLine = () => {
                         barBorderRadius: [30, 30, 0, 0],
                     }
                 }
-            },
-        ],
+            }
+        }),
         dataZoom: [{
             type: 'slider',
             realtime: true,
@@ -120,5 +111,4 @@ export const drawLine = () => {
         }],
     };
     return option;
-
 }

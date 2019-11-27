@@ -1,53 +1,105 @@
 <template lang="pug">
 .pay-container.layout-column
-  .wjp-tools.layout-row
-    //- el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
-    //- el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-    //- el-input(v-model='userName',@enter="getTableData" placeholder='姓名' style="width:200px;")
-    //- el-input(v-model='account',@enter="getTableData" placeholder='结算账号' style="width:200px;")
-    el-button(type='primary' @click="addModal = true") 添 加
-    //- el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+  .wjp-tools.layout-row__between
+    div
+      el-button(type='primary' @click="isAdd=true;visible = true;form={}") 添加收款方式
+    .layout-row
+      el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
+        el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      el-select(v-model='used', placeholder='是否启用' clearable @change="getPays")
+        el-option(label='启用', :value='true')
+        el-option(label='禁用', :value='false')
   .wjp-content.layout-column.flex
-    el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
+    el-table.wjp-table(v-loading="loading" :data='dqyhpz', style='width: 100%', height='250')
       el-table-column(fixed prop='id', label='id', width='50')
-      el-table-column(prop='dictValueDisplayName', label='支付名称')
-      el-table-column(prop='optional_1', label='支付类型')
+      el-table-column(prop='payWayDictId', label='支付名称')
+        template(slot-scope='scope')
+          span {{ dicFilter(scope.row.payWayDictId) }}
+      //- el-table-column(prop='optional_1', label='支付类型')
+      el-table-column(label='启用时间')
+        template(slot-scope='scope')
+          span {{ scope.row.forNight?'晚上':'白天' }}
+      el-table-column(prop='remark', label='备注')
       el-table-column(label='编辑')
         template(slot-scope='scope')
           el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
       el-table-column(label='操作')
         template(slot-scope='scope')
-          el-switch(v-model='scope.row.use', :active-text="scope.row.use?'启用':'禁用'")
+          el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
+  .page.layout-row.align-center.right
+    span 每页显示
+    el-pagination.statistics(
+    background
+    prev-text="上一页"
+    next-text="下一页"
+    @size-change="sizeChange"
+    @current-change="getPays"
+    :current-page.sync="currentPage"
+    :page-size="pageSize"
+    layout="sizes, prev, pager, next,total"
+    :total="totalPage")
   //添加/修改
   el-dialog(title='配置', :visible.sync='visible', width='40%')
     el-form(:model='form', :rules='rules', ref='form', label-width='100px')
-      el-form-item(label='选择开启通道', prop='' v-if="isAdd")
-        el-select(v-model='form.id', placeholder='开启通道')
+      el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
+        el-select(v-model='form.payWayDictId', placeholder='开启通道')
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //当面付
+      div(v-if="form.payWayDictId == 5")
+        el-form-item(label='appid', prop='name')
+          el-input(v-model='form.contentObj.appId' placeholder="请填写appId")
+        el-form-item(label='商户号(pid)', prop='pId')
+          el-input(v-model='form.contentObj.pId' placeholder="请填写商户号（pid）")
+        el-form-item(label='私钥', prop='privateKey')
+          el-input(v-model='form.contentObj.privateKey' placeholder="请填写私钥")
+        el-form-item(label='公钥', prop='publicKey')
+          el-input(v-model='form.contentObj.publicKey' placeholder="请填写公钥")
+        el-form-item(label='阿里公钥', prop='alipayPublicKey')
+          el-input(v-model='form.contentObj.alipayPublicKey' placeholder="RSA")
       //个人转账
-      div(v-if="form.id == 6 || form.id ==7")
-        el-upload.upload-demo(:file-list='qrcodes', list-type='picture')
-          el-button(size='small', type='primary') 点击上传
+      div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
+        el-form-item(label='收款二维码')
+          el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
+            el-button(size='small', type='primary') 点击上传
+        el-form-item(v-if="form.contentObj")
+          .layout-row__between.align-center
+            .layout-row.align-center
+              img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
+              .pay-label
+                .layout-row
+                  p 二维码金额：
+                  el-input(v-model.number='form.contentObj.money' type="number" placeholder="二维码金额" style="width:100px")
+                  | RMB
+                //- .layout-row
+                //-   p 备注：
+                //-   el-input(v-model='form.contentObj.remark' placeholder="备注" style="width:150px")
+            //- el-button(type='danger' @click="remove") 删除
+        el-form-item(label='二维码所在地', prop='qrCodeAdd')
+          el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
       //个人付款
-      div(v-if="form.id == 8")
+      div(v-if="form.payWayDictId == 8")
+        el-form-item(label='pid', prop='pId')
+          el-input(v-model='form.pId' placeholder="请填写收款pId")
+      //红包（暂时不用）
+      div(v-if="form.payWayDictId == 9")
         el-form-item(label='appid', prop='name')
           el-input(v-model='form.appId' placeholder="请填写appId")
       //银行卡
-      div(v-if="form.id == 10")
+      div(v-if="form.payWayDictId == 10")
         el-form-item(label='appid', prop='name')
           el-input(v-model='form.appId' placeholder="请填写appId")
-      //当面付
-      div(v-if="for.id == 5")
-        el-form-item(label='appid', prop='name')
-          el-input(v-model='form.appId' placeholder="请填写appId")
-        el-form-item(label='商户号(pid)', prop='pid')
-          el-input(v-model='form.pid' placeholder="请填写商户号（pid）")
-        el-form-item(label='私钥', prop='privateKey')
-          el-input(v-model='form.privateKey' placeholder="请填写私钥")
-        el-form-item(label='公钥', prop='publickKey')
-          el-input(v-model='form.publickKey' placeholder="请填写公钥")
-        el-form-item(label='阿里公钥', prop='alipayPublicKey')
-          el-input(v-model='form.alipayPublicKey' placeholder="RSA")
+      el-form-item(label='该方式收款上限', prop='ceiling')
+        el-input(v-model='form.ceiling' placeholder="设置改方式收款上限(请自行根据情况设定，以防风控)")
+      el-form-item(label='备注', prop='remark')
+        el-input(v-model='form.remark' placeholder="备注(主要用于备注二维码用途)")
+      //- el-form-item(label='是否启用', prop='used')
+      //-   el-select(v-model='form.used', placeholder='启用时间')
+      //-     el-option(label='启用', :value='true')
+      //-     el-option(label='禁用', :value='false')
+      el-form-item(label='启用时间', prop='forNight')
+        el-select(v-model='form.forNight', placeholder='启用时间')
+          el-option(label='白天', :value='false')
+          el-option(label='晚上', :value='true')
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
       el-button(type='primary', @click='submitForm') 确 定
@@ -55,9 +107,11 @@
 </template>
 
 <script>
-import { getPays, updateUse } from "@/api/pay";
+import { getPays, updateUse, updateConfigPay } from "@/api/pay";
 import { mapGetters, mapState } from "vuex";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEmpty } from "lodash";
+import { decrypt } from "@/utils/index";
+let reader = new FileReader();
 export default {
   name: "pay",
   computed: {
@@ -65,9 +119,7 @@ export default {
     ...mapState(["settings"]),
     payWay() {
       if (this.settings.dict) {
-        let pay = this.settings.dict.PayWay.dicts;
-        const ids = this.dqyhpz.map(item => item.payWayDictId);
-        return pay.filter(item => !ids.includes(item.id));
+        return this.settings.dict.PayWay.dicts;
       } else {
         return [];
       }
@@ -76,14 +128,16 @@ export default {
   data() {
     return {
       loading: false,
-      visible: true,
+      visible: false,
       qrcodes: [],
+      isAdd: false,
       form: {},
       addForm: {},
       rules: {},
-      choose: null,
       dqyhpz: [],
-      tableData: []
+      totalPage: 0, //总条数
+      currentPage: 1, //当前页
+      pageSize: 10 //当前页显示数量
     };
   },
   created() {
@@ -92,36 +146,136 @@ export default {
   mounted() {},
   methods: {
     edit(data) {
+      this.isAdd = false;
       this.visible = true;
-      this.choose = cloneDeep(data);
+      let form = cloneDeep(data);
+      let contentObj = decrypt(form.content, form.payKey);
+      //当面付
+      this.form = {
+        id: form.id,
+        payWayDictId: form.payWayDictId,
+        used: form.used,
+        remark: form.remark,
+        qrCodeAdd: form.qrCodeAdd,
+        forNight: form.forNight,
+        ceiling: form.ceiling,
+        contentObj
+      };
     },
+    //图片上传
+    uploadUrl(raw) {
+      let _self = this;
+      reader.readAsDataURL(raw.file);
+      reader.onload = function(d) {
+        const base64 = d.target.result;
+        qrcode.decode(base64, function(qrUrl) {
+          if (qrUrl === "error decoding QR Code") {
+            _self.$message.error("未能识别支付二维码！");
+          } else {
+            let data = {
+              money: 0,
+              url: base64,
+              qrUrl
+            };
+            _self.$set(_self.form, "contentObj", data);
+          }
+        });
+      };
+    },
+    // remove(i) {
+    //   this.form.contentObj = {};
+    // },
     cancel() {
       this.visible = false;
-      this.choose = null;
+      this.form = {};
       this.$refs.form.resetFields();
     },
     submitForm() {
-      this.$refs.form.validate(valid => {
-        if (valid) {
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+      if (isEmpty(this.form.contentObj)) {
+        this.$message.error("请填写支付配置内容！");
+        return;
+      }
+      updateConfigPay(this.form)
+        .then(res => {
+          this.$message.success(`${this.isAdd ? "添加" : "修改"}成功！`);
+          this.cancel();
+          this.getPays();
+        })
+        .catch(err => {
+          this.$message.error("修改失败！");
+        });
     },
     getPays() {
-      getPays()
+      this.loading = true;
+      getPays({
+        pageNo: this.currentPage,
+        pageSize: this.pageSize,
+        param: {
+          payWayDictId: this.payWayDictId, //支付类型
+          used: this.used //是否启用
+        }
+      })
         .then(res => {
-          this.dqyhpz = res.data;
+          const {
+            totalRecords,
+            pageNo,
+            pageSize,
+            totalPage,
+            content
+          } = res.data;
+          this.totalPage = totalRecords;
+          this.pageSize = pageSize;
+          this.currentPage = pageNo;
+          this.dqyhpz = content;
         })
-        .catch(err => {});
+        .catch(err => {})
+        .finally(_ => {
+          this.loading = false;
+        });
     },
-    dicChange() {}
+    //启用禁用转换
+    useChange(id, used) {
+      updateUse({
+        id,
+        used
+      })
+        .then(res => {
+          this.$message.success("状态修改成功！");
+        })
+        .finally(_ => {
+          this.getPays();
+        });
+    },
+    //转换名字
+    dicFilter(id) {
+      if (!this.settings.dict) return;
+      return this.settings.dict.PayWay.dicts.find(item => id == item.id)
+        .dictValueDisplayName;
+    },
+    sizeChange(num) {
+      this.pageSize = num;
+      this.getPays();
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.img {
+  width: 100px;
+  & + div {
+    margin-left: 10px;
+  }
+}
+.pay-label {
+  > div {
+    margin-top: 5px;
+  }
+  p {
+    text-align: right;
+    width: 90px;
+  }
+}
 .dashboard-container {
   >>> .iconfont {
     width: 70px;
@@ -144,6 +298,7 @@ export default {
     line-height: 38px;
     height: 38px;
   }
+
   .field {
     padding-top: 9px;
     margin-top: 8px;

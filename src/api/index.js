@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import Qs from 'qs'
 export function getConfig() {
     return request({
         url: '/base/dict/dictMaps',
@@ -16,6 +16,6 @@ export function getBody(data) {
     return request({
         url: '/home/body',
         method: 'post',
-        data
+        data: Qs.stringify(data)
     })
 }

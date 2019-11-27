@@ -40,11 +40,11 @@
     el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
       svg.iconfont(aria-hidden='true')
         use(xlink:href='#icon-zhifubao')
-      .money {{ wxSum}} ￥
+      .money {{ aliSum}} ￥
     el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
       svg.iconfont(aria-hidden='true')
         use(xlink:href='#icon-weixin')
-      .money {{ aliSum }} ￥
+      .money {{ wxSum }} ￥
     //- el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
     //-   svg.iconfont(aria-hidden='true' style="width:200px")
     //-     use(xlink:href='#icon-yinhangqia')
@@ -62,6 +62,9 @@ import DatePicker from "@/components/DatePicker";
 import { getHead, getBody } from "@/api/index";
 import { mapGetters } from "vuex";
 import dayjs from "dayjs";
+import { uniqBy, sortBy } from "lodash";
+import { debuggerStatement } from "babel-types";
+import { options } from "runjs";
 let line;
 export default {
   name: "Dashboard",
@@ -92,12 +95,16 @@ export default {
   },
   computed: {
     wxSum() {
-      let obj = this.body.find(item => item.name == "微信");
-      return obj ? obj.sum : 0;
+      let obj = this.body.filter(item => item.name == "微信");
+      return obj.reduce((total, val) => {
+        return total + Number(val.sum);
+      }, 0);
     },
     aliSum() {
-      let obj = this.body.find(item => item.name == "支付宝");
-      return obj ? obj.sum : 0;
+      let obj = this.body.filter(item => item.name == "支付宝");
+      return obj.reduce((total, val) => {
+        return total + Number(val.sum);
+      }, 0);
     }
   },
   created() {
@@ -107,13 +114,25 @@ export default {
   mounted() {
     this.$nextTick(() => {
       line = echarts.init(this.$el.querySelector(".line"));
-      this.setOption();
     });
   },
   methods: {
-    setOption() {
-      let data = drawLine();
-      line.setOption(data, true);
+    setOption(data) {
+      data = sortBy(data, "time");
+      let xAxis = uniqBy(data, "time").map(item => item.time);
+      let option = {
+        name: ["支付宝", "微信"],
+        data: [[], []],
+        xAxis
+      };
+      xAxis.map(time => {
+        let obj = data.filter(item => item.time == time);
+        let zfb = obj.find(item => item.name == "支付宝");
+        let wx = obj.find(item => item.name == "微信");
+        option.data[0].push((zfb && zfb.sum) || 0);
+        option.data[1].push((wx && wx.sum) || 0);
+      });
+      line.setOption(drawLine(option), true);
     },
     copy() {
       // `${website}/#/register?pid=${userinfo.id}`
@@ -127,11 +146,11 @@ export default {
     },
     getBody() {
       getBody({
-        startTime: this.time[0],
-        endTime: this.time[1]
+        dayNum: dayjs(this.time[1]).diff(this.time[0], "day")
       })
         .then(res => {
           this.body = res.data;
+          this.setOption(res.data);
         })
         .catch(err => {});
     }

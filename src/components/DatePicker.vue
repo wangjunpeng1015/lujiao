@@ -11,7 +11,8 @@
       value-format="yyyy-MM-dd"
       type="daterange"
       range-separator="至"
-      start-placeholder="开始日期"
+      start-placeholder="开始日期",
+      :picker-options="pickerOptions"
       end-placeholder="结束日期")
 </template>
 
@@ -45,12 +46,16 @@ export default {
         {
           name: "近一周",
           day: 7
-        },
-        {
-          name: "一个月",
-          day: 30
         }
-      ]
+      ],
+      pickerOptions: {
+        disabledDate(time) {
+          return (
+            time.getTime() > Date.now() ||
+            time.getTime() < dayjs().subtract(7, "day")
+          );
+        }
+      }
     };
   },
   watch: {
