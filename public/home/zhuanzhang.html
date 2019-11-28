@@ -22,30 +22,36 @@
     try {
       let params = window.location.search.split('?')[1]
       let config = JSON.parse(unescape(params))
-      if (!config.amount || !config.remark || !config.uid) {
-        alert('参数错误,请检查参数')
-        return false
+      if (!config.amount || !config.remark || !config.pId) {
+        throw ('参数错误,请检查参数')
       }
-      let param = {
-        actionType: 'scan',
-        u: config.uid,
-        a: config.amount,
-        m: config.remark,
-        biz_data: {
-          s: 'money',
-          u: config.uid,
+      const u = navigator.userAgent;
+      const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+      // const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      if (isAndroid) {
+        let data = {
+          actionType: 'scan',
+          u: config.pId,
           a: config.amount,
-          m: config.remark
+          m: config.remark,
+          biz_data: {
+            s: 'money',
+            u: config.pId,
+            a: config.amount,
+            m: config.remark
+          }
         }
+        AlipayJSBridge.call('startApp', {
+          appId: '20000123',
+          param: data
+        }, function (e) {
+          if (e.errorCode > 0) {
+            alert(JSON.stringify(a));
+          }
+        });
+      } else {
+        location.href = `alipays://platformapi/startapp?appId=20000123&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
       }
-      AlipayJSBridge.call('startApp', {
-        appId: '20000123',
-        param: param
-      }, function (e) {
-        if (e.errorCode > 0) {
-          alert(JSON.stringify(a));
-        }
-      });
     } catch (err) {
       alert(err)
     }

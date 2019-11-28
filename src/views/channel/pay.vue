@@ -2,7 +2,7 @@
 .pay-container.layout-column
   .wjp-tools.layout-row__between
     div
-      el-button(type='primary' @click="isAdd=true;visible = true;form={}") 添加收款方式
+      el-button(type='primary' @click="addChannel") 添加收款方式
     .layout-row
       el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
         el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
@@ -39,14 +39,14 @@
     layout="sizes, prev, pager, next,total"
     :total="totalPage")
   //添加/修改
-  el-dialog(title='配置', :visible.sync='visible', width='40%')
-    el-form(:model='form', :rules='rules', ref='form', label-width='100px')
+  el-dialog(title='配置', :visible.sync='visible',  width='40%' :close-on-click-modal="false")
+    el-form(:model='form', :rules='rules', ref='form', label-width='120px')
       el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
-        el-select(v-model='form.payWayDictId', placeholder='开启通道')
+        el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
       //当面付
       div(v-if="form.payWayDictId == 5")
-        el-form-item(label='appid', prop='name')
+        el-form-item(label='appid', prop='name') 
           el-input(v-model='form.contentObj.appId' placeholder="请填写appId")
         el-form-item(label='商户号(pid)', prop='pId')
           el-input(v-model='form.contentObj.pId' placeholder="请填写商户号（pid）")
@@ -57,7 +57,8 @@
         el-form-item(label='阿里公钥', prop='alipayPublicKey')
           el-input(v-model='form.contentObj.alipayPublicKey' placeholder="RSA")
       //个人转账
-      div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
+      //- div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
+      div(v-if="form.payWayDictId == 6")
         el-form-item(label='收款二维码')
           el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
             el-button(size='small', type='primary') 点击上传
@@ -68,26 +69,26 @@
               .pay-label
                 .layout-row
                   p 二维码金额：
-                  el-input(v-model.number='form.contentObj.money' type="number" placeholder="二维码金额" style="width:100px")
+                  el-input(v-model='form.contentObj.money' placeholder="二维码金额" style="width:100px")
                   | RMB
+                //- span.red(v-if="form.payWayDictId == 7") (请输入二维码对应的金额)
                 //- .layout-row
                 //-   p 备注：
                 //-   el-input(v-model='form.contentObj.remark' placeholder="备注" style="width:150px")
-            //- el-button(type='danger' @click="remove") 删除
         el-form-item(label='二维码所在地', prop='qrCodeAdd')
           el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
       //个人付款
       div(v-if="form.payWayDictId == 8")
         el-form-item(label='pid', prop='pId')
-          el-input(v-model='form.pId' placeholder="请填写收款pId")
+          el-input(v-model='form.contentObj.pId' placeholder="请填写收款pId")
       //红包（暂时不用）
-      div(v-if="form.payWayDictId == 9")
-        el-form-item(label='appid', prop='name')
-          el-input(v-model='form.appId' placeholder="请填写appId")
+      //- div(v-if="form.payWayDictId == 9")
+      //-   el-form-item(label='appid', prop='name')
+      //-     el-input(v-model='form.contentObj.appId' placeholder="请填写appId")
       //银行卡
       div(v-if="form.payWayDictId == 10")
-        el-form-item(label='appid', prop='name')
-          el-input(v-model='form.appId' placeholder="请填写appId")
+        el-form-item(label='收款银行卡号', prop='cardNum')
+          el-input(v-model='form.contentObj.cardNum' placeholder="请填写转账银行卡号")
       el-form-item(label='该方式收款上限', prop='ceiling')
         el-input(v-model='form.ceiling' placeholder="设置改方式收款上限(请自行根据情况设定，以防风控)")
       el-form-item(label='备注', prop='remark')
@@ -129,9 +130,13 @@ export default {
     return {
       loading: false,
       visible: false,
+      used: "",
+      payWayDictId: "",
       qrcodes: [],
       isAdd: false,
-      form: {},
+      form: {
+        contentObj: {}
+      },
       addForm: {},
       rules: {},
       dqyhpz: [],
@@ -232,6 +237,13 @@ export default {
         .finally(_ => {
           this.loading = false;
         });
+    },
+    addChannel() {
+      this.isAdd = true;
+      this.visible = true;
+      this.form = {
+        contentObj: {}
+      };
     },
     //启用禁用转换
     useChange(id, used) {

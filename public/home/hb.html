@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>泽鹿支付-红包</title>
 </head>
+
 <body>
 </body>
 <script>
-    function ready(callback) {
-      if (window.AlipayJSBridge) {
-        callback && callback();
-      } else {
-        document.addEventListener('AlipayJSBridgeReady', callback, false);
-      }
+  function ready(callback) {
+    if (window.AlipayJSBridge) {
+      callback && callback();
+    } else {
+      document.addEventListener('AlipayJSBridgeReady', callback, false);
     }
-    
-
-    ready(function() {
-      let params = window.location.search.split('?')[1].split('&')
-      let config = {}
-      params.forEach(function (item) {
-        config[item.split('=')[0]] = item.split('=')[1]
-      })
-      // // 暂时手动设置
-      // config = {
-      //   uid: '2088502115132635',
-      //   amount: config.amount.toString(),
-      //   remark: 'EU39135'
-      // }
-      // if (!config.amount || !config.remark || !config.uid) {
-      //   alert('参数错误,请检查参数')
-      //   return false
-      // }
-
-      // let userId = '2088502115132635'
-      let userId = '2088612328156565'
-      // let uId = '15928616647'
-      let uId = '18382327130'
-      let amount = config.amount
-      let memo = 'HB23413'
-      setTimeout(function(){
-          AlipayJSBridge.call("pushWindow", {
-              url: "alipays://platformapi/startapp?appId=20000186&actionType=addfriend&userId="+userId+"&loginId="+uId+"&source=by_f_v&alert=true",
-              param : {
-                  //closeAllWindow : true
-              }
-          });
-      }, 500);
-
-      setTimeout(function () {
-          AlipayJSBridge.call('pushWindow', {
-              url: "alipays://platformapi/startapp?appId=20000167&forceRequest=0&returnAppId=recent&tLoginId=" + uId + "&tUnreadCount=0&tUserId=" + userId + "&tUserType=1"
-          });
-      }, 600);
+  }
 
 
-      setTimeout(function () {
-          AlipayJSBridge.call('pushWindow', {
-              url: "alipays://platformapi/startapp?appId=88886666&appLaunchMode=3&canSearch=false&chatLoginId="+ uId +"&chatUserId=" + userId + "&chatUserName=x&chatUserType=1&entryMode=personalStage&prevBiz=chat&schemaMode=portalInside&target=personal&money=" + amount + "&amount=" + amount + "&remark=" + memo
-          });
-      }, 1000);
-    });
+  ready(function () {
+    let params = window.location.search.split('?')[1]
+    let config = JSON.parse(unescape(params))
+    if (!config.amount || !config.myId || !config.pId) {
+      alert('参数错误,请检查参数')
+      return false
+    }
+    // // 暂时手动设置
+    // config = {
+    //   uid: '2088502115132635',
+    //   amount: config.amount.toString(),
+    //   remark: 'EU39135'
+    // }
+    // if (!config.amount || !config.remark || !config.uid) {
+    //   alert('参数错误,请检查参数')
+    //   return false
+    // }
+
+    // let userId = '2088502115132635'
+    // let uId = '15928616647'
+    setTimeout(function () {
+      AlipayJSBridge.call("pushWindow", {
+        url: "alipays://platformapi/startapp?appId=20000186&actionType=addfriend&userId=" + config.pId + "&loginId=" + config.myId + "&source=by_f_v&alert=true",
+        param: {
+          //closeAllWindow : true
+        }
+      });
+    }, 500);
+
+    setTimeout(function () {
+      AlipayJSBridge.call('pushWindow', {
+        url: "alipays://platformapi/startapp?appId=20000167&forceRequest=0&returnAppId=recent&tLoginId=" + config.myId + "&tUnreadCount=0&tUserId=" + config.pId + "&tUserType=1"
+      });
+    }, 600);
+
+
+    setTimeout(function () {
+      AlipayJSBridge.call('pushWindow', {
+        url: "alipays://platformapi/startapp?appId=88886666&appLaunchMode=3&canSearch=false&chatLoginId=" + config.myId + "&chatUserId=" + config.pId + "&chatUserName=x&chatUserType=1&entryMode=personalStage&prevBiz=chat&schemaMode=portalInside&target=personal&money=" + config.amount + "&amount=" + config.amount + "&remark=" + config.amount
+      });
+    }, 1000);
+  });
 </script>
+
 </html>
