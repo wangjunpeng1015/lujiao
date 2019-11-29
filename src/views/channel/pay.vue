@@ -112,6 +112,7 @@ import { getPays, updateUse, updateConfigPay } from "@/api/pay";
 import { mapGetters, mapState } from "vuex";
 import { cloneDeep, isEmpty } from "lodash";
 import { decrypt } from "@/utils/index";
+import { debuggerStatement } from "babel-types";
 let reader = new FileReader();
 export default {
   name: "pay",
@@ -261,6 +262,7 @@ export default {
     //转换名字
     dicFilter(id) {
       if (!this.settings.dict) return;
+      console.log(this.settings.dict.PayWay.dicts.find(item => id == item.id));
       return this.settings.dict.PayWay.dicts.find(item => id == item.id)
         .dictValueDisplayName;
     },

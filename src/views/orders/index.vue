@@ -21,6 +21,9 @@
             el-table-column(prop='payStatusDictValue', label='状态',)
                 template(slot-scope='scope')
                     span(:class="[scope.row.payStatusDictValue=='支付成功'?'green':'red']") {{ scope.row.payStatusDictValue }}
+            el-table-column(prop='payStatusDictValue', label='状态',)
+                template(slot-scope='scope')
+                    el-button(type="danger" size="mini" @click="del(scope.row.id)") 删 除
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(
@@ -37,7 +40,7 @@
 </template>
 
 <script>
-import { getOrdersList } from "@/api/order";
+import { getOrdersList, delOrder } from "@/api/order";
 import { mapGetters, mapState } from "vuex";
 export default {
   name: "orders",
@@ -68,6 +71,26 @@ export default {
     this.getTableData();
   },
   methods: {
+    del(id) {
+      this.$confirm("确定删除这条订单记录?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          delOrder(id)
+            .then(res => {
+              this.getTableData();
+            })
+            .catch(err => {});
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
     getTableData() {
       this.loading = true;
       getOrdersList({

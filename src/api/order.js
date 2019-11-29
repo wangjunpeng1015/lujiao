@@ -14,3 +14,9 @@ export function getSettlementList(data) {
         data
     })
 }
+export function delOrder(id) {
+    return request({
+        url: `/order/${id}`,
+        method: 'delete',
+    })
+}

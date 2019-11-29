@@ -20,10 +20,10 @@
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
-            <span @click="edit">修改密码</span>
+            <p @click="edit">修改密码</p>
           </el-dropdown-item>
           <el-dropdown-item divided>
-            <span @click="logout">退出</span>
+            <p @click="logout">退出</p>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
