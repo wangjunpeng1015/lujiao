@@ -10,6 +10,8 @@
 
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="hover">
+        <span>{{ userinfo.roles[0].roleName }}</span>
+        <el-divider direction="vertical"></el-divider>
         <span>{{ userinfo.account }}</span>
         <!-- <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">

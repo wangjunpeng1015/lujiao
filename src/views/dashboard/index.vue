@@ -3,35 +3,37 @@
   el-row.box-card(type="flex" justify="center" align="middle" :gutter="20")
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" )
       el-card
-        .title 订单总数
+        .title 今日订单总数
         .num {{ list.orders }}
-        .unit 笔
-        .field
-          span 当前时间
-          span {{ nowTime }}
+          span.unit  笔
+        //- .field
+        //-   span 当前时间
+        //-   span {{ nowTime }}
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
       el-card
-        .title 商户数量
-        .num {{ list.merchants }}
-        .unit 位
-        .field
-          span 当前版本
-          span {{ version }}
+        .title 商户/应用数量
+        .num {{ list.merchants }}/{{ list.merchants }}
+          span.unit  个
+        //- .field
+        //-   span 当前版本
+        //-   span {{ version }}
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
       el-card
         .title 总计余额
-        .num {{ list.aggregate }}
-        .unit 元
-        .field
-          span(@click="copy") 推荐好友  
+        .layout-row__between
+          .num {{ list.aggregate }}
+            span.unit 元
+          el-button(type="text") 申请提现
+        //- .field
+        //-   span(@click="copy") 推荐好友
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
       el-card
-        .title 结算余额
+        .title 已结算金额
         .num {{ list.settlementMoney }}
-        .unit 元
-        .field
-          span 程序购买
-          span {{ }}
+          span.unit 元
+        //- .field
+        //-   span 程序购买
+        //-   span {{ }}
   .wjp-title
     el-divider(content-position='left') 收益查询
   .wjp-tools.layout-row.align-center.justify-end

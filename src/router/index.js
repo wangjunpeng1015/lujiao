@@ -57,7 +57,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'el-icon-s-home' }
     }]
   },
   //订单
@@ -69,11 +69,11 @@ export const constantRoutes = [
         path: 'index',
         name: 'orders',
         component: () => import('@/views/orders/index'),
-        meta: { title: '订单管理', icon: 'form' }
+        meta: { title: '订单管理', icon: 'el-icon-s-order' }
       }
     ]
   },
-  //订单
+  //结算
   {
     path: '/settlement',
     component: Layout,
@@ -82,11 +82,24 @@ export const constantRoutes = [
         path: 'index',
         name: 'settlement',
         component: () => import('@/views/settlement/index'),
-        meta: { title: '结算管理', icon: 'form' }
+        meta: { title: '结算管理', icon: 'el-icon-money' }
       }
     ]
   },
-  //订单
+  // 应用
+  {
+    path: '/app',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'app',
+        component: () => import('@/views/app/index'),
+        meta: { title: '应用管理', icon: 'el-icon-s-platform' }
+      }
+    ]
+  },
+  //登录
   {
     path: '/record',
     component: Layout,
@@ -95,7 +108,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'record',
         component: () => import('@/views/record/index'),
-        meta: { title: '登录记录', icon: 'form' }
+        meta: { title: '登录记录', icon: 'el-icon-tickets' }
       }
     ]
   },
@@ -110,12 +123,39 @@ export const constantRoutes = [
         path: 'pay',
         name: 'pay',
         component: () => import('@/views/channel/pay'),
-        meta: { title: '支付通道配置', icon: 'table' }
+        meta: { title: '支付通道配置', icon: 'el-icon-s-tools' }
       }
     ]
   },
+  {
+    path: '/doc',
+    component: Layout,
+    redirect: '/doc/index',
+    name: 'doc',
+    meta: { title: '开发文档', icon: 'el-icon-document' },
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/doc/index'),
+        meta: { title: '商户API文档', icon: 'el-icon-document' }
+      },
+      {
+        path: 'aliPid',
+        name: 'aliPid',
+        component: () => import('@/views/doc/aliPid'),
+        meta: { title: '获取支付宝PID', icon: 'el-icon-document' }
+      },
+      {
+        path: 'cardId',
+        name: 'cardId',
+        component: () => import('@/views/doc/cardId'),
+        meta: { title: '获取银行卡ID', icon: 'el-icon-document' }
+      },
+    ]
+  },
   // {
-  //   path: '/example',
+  //   path: '/doc',
   //   component: Layout,
   //   redirect: '/example/table',
   //   name: 'Example',

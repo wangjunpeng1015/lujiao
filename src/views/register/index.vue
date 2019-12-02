@@ -3,6 +3,10 @@
   el-form.login-form(ref='form', :model='form', :rules='loginRules',label-width="90px" auto-complete='on', label-position='left')
     .title-container.center
       h3.title 自助申请商户
+    el-form-item(label="用户类型"  prop='type')
+      el-select(style="width: 100%")
+        el-option(label="商户")
+        el-option(label="码商")
     el-form-item(label="账号"  prop='account')
       el-input(v-model='form.account', placeholder='账号', name='account', type='text',  auto-complete='on')
     el-form-item(label="密码"  prop='userPassword')
@@ -25,7 +29,7 @@
     .btn
         .wrap-btn
         el-button(:loading='loading', type='primary', @click.native.prevent='handleRegister') 注 册
-    
+
 </template>
 
 <script>

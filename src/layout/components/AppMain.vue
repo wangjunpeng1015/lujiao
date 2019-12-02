@@ -30,7 +30,7 @@ export default {
   padding: 10px;
   margin: 20px;
   height: calc(100vh - 90px);
-  box-shadow: 4px 4px 6px 6px #666;
+  box-shadow: 0px 0px 18px -10px #666;
 }
 .fixed-header + .app-main {
   padding-top: 50px;
