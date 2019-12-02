@@ -5,16 +5,12 @@ import { router, resetRouter } from '@/router'
 import store from '../index'
 const state = {
   token: getToken(),
-  userinfo: '',
-  roles: [],
+  userinfo: null,
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
-  },
-  SET_RULES: (state, token) => {
-    state.roles = roles
   },
   SET_USER_INFO: (state, data) => {
     state.userinfo = data

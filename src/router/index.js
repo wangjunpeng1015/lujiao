@@ -139,6 +139,44 @@ export const constantRoutes = [
       },
     ]
   },
+  {
+    path: '/channel',
+    component: Layout,
+    redirect: '/channel/pay',
+    name: 'channel',
+    meta: { title: '支付通道', icon: 'example' },
+    children: [
+      {
+        path: 'pay',
+        name: 'pay',
+        component: () => import('@/views/channel/pay'),
+        meta: {
+          title: '支付通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1],
+        }
+      }
+    ]
+  },
+  // {
+  //   path: '/channel',
+  //   component: Layout,
+  //   redirect: '/channel/pay',
+  //   name: 'channel',
+  //   meta: { title: '支付通道', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'pay',
+  //       name: 'pay',
+  //       component: () => import('@/views/channel/pay'),
+  //       meta: {
+  //         title: '支付通道配置',
+  //         icon: 'el-icon-s-tools',
+  //         roles: ['admin'],
+  //       }
+  //     }
+  //   ]
+  // },
   // {
   //   path: '/doc',
   //   component: Layout,
@@ -255,7 +293,7 @@ export const asyncRoutes = [
         meta: {
           title: '支付通道配置',
           icon: 'el-icon-s-tools',
-          roles: ['admin'],
+          roles: [1],
         }
       }
     ]

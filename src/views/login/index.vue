@@ -12,17 +12,16 @@
         <h3 class="title">支付登录</h3>
       </div>
 
-      <el-form-item prop="type" class="type">
+      <!-- <el-form-item prop="type" class="type">
         <span class="svg-container">
           <i class="el-icon-collection"></i>
-          <!-- <svg-icon icon-class="people"/> -->
         </span>
         <el-select>
           <el-option label="商户"></el-option>
           <el-option label="码商"></el-option>
           <el-option label="管理员"></el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
 
       <el-form-item prop="account">
         <span class="svg-container">
@@ -38,7 +37,6 @@
           auto-complete="on"
         />
       </el-form-item>
-
 
       <el-form-item prop="password">
         <span class="svg-container">
@@ -125,7 +123,7 @@ export default {
         if (valid) {
           this.loading = true;
           this.$store
-            .dispatch("user/login", {...this.loginForm,type:'admin'})
+            .dispatch("user/login", { ...this.loginForm, type: "admin" })
             .then(() => {
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
@@ -193,12 +191,12 @@ $cursor: #fff;
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
-.type /deep/ .el-form-item__content{
+.type /deep/ .el-form-item__content {
   display: flex;
-  .el-select{
+  .el-select {
     width: 100%;
   }
-  .el-input{
+  .el-input {
     width: 100%;
   }
 }
@@ -233,7 +231,7 @@ $light_gray: #eee;
   .svg-container {
     padding: 6px 5px 6px 15px;
     // color: $dark_gray;
-    color: #409EFF;
+    color: #409eff;
     vertical-align: middle;
     width: 30px;
     display: inline-block;
