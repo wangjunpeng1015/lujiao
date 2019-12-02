@@ -21,9 +21,10 @@
             el-table-column(prop='payStatusDictValue', label='状态',)
                 template(slot-scope='scope')
                     span(:class="[scope.row.payStatusDictValue=='支付成功'?'green':'red']") {{ scope.row.payStatusDictValue }}
-            el-table-column(prop='payStatusDictValue', label='状态',)
+            el-table-column(prop='payStatusDictValue', label='操作',)
                 template(slot-scope='scope')
                     el-button(type="danger" size="mini" @click="del(scope.row.id)") 删 除
+                    el-button(type="primary" size="mini" @click="supplement(scope.row.id)") 补 单
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import { getOrdersList, delOrder } from "@/api/order";
+import { getOrdersList, delOrder, supplement } from "@/api/order";
 import { mapGetters, mapState } from "vuex";
 export default {
   name: "orders",
@@ -71,6 +72,7 @@ export default {
     this.getTableData();
   },
   methods: {
+    //删除订单
     del(id) {
       this.$confirm("确定删除这条订单记录?", "提示", {
         confirmButtonText: "确定",
@@ -90,6 +92,28 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    //补单
+    supplement(id) {
+      this.$prompt("请输入补单备注：", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPlaceholder: "补单备注"
+      }).then(({ value }) => {
+        supplement({
+          id,
+          remark: value
+        })
+          .then(res => {
+            this.$message.success("补单成功！");
+          })
+          .catch(err => {
+            this.$message.error("补单失败！");
+          })
+          .finally(_ => {
+            this.getTableData();
+          });
+      });
     },
     getTableData() {
       this.loading = true;

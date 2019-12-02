@@ -24,9 +24,9 @@ export function getloginLog() {
   })
 }
 //用户信息
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/base/user/getCurrentUser',
+    url: `/base/user/getCurrentUser`,
     method: 'get',
   })
 }

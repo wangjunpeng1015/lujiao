@@ -99,21 +99,6 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/channel',
-    component: Layout,
-    redirect: '/channel/pay',
-    name: 'channel',
-    meta: { title: '支付通道', icon: 'example' },
-    children: [
-      {
-        path: 'pay',
-        name: 'pay',
-        component: () => import('@/views/channel/pay'),
-        meta: { title: '支付通道配置', icon: 'table' }
-      }
-    ]
-  },
   // {
   //   path: '/example',
   //   component: Layout,
@@ -215,7 +200,27 @@ export const constantRoutes = [
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
-
+export const asyncRoutes = [
+  {
+    path: '/channel',
+    component: Layout,
+    redirect: '/channel/pay',
+    name: 'channel',
+    meta: { title: '支付通道', icon: 'example' },
+    children: [
+      {
+        path: 'pay',
+        name: 'pay',
+        component: () => import('@/views/channel/pay'),
+        meta: {
+          title: '支付通道配置',
+          icon: 'table',
+          roles: ['admin'],
+        }
+      }
+    ]
+  },
+]
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),

@@ -103,11 +103,16 @@ const payWay = {
     // },
     //(跳转)支付宝银行卡-隐藏卡号
     10: (data) => {
+        debugger
         const { payMoney } = data
         const { cardNum } = JSON.parse(data.payContent)
         let params = JSON.stringify({
             amount: payMoney,
-            cardNum
+            cardNum,
+            mark,
+            bankName,
+            name,
+            cardIndex
         })
         let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/fly.html?' + escape(params)
         window.location.href = url
@@ -130,7 +135,7 @@ function createOrder() {
     data.append('payWay', getUserParam('type'))
     $.ajax({
         type: "POST",
-        url: `${baseUrl}/order/create`,
+        url: `${baseUrl}/order/optimalPay`,
         processData: false,//告诉jquery 不要处理发送的数据
         contentType: false,//不要设置content-Type
         data,
@@ -161,30 +166,6 @@ function createOrder() {
             payWay[data.payWayDictId](data)
         },
     })
-}
-function orderState() {
-    let siv = setInterval(() => {
-        $.ajax({
-            type: "POST",
-            url: `${baseUrl}/order/create`,
-            data:
-                JSON.stringify(
-                    {
-                        money: $('#amount_val').val(),
-                        payWay
-                    }),
-            error: function (XHR, textStatus, errorThrown) {
-
-            },
-            success: function (data, textStatus) {
-
-                clearInterval(siv)
-            },
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-            }
-        })
-    }, 1000);
 }
 function countdown() {
     $('#status').removeClass('none')

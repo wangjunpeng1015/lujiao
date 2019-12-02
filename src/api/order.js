@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import Qs from 'qs'
 export function getOrdersList(data) {
     return request({
         url: '/order/list',
@@ -18,5 +18,12 @@ export function delOrder(id) {
     return request({
         url: `/order/${id}`,
         method: 'delete',
+    })
+}
+export function supplement(data) {
+    return request({
+        url: `/order/replacementOrder`,
+        method: 'post',
+        data: Qs.stringify(data)
     })
 }

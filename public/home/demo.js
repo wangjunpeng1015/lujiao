@@ -21,15 +21,15 @@ Date.prototype.Format = function (fmt) { //author: meizz
 const payWay = {
   //当面付款
   5: () => {
-    createOrder('支付宝', function (data) {
+    createOrder('ali', function (data) {
 
     })
   },
   //(跳转)个人付款-用户手输金额
   6: (data) => {
-    createOrder('支付宝', function (data) {
-      debugger
+    createOrder('ali', function (data) {
       let orderNo = data.orderNum
+      const { qrUrl } = JSON.parse(data.payContent)
       setTimeout(() => {
         $.hidePreloader();
         $('#orderNo').val(orderNum)
@@ -51,7 +51,7 @@ const payWay = {
             onClick: function () {
               // 辉：无
               // let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/fkx03502qacq8cbmglhjdea?t=1574131918077'
-              let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + data.qrcode
+              let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
               // 鹏：0.01
               // let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/fkx089790ri7t8y4qu8tde4'
               window.location.href = url
@@ -63,7 +63,8 @@ const payWay = {
   },
   //(跳转)个人付款-自动生成金额
   7: () => {
-    createOrder('支付宝', function (data) {
+    createOrder('ali', function (data) {
+      debugger
       // let qrurl = 'https://qr.alipay.com/fkx089790ri7t8y4qu8tde4'
       // let qrurl = 'https://qr.alipay.com/fkx03936zlrnefzbooeiwe8'
       let qrurl = 'https://qr.alipay.com/bax02107ixjtebepd3j740d1'
@@ -100,7 +101,8 @@ const payWay = {
   },
   //(跳转)个人转账-自动生成金额备注
   8: () => {
-    createOrder('支付宝', function (data) {
+    createOrder('ali', function (data) {
+      debugger
       $.hidePreloader();
       let uid = '2088502115132635'
       let amount = $('#amount_val').val()
@@ -120,18 +122,20 @@ const payWay = {
   //(跳转)个人红包-自动生成金额备注
   9: () => {
     setTimeout(function () {
+      debugger
       $.hidePreloader();
       let amount = $('#amount_val').val()
       // 坑：支付宝中只能拿到url中第一个参数
       // todo：需要在此处创建订单，在支付宝url中获取订单信息
       // let url = 'alipays://platformapi/startapp?appId=20000067&url=http://192.168.0.103:5500/zhuanzhang.html?uid=' + uid + '&amount=' + amount + '&remark=' + remark
-      let url = 'alipays://platformapi/startapp?appId=20000067&url=http://192.168.8.104:5500/hb.html?amount=' + amount
+      let url = 'alipays://platformapi/startapp?appId=20000067&url=+' + frontUrl + '/hb.html?amount=' + amount
       window.location.href = url
     }, 1000);
   },
   //(跳转)支付宝银行卡-隐藏卡号
   10: () => {
     setTimeout(function () {
+      debugger
       $.hidePreloader();
       let amount = $('#amount_val').val()
       let cardIndex = '1607121556258423195'
@@ -180,25 +184,22 @@ function getPayWay(value, callback) {
   })
 }
 function createOrder(payWay, callback) {
+  let data = new FormData()
+  data.append('userId', getUserParam('id'))
+  data.append('money', $('#amount_val').val())
+  data.append('payWay', payWay)
   $.ajax({
     type: "POST",
-    url: `${baseUrl}/order/create`,
-    data:
-      JSON.stringify(
-        {
-          userId: getUserParam('id'),
-          money: $('#amount_val').val(),
-          payWay
-        }),
+    url: `${baseUrl}/order/optimalPay`,
+    processData: false,//告诉jquery 不要处理发送的数据
+    contentType: false,//不要设置content-Type
+    data,
     error: function (XHR, textStatus, errorThrown) {
 
     },
     success: function (data, textStatus) {
-      callback(data.data)
+      callback(data.data.data)
     },
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8',
-    }
   })
 }
 function orderState() {

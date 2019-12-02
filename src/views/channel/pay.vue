@@ -62,7 +62,7 @@
         el-form-item(label='收款二维码')
           el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
             el-button(size='small', type='primary') 点击上传
-        el-form-item(v-if="form.contentObj")
+        el-form-item(v-if="!isEmpty(form.contentObj)")
           .layout-row__between.align-center
             .layout-row.align-center
               img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
@@ -85,10 +85,32 @@
       //- div(v-if="form.payWayDictId == 9")
       //-   el-form-item(label='appid', prop='name')
       //-     el-input(v-model='form.contentObj.appId' placeholder="请填写appId")
-      //银行卡
+      //支付宝银行卡
       div(v-if="form.payWayDictId == 10")
-        el-form-item(label='收款银行卡号', prop='cardNum')
-          el-input(v-model='form.contentObj.cardNum' placeholder="请填写转账银行卡号")
+        el-form-item(label='银行卡cardIndex', prop='cardIndex')
+          el-input(v-model='form.contentObj.cardIndex' placeholder="请填写转账银行卡cardIndex")
+        el-form-item(label='银行简称', prop='mark')
+          el-input(v-model='form.contentObj.mark' placeholder="请填写银行简称")
+        el-form-item(label='银行名称', prop='bankName')
+          el-input(v-model='form.contentObj.bankName' placeholder="请填写银行名称")
+        el-form-item(label='真实姓名', prop='name')
+          el-input(v-model='form.contentObj.name' placeholder="请填写真实姓名")
+      //微信
+      div(v-if="form.payWayDictId == 11")
+        el-form-item(label='收款二维码')
+          el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
+            el-button(size='small', type='primary') 点击上传
+        el-form-item(v-if="!isEmpty(form.contentObj)")
+          .layout-row__between.align-center
+            .layout-row.align-center
+              img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
+              .pay-label
+                .layout-row
+                  p 二维码金额：
+                  el-input(v-model='form.contentObj.money' placeholder="二维码金额" style="width:100px")
+                  | RMB
+        el-form-item(label='二维码所在地', prop='qrCodeAdd')
+          el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
       el-form-item(label='该方式收款上限', prop='ceiling')
         el-input(v-model='form.ceiling' placeholder="设置改方式收款上限(请自行根据情况设定，以防风控)")
       el-form-item(label='备注', prop='remark')
@@ -113,7 +135,6 @@ import { mapGetters, mapState } from "vuex";
 import { cloneDeep, isEmpty } from "lodash";
 import { decrypt } from "@/utils/index";
 import { debuggerStatement } from "babel-types";
-let reader = new FileReader();
 export default {
   name: "pay",
   computed: {
@@ -168,29 +189,41 @@ export default {
         contentObj
       };
     },
+    getObjectURL(file) {
+      let url = null;
+      if (window.createObjectURL != undefined) {
+        // basic
+        url = window.createObjectURL(file);
+      } else if (window.URL != undefined) {
+        // mozilla(firefox)
+        url = window.URL.createObjectURL(file);
+      } else if (window.webkitURL != undefined) {
+        // webkit or chrome
+        url = window.webkitURL.createObjectURL(file);
+      }
+      return url;
+    },
     //图片上传
     uploadUrl(raw) {
       let _self = this;
-      reader.readAsDataURL(raw.file);
-      reader.onload = function(d) {
-        const base64 = d.target.result;
-        qrcode.decode(base64, function(qrUrl) {
-          if (qrUrl === "error decoding QR Code") {
-            _self.$message.error("未能识别支付二维码！");
-          } else {
-            let data = {
-              money: 0,
-              url: base64,
-              qrUrl
-            };
-            _self.$set(_self.form, "contentObj", data);
-          }
-        });
+      const _URL = window.URL || window.webkitURL;
+      qrcode.decode(this.getObjectURL(raw.file));
+      qrcode.callback = function(qrUrl) {
+        if (qrUrl === "error decoding QR Code") {
+          _self.$message.error("未能识别支付二维码！");
+        } else {
+          let data = {
+            money: 0,
+            url: _URL.createObjectURL(raw.file),
+            qrUrl
+          };
+          _self.$set(_self.form, "contentObj", data);
+        }
       };
     },
-    // remove(i) {
-    //   this.form.contentObj = {};
-    // },
+    isEmpty(data) {
+      return isEmpty(data);
+    },
     cancel() {
       this.visible = false;
       this.form = {};
@@ -262,7 +295,6 @@ export default {
     //转换名字
     dicFilter(id) {
       if (!this.settings.dict) return;
-      console.log(this.settings.dict.PayWay.dicts.find(item => id == item.id));
       return this.settings.dict.PayWay.dicts.find(item => id == item.id)
         .dictValueDisplayName;
     },

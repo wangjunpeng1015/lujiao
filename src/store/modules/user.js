@@ -6,11 +6,15 @@ import store from '../index'
 const state = {
   token: getToken(),
   userinfo: '',
+  roles: [],
 }
 
 const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
+  },
+  SET_RULES: (state, token) => {
+    state.roles = roles
   },
   SET_USER_INFO: (state, data) => {
     state.userinfo = data
@@ -20,9 +24,9 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { account, password } = userInfo
+    const { account, password, type } = userInfo
     return new Promise((resolve, reject) => {
-      login({ account: account.trim(), password: password.trim(), ip: returnCitySN.cip }).then(response => {
+      login({ account: account.trim(), password: password.trim(), type, ip: returnCitySN.cip }).then(response => {
         store.dispatch("settings/getdic")
         const { data } = response
         commit('SET_TOKEN', data.token)
@@ -45,7 +49,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
         if (!data) {
           reject('请重新登录！')
