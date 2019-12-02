@@ -89,10 +89,10 @@
       div(v-if="form.payWayDictId == 10")
         el-form-item(label='银行卡cardIndex', prop='cardIndex')
           el-input(v-model='form.contentObj.cardIndex' placeholder="请填写转账银行卡cardIndex")
-        el-form-item(label='银行简称', prop='mark')
-          el-input(v-model='form.contentObj.mark' placeholder="请填写银行简称")
         el-form-item(label='银行名称', prop='bankName')
           el-input(v-model='form.contentObj.bankName' placeholder="请填写银行名称")
+        el-form-item(label='银行简称', prop='mark')
+          el-input(v-model='form.contentObj.mark' placeholder="请填写银行简称")
         el-form-item(label='真实姓名', prop='name')
           el-input(v-model='form.contentObj.name' placeholder="请填写真实姓名")
       //微信
@@ -104,15 +104,23 @@
           .layout-row__between.align-center
             .layout-row.align-center
               img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
-              .pay-label
-                .layout-row
-                  p 二维码金额：
-                  el-input(v-model='form.contentObj.money' placeholder="二维码金额" style="width:100px")
-                  | RMB
         el-form-item(label='二维码所在地', prop='qrCodeAdd')
           el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
-      el-form-item(label='该方式收款上限', prop='ceiling')
+      //云闪付
+      div(v-if="form.payWayDictId == 17")
+        el-form-item(label='收款二维码')
+          el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
+            el-button(size='small', type='primary') 点击上传
+        el-form-item(v-if="!isEmpty(form.contentObj)")
+          .layout-row__between.align-center
+            .layout-row.align-center
+              img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
+        el-form-item(label='二维码所在地', prop='qrCodeAdd')
+          el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
+      el-form-item(label='当日收款上限', prop='ceiling')
         el-input(v-model='form.ceiling' placeholder="设置改方式收款上限(请自行根据情况设定，以防风控)")
+      el-form-item(label='单笔限额', prop='singleCeiling')
+        el-input(v-model='form.singleCeiling' placeholder="设置单次最大金额")
       el-form-item(label='备注', prop='remark')
         el-input(v-model='form.remark' placeholder="备注(主要用于备注二维码用途)")
       //- el-form-item(label='是否启用', prop='used')
@@ -135,6 +143,7 @@ import { mapGetters, mapState } from "vuex";
 import { cloneDeep, isEmpty } from "lodash";
 import { decrypt } from "@/utils/index";
 import { debuggerStatement } from "babel-types";
+
 export default {
   name: "pay",
   computed: {
@@ -183,6 +192,7 @@ export default {
         payWayDictId: form.payWayDictId,
         used: form.used,
         remark: form.remark,
+        singleCeiling: form.singleCeiling,
         qrCodeAdd: form.qrCodeAdd,
         forNight: form.forNight,
         ceiling: form.ceiling,
@@ -206,19 +216,22 @@ export default {
     //图片上传
     uploadUrl(raw) {
       let _self = this;
-      const _URL = window.URL || window.webkitURL;
-      qrcode.decode(this.getObjectURL(raw.file));
-      qrcode.callback = function(qrUrl) {
-        if (qrUrl === "error decoding QR Code") {
-          _self.$message.error("未能识别支付二维码！");
-        } else {
-          let data = {
-            money: 0,
-            url: _URL.createObjectURL(raw.file),
-            qrUrl
-          };
-          _self.$set(_self.form, "contentObj", data);
-        }
+      let reader = new FileReader();
+      reader.readAsDataURL(raw.file);
+      reader.onload = function() {
+        qrcode.decode(_self.getObjectURL(raw.file));
+        qrcode.callback = function(qrUrl) {
+          if (qrUrl === "error decoding QR Code") {
+            _self.$message.error("未能识别支付二维码！");
+          } else {
+            let data = {
+              money: 0,
+              url: reader.result,
+              qrUrl
+            };
+            _self.$set(_self.form, "contentObj", data);
+          }
+        };
       };
     },
     isEmpty(data) {

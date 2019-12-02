@@ -21,14 +21,15 @@ Date.prototype.Format = function (fmt) { //author: meizz
 const payWay = {
   //当面付款
   5: () => {
-    createOrder('ali', function (data) {
-
+    createOrder('5', function (data) {
+      const { qrUrl } = JSON.parse(data.payContent)
+      window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
     })
   },
   //(跳转)个人付款-用户手输金额
-  6: (data) => {
-    createOrder('ali', function (data) {
-      let orderNo = data.orderNum
+  6: () => {
+    createOrder('6', function (data) {
+      const orderNum = data.orderNum
       const { qrUrl } = JSON.parse(data.payContent)
       setTimeout(() => {
         $.hidePreloader();
@@ -41,7 +42,7 @@ const payWay = {
         title: '注意！',
         text: `
               <span>1. 请输入<b>准确金额</b></span><br/>
-              <span>2. 请在备注中输入订单号:<b>${orderNo}</b><br/>
+              <span>2. 请在备注中输入订单号:<b>${orderNum}</b><br/>
               (已复制订单号，直接在支付宝中粘贴即可)</span><br/>
               <span style="color:red">否则无法到账！!!</span>
             `,
@@ -49,11 +50,7 @@ const payWay = {
           {
             text: '支付',
             onClick: function () {
-              // 辉：无
-              // let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/fkx03502qacq8cbmglhjdea?t=1574131918077'
-              let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
-              // 鹏：0.01
-              // let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=https://qr.alipay.com/fkx089790ri7t8y4qu8tde4'
+              window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
               window.location.href = url
             }
           }
@@ -63,11 +60,8 @@ const payWay = {
   },
   //(跳转)个人付款-自动生成金额
   7: () => {
-    createOrder('ali', function (data) {
-      debugger
-      // let qrurl = 'https://qr.alipay.com/fkx089790ri7t8y4qu8tde4'
-      // let qrurl = 'https://qr.alipay.com/fkx03936zlrnefzbooeiwe8'
-      let qrurl = 'https://qr.alipay.com/bax02107ixjtebepd3j740d1'
+    createOrder('7', function (data) {
+      const { qrUrl } = JSON.parse(data.payContent)
       $.modal({
         title: '注意！(demo金额都为0.01)',
         text: `
@@ -76,17 +70,14 @@ const payWay = {
           1.请截图保存该页面<br/>
           2.打开支付宝扫一扫<br/>
           3.点击右上角相册选择保存的二维码支付</span><br/>
-          <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(data.qrcode)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+          <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
         `,
         // <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrurl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
         buttons: [
           {
             text: '跳转支付',
             onClick: function () {
-              // 辉：无
-              // let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=HTTPS://QR.ALIPAY.COM/FKX03295LG3MONLF40T42A?t=1574131918077'
-              // 鹏：0.01
-              let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + data.qrcode
+              let url = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
               window.location.href = url
             }
           },
@@ -101,19 +92,16 @@ const payWay = {
   },
   //(跳转)个人转账-自动生成金额备注
   8: () => {
-    createOrder('ali', function (data) {
-      debugger
-      $.hidePreloader();
-      let uid = '2088502115132635'
-      let amount = $('#amount_val').val()
-      let remark = 'EU39135'
+    createOrder('8', function (data) {
+      const { orderNum, payMoney } = data
+      const { pId } = JSON.parse(data.payContent)
       // 坑：支付宝中只能拿到url中第一个参数
       // todo：需要在此处创建订单，在支付宝url中获取订单信息
       // let url = 'alipays://platformapi/startapp?appId=20000067&url=http://192.168.0.103:5500/zhuanzhang.html?uid=' + uid + '&amount=' + amount + '&remark=' + remark
-      params = JSON.stringify({
-        amount,
-        uid,
-        remark
+      const params = JSON.stringify({
+        amount: payMoney,
+        remark: orderNum,
+        pId
       })
       let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/zhuanzhang.html?' + escape(params)
       window.location.href = url
@@ -122,7 +110,6 @@ const payWay = {
   //(跳转)个人红包-自动生成金额备注
   9: () => {
     setTimeout(function () {
-      debugger
       $.hidePreloader();
       let amount = $('#amount_val').val()
       // 坑：支付宝中只能拿到url中第一个参数
@@ -134,18 +121,40 @@ const payWay = {
   },
   //(跳转)支付宝银行卡-隐藏卡号
   10: () => {
-    setTimeout(function () {
-      debugger
-      $.hidePreloader();
-      let amount = $('#amount_val').val()
-      let cardIndex = '1607121556258423195'
-      let params = {
-        amount,
+    createOrder('10', function (data) {
+      const { payMoney } = data
+      const {
+        mark,
+        bankName,
+        name,
         cardIndex
-      }
-      let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/fly.html?amount=' + escape(params)
+      } = JSON.parse(data.payContent)
+      let params = JSON.stringify({
+        amount: payMoney,
+        mark,
+        bankName,
+        name,
+        cardIndex
+      })
+
+      let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/fly.html?' + escape(params)
       window.location.href = url
-    }, 1000);
+    })
+  },
+  11: () => {
+    createOrder('11', function (data) {
+      const { qrUrl } = JSON.parse(data.payContent)
+      $.modal({
+        title: '注意！',
+        text: `
+          1.请截图保存该页面<br/>
+          2.打开微信扫一扫<br/>
+          3.点击右上角相册选择保存的二维码支付</span><br/>
+          <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+        `,
+        // <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrurl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+      })
+    })
   }
 }
 function chooseAmount(num) {
@@ -183,11 +192,11 @@ function getPayWay(value, callback) {
     }
   })
 }
-function createOrder(payWay, callback) {
+function createOrder(id, callback) {
   let data = new FormData()
   data.append('userId', getUserParam('id'))
   data.append('money', $('#amount_val').val())
-  data.append('payWay', payWay)
+  data.append('payWayDictId', id)
   $.ajax({
     type: "POST",
     url: `${baseUrl}/order/optimalPay`,
@@ -195,7 +204,20 @@ function createOrder(payWay, callback) {
     contentType: false,//不要设置content-Type
     data,
     error: function (XHR, textStatus, errorThrown) {
+      $.modal({
+        title: '注意！',
+        text: `
+          <span>订单创建中失败，请从平台重新打开！</span>
+        `,
+        buttons: [
+          {
+            text: '确定',
+            onClick: function () {
 
+            }
+          }
+        ]
+      })
     },
     success: function (data, textStatus) {
       callback(data.data.data)
@@ -241,6 +263,20 @@ function countdown() {
 
 // https://qr.alipay.com/fkx03562pfglokkqkpg3afa?t=1574131936724
 $('.ali-methods').on('click', function () {
+  getway('ali')
+})
+$('.wx-methods').on('click', function () {
+  getway('wx')
+})
+$('.ysf-methods').on('click', function () {
+  getway('ysf')
+})
+
+$('.b-methods').on('click', function () {
+  getway('other')
+})
+
+function getway(way) {
   if (!validateAmount()) {
     return false;
   }
@@ -256,7 +292,7 @@ $('.ali-methods').on('click', function () {
       text: '取消',
     }
   ];
-  getPayWay('ali', function (menu) {
+  getPayWay(way, function (menu) {
     $.hidePreloader();
     const ids = Object.keys(payWay)
     menu.map(item => {
@@ -273,13 +309,5 @@ $('.ali-methods').on('click', function () {
     $.actions(groups);
   })
   return;
-})
-
-$('.wx-methods').on('click', function () {
-  $.toast("暂无可用通道");
-})
-
-$('.b-methods').on('click', function () {
-  $.toast("通道开发中...敬请期待");
-})
+}
 

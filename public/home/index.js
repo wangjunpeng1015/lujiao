@@ -103,7 +103,6 @@ const payWay = {
     // },
     //(跳转)支付宝银行卡-隐藏卡号
     10: (data) => {
-        debugger
         const { payMoney } = data
         const { cardNum } = JSON.parse(data.payContent)
         let params = JSON.stringify({
@@ -116,6 +115,19 @@ const payWay = {
         })
         let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/fly.html?' + escape(params)
         window.location.href = url
+    },
+    11: (data) => {
+        const { qrUrl } = JSON.parse(data.payContent)
+        $.modal({
+            title: '注意！',
+            text: `
+          1.请截图保存该页面<br/>
+          2.打开微信扫一扫<br/>
+          3.点击右上角相册选择保存的二维码支付</span><br/>
+          <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+        `,
+            // <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrurl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+        })
     }
 }
 
@@ -160,7 +172,7 @@ function createOrder() {
             data = data.data.data
             countdown();
             $('#orderNo').text(data.orderNum)
-            $('#orderno').text(data.orderNum)
+            $('#orderno').val(data.orderNum)
             document.getElementById('orderno').select()
             document.execCommand('copy');
             payWay[data.payWayDictId](data)
