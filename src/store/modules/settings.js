@@ -18,7 +18,7 @@ const mutations = {
   },
   SET_DIC: (state, value) => {
     value.PayWay.dicts = value.PayWay.dicts.filter(item => {
-      return item.id != 12 && item.id != 13;
+      return item.id != 7 && item.id != 12 && item.id != 13;
     })
     state.dict = value
   }

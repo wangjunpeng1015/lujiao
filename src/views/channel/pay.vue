@@ -56,7 +56,7 @@
           el-input(v-model='form.contentObj.publicKey' placeholder="请填写公钥")
         el-form-item(label='阿里公钥', prop='alipayPublicKey')
           el-input(v-model='form.contentObj.alipayPublicKey' placeholder="RSA")
-      //个人转账
+      //个人转账（暂时屏蔽转账自动金额）
       //- div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
       div(v-if="form.payWayDictId == 6")
         el-form-item(label='收款二维码')
