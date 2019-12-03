@@ -23,23 +23,10 @@
   ready(function () {
     let params = window.location.search.split('?')[1]
     let config = JSON.parse(unescape(params))
-    if (!config.amount || !config.myId || !config.pId) {
+    if (!config.amount || !config.myId || !config.pId || !config.remark) {
       alert('参数错误,请检查参数')
       return false
     }
-    // // 暂时手动设置
-    // config = {
-    //   uid: '2088502115132635',
-    //   amount: config.amount.toString(),
-    //   remark: 'EU39135'
-    // }
-    // if (!config.amount || !config.remark || !config.uid) {
-    //   alert('参数错误,请检查参数')
-    //   return false
-    // }
-
-    // let userId = '2088502115132635'
-    // let uId = '15928616647'
     setTimeout(function () {
       AlipayJSBridge.call("pushWindow", {
         url: "alipays://platformapi/startapp?appId=20000186&actionType=addfriend&userId=" + config.pId + "&loginId=" + config.myId + "&source=by_f_v&alert=true",
@@ -58,7 +45,7 @@
 
     setTimeout(function () {
       AlipayJSBridge.call('pushWindow', {
-        url: "alipays://platformapi/startapp?appId=88886666&appLaunchMode=3&canSearch=false&chatLoginId=" + config.myId + "&chatUserId=" + config.pId + "&chatUserName=x&chatUserType=1&entryMode=personalStage&prevBiz=chat&schemaMode=portalInside&target=personal&money=" + config.amount + "&amount=" + config.amount + "&remark=" + config.amount
+        url: "alipays://platformapi/startapp?appId=88886666&appLaunchMode=3&canSearch=false&chatLoginId=" + config.myId + "&chatUserId=" + config.pId + "&chatUserName=x&chatUserType=1&entryMode=personalStage&prevBiz=chat&schemaMode=portalInside&target=personal&money=" + config.amount + "&amount=" + config.amount + "&remark=" + config.remark
       });
     }, 1000);
   });

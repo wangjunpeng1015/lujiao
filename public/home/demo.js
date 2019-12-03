@@ -109,15 +109,20 @@ const payWay = {
   },
   //(跳转)个人红包-自动生成金额备注
   9: () => {
-    setTimeout(function () {
-      $.hidePreloader();
-      let amount = $('#amount_val').val()
-      // 坑：支付宝中只能拿到url中第一个参数
-      // todo：需要在此处创建订单，在支付宝url中获取订单信息
-      // let url = 'alipays://platformapi/startapp?appId=20000067&url=http://192.168.0.103:5500/zhuanzhang.html?uid=' + uid + '&amount=' + amount + '&remark=' + remark
-      let url = 'alipays://platformapi/startapp?appId=20000067&url=+' + frontUrl + '/hb.html?amount=' + amount
+    createOrder('9', function (data) {
+
+      const { orderNum } = data
+      const { pId, myId } = JSON.parse(data.payContent)
+      const params = JSON.stringify({
+        amount: $('#amount_val').val(),
+        remark: orderNum,
+        pId,
+        myId
+      })
+      let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/hb.html?' + escape(params)
+      debugger
       window.location.href = url
-    }, 1000);
+    })
   },
   //(跳转)支付宝银行卡-隐藏卡号
   10: () => {
@@ -148,7 +153,22 @@ const payWay = {
         title: '注意！',
         text: `
           1.请截图保存该页面<br/>
-          2.打开微信扫一扫<br/>
+          2.<span style="color:red">打开微信扫一扫</span><br/>
+          3.点击右上角相册选择保存的二维码支付</span><br/>
+          <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+        `,
+        // <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrurl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+      })
+    })
+  },
+  17: () => {
+    createOrder('17', function (data) {
+      const { qrUrl } = JSON.parse(data.payContent)
+      $.modal({
+        title: '注意！',
+        text: `
+          1.请截图保存该页面<br/>
+          2.<span style="color:red">打开云闪付扫一扫</span><br/>
           3.点击右上角相册选择保存的二维码支付</span><br/>
           <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
         `,
@@ -268,12 +288,14 @@ $('.ali-methods').on('click', function () {
 $('.wx-methods').on('click', function () {
   getway('wx')
 })
-$('.ysf-methods').on('click', function () {
-  getway('ysf')
+$('.cloud-methods').on('click', function () {
+  getway('cloud')
 })
 
 $('.b-methods').on('click', function () {
-  getway('other')
+  $.toast("通道开发中...敬请期待");
+  return;
+  // getway('other')
 })
 
 function getway(way) {

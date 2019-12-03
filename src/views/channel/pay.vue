@@ -79,12 +79,14 @@
           el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
       //个人付款
       div(v-if="form.payWayDictId == 8")
-        el-form-item(label='pid', prop='pId')
+        el-form-item(label='支付宝pid', prop='pId')
           el-input(v-model='form.contentObj.pId' placeholder="请填写收款pId")
-      //红包（暂时不用）
-      //- div(v-if="form.payWayDictId == 9")
-      //-   el-form-item(label='appid', prop='name')
-      //-     el-input(v-model='form.contentObj.appId' placeholder="请填写appId")
+      //红包
+      div(v-if="form.payWayDictId == 9")
+        el-form-item(label='支付宝pid', prop='pId')
+          el-input(v-model='form.contentObj.pId' placeholder="请填写收款pId")
+        el-form-item(label='支付宝收款账号', prop='myId')
+          el-input(v-model='form.contentObj.myId' placeholder="请填写收款支付宝账号")
       //支付宝银行卡
       div(v-if="form.payWayDictId == 10")
         el-form-item(label='银行卡cardIndex', prop='cardIndex')

@@ -87,20 +87,18 @@ const payWay = {
         window.location.href = url
     },
     //(跳转)个人红包-自动生成金额备注
-    // 9: (data) => {
-    //     const { orderNum, payMoney } = data
-    //     const { pId } = JSON.parse(data.payContent)
-    //     const params = JSON.stringify({
-    //         amount: payMoney,
-    //         remark: orderNum,
-    //         pId
-    //     })
-    //     // 坑：支付宝中只能拿到url中第一个参数
-    //     // todo：需要在此处创建订单，在支付宝url中获取订单信息
-    //     // let url = 'alipays://platformapi/startapp?appId=20000067&url=http://192.168.0.103:5500/zhuanzhang.html?uid=' + uid + '&amount=' + amount + '&remark=' + remark
-    //     let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/hb.html?' + escape(params)
-    //     window.location.href = url
-    // },
+    9: (data) => {
+        const { orderNum, payMoney } = data
+        const { pId, myId } = JSON.parse(data.payContent)
+        const params = JSON.stringify({
+            amount: payMoney,
+            remark: orderNum,
+            pId,
+            myId
+        })
+        let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/zhuanzhang.html?' + escape(params)
+        window.location.href = url
+    },
     //(跳转)支付宝银行卡-隐藏卡号
     10: (data) => {
         const { payMoney } = data
