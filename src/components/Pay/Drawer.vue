@@ -40,15 +40,16 @@ div
           :page-size="pageSize"
           layout="sizes, prev, pager, next,total"
           :total="totalPage")
-  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form")
+  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWay='payWay' :account="account")
 </template>
 
 <script>
 import { getPays, updatePayUse } from "@/api/pay";
-import { cloneDeep, isEmpty } from "lodash";
+import { cloneDeep } from "lodash";
 import { mapState } from "vuex";
 import { decrypt } from "@/utils/index";
 import AddModal from "@/components/Pay/AddModal";
+import { debuggerStatement } from "babel-types";
 export default {
   props: ["visible", "account"],
   components: {
@@ -57,8 +58,10 @@ export default {
   computed: {
     ...mapState(["settings"]),
     payWay() {
-      if (this.settings.dict) {
-        return this.settings.dict.PayWay.dicts;
+      if (this.settings.dict && !!this.account) {
+        return this.settings.dict.PayWay.dicts.filter(item => {
+          return item.dictValue.startsWith(this.account.accountType);
+        });
       } else {
         return [];
       }

@@ -25,12 +25,7 @@
         el-form-item(v-if="!isEmpty(form.contentObj)")
           .layout-row__between.align-center
             .layout-row.align-center
-              img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
-              .pay-label
-                .layout-row
-                  p 二维码金额：
-                  el-input(v-model='form.contentObj.money' placeholder="二维码金额" style="width:100px")
-                  | RMB
+              img.img(:src="form.contentObj.url")
                 //- span.red(v-if="form.payWayDictId == 7") (请输入二维码对应的金额)
                 //- .layout-row
                 //-   p 备注：
@@ -65,7 +60,7 @@
         el-form-item(v-if="!isEmpty(form.contentObj)")
           .layout-row__between.align-center
             .layout-row.align-center
-              img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
+              img.img(:src="form.contentObj.url")
       //云闪付
       div(v-if="form.payWayDictId == 17")
         el-form-item(label='收款二维码')
@@ -74,7 +69,7 @@
         el-form-item(v-if="!isEmpty(form.contentObj)")
           .layout-row__between.align-center
             .layout-row.align-center
-              img.img(:src="form.contentObj.url" :alt="form.contentObj.money")
+              img.img(:src="form.contentObj.url")
       el-form-item(label='单笔限额', prop='ceiling')
         el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
         |-
@@ -91,19 +86,14 @@
 </template>
 
 <script>
+import { updateConfigPay } from "@/api/pay";
+import { isEmpty } from "lodash";
 import { mapState } from "vuex";
 export default {
-  props: ["visible", "data", "isAdd"],
+  props: ["visible", "data", "isAdd", "payWay", "account"],
   components: {},
   computed: {
-    ...mapState(["settings"]),
-    payWay() {
-      if (this.settings.dict) {
-        return this.settings.dict.PayWay.dicts;
-      } else {
-        return [];
-      }
-    }
+    ...mapState(["settings"])
   },
   watch: {
     data: {
@@ -129,7 +119,10 @@ export default {
         this.$message.error("请填写支付配置内容！");
         return;
       }
-      updateConfigPay(this.form)
+      updateConfigPay({
+        ...this.form,
+        payConfigAccountId: this.account.id
+      })
         .then(res => {
           this.$message.success(`${this.isAdd ? "添加" : "修改"}成功！`);
           this.cancel();
@@ -141,6 +134,20 @@ export default {
     },
     isEmpty(data) {
       return isEmpty(data);
+    },
+    getObjectURL(file) {
+      let url = null;
+      if (window.createObjectURL != undefined) {
+        // basic
+        url = window.createObjectURL(file);
+      } else if (window.URL != undefined) {
+        // mozilla(firefox)
+        url = window.URL.createObjectURL(file);
+      } else if (window.webkitURL != undefined) {
+        // webkit or chrome
+        url = window.webkitURL.createObjectURL(file);
+      }
+      return url;
     },
     //图片上传
     uploadUrl(raw) {
@@ -154,7 +161,7 @@ export default {
             _self.$message.error("未能识别支付二维码！");
           } else {
             let data = {
-              money: 0,
+              //   money: 0,
               url: reader.result,
               qrUrl
             };
@@ -175,4 +182,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.img {
+  width: 100px;
+  & + div {
+    margin-left: 10px;
+  }
+}
 </style>

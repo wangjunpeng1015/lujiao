@@ -124,20 +124,7 @@ export default {
       this.chooseAccount = data;
       this.visible = true;
     },
-    getObjectURL(file) {
-      let url = null;
-      if (window.createObjectURL != undefined) {
-        // basic
-        url = window.createObjectURL(file);
-      } else if (window.URL != undefined) {
-        // mozilla(firefox)
-        url = window.URL.createObjectURL(file);
-      } else if (window.webkitURL != undefined) {
-        // webkit or chrome
-        url = window.webkitURL.createObjectURL(file);
-      }
-      return url;
-    },
+
     getAllAcount() {
       this.loading = true;
       getAllAcount({
@@ -208,12 +195,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.img {
-  width: 100px;
-  & + div {
-    margin-left: 10px;
-  }
-}
 .pay-label {
   > div {
     margin-top: 5px;
