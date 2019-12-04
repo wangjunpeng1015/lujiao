@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '泽鹿支付',
+  title: 'DD PAY',
 
   /**
    * @type {boolean} true | false

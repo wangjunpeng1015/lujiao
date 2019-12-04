@@ -113,11 +113,30 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/channel',
+    component: Layout,
+    redirect: '/channel/pay',
+    name: 'channel',
+    meta: { title: '支付通道', icon: 'example' },
+    children: [
+      {
+        path: 'pay',
+        name: 'pay',
+        component: () => import('@/views/channel/pay'),
+        meta: {
+          title: '支付通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1],
+        }
+      }
+    ]
+  },
+  {
     path: '/doc',
     component: Layout,
     redirect: '/doc/index',
     name: 'doc',
-    meta: { title: '开发文档', icon: 'el-icon-document' },
+    meta: { title: '帮助文档', icon: 'el-icon-document' },
     children: [
       {
         path: 'index',
@@ -137,25 +156,18 @@ export const constantRoutes = [
         component: () => import('@/views/doc/cardId'),
         meta: { title: '获取银行卡ID', icon: 'el-icon-document' }
       },
-    ]
-  },
-  {
-    path: '/channel',
-    component: Layout,
-    redirect: '/channel/pay',
-    name: 'channel',
-    meta: { title: '支付通道', icon: 'example' },
-    children: [
       {
-        path: 'pay',
-        name: 'pay',
-        component: () => import('@/views/channel/pay'),
-        meta: {
-          title: '支付通道配置',
-          icon: 'el-icon-s-tools',
-          roles: [1],
-        }
-      }
+        path: 'smdd',
+        name: 'smdd',
+        component: () => import('@/views/doc/smdd'),
+        meta: { title: '开通扫码点单', icon: 'el-icon-document' }
+      },
+      {
+        path: 'f2f',
+        name: 'f2f',
+        component: () => import('@/views/doc/f2f'),
+        meta: { title: '开通当面付', icon: 'el-icon-document' }
+      },
     ]
   },
   // {
