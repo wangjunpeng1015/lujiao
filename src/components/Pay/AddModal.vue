@@ -42,6 +42,17 @@
           el-input(v-model='form.contentObj.pId' placeholder="请填写收款pId")
         el-form-item(label='支付宝收款账号', prop='myId')
           el-input(v-model='form.contentObj.myId' placeholder="请填写收款支付宝账号")
+      //扫码点单
+      div(v-if="form.payWayDictId == 18")
+        el-form-item(label='收款二维码')
+          el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
+            el-button(size='small', type='primary') 点击上传
+        el-form-item(v-if="!isEmpty(form.contentObj)")
+          .layout-row__between.align-center
+            .layout-row.align-center
+              img.img(:src="form.contentObj.url")
+        el-form-item(label='桌号')
+          el-input(v-model='form.contentObj.ramadhin' placeholder="请填写桌号(方便识别)")
       //支付宝银行卡
       div(v-if="form.payWayDictId == 10")
         el-form-item(label='银行卡cardIndex', prop='cardIndex')
