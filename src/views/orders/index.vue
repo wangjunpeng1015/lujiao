@@ -132,13 +132,7 @@ export default {
       })
         .then(res => {
           if (res.success) {
-            const {
-              totalRecords,
-              pageNo,
-              pageSize,
-              totalPage,
-              content
-            } = res.data;
+            const { totalRecords, pageNo, pageSize, content } = res.data;
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;

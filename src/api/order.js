@@ -27,3 +27,10 @@ export function supplement(data) {
         data: Qs.stringify(data)
     })
 }
+export function settleCreate(data) {
+    return request({
+        url: `/settlement/create`,
+        method: 'post',
+        data
+    })
+}
