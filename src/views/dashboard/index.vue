@@ -1,5 +1,5 @@
 <template lang="pug">
-.dashboard-container
+.dashboard-container.layout-column
   el-row.box-card(type="flex" justify="center" align="middle" :gutter="20")
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" )
       el-card
@@ -34,27 +34,11 @@
         //- .field
         //-   span 程序购买
         //-   span {{ }}
-  .wjp-title
-    el-divider(content-position='left') 收益查询
-  .wjp-tools.layout-row.align-center.justify-end
-    Date-picker.time-picker(@change="getBody" ,:date.sync="time")
-  el-row(type="flex" justify="center" align="middle")
-    el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
-      svg.iconfont(aria-hidden='true')
-        use(xlink:href='#icon-zhifubao')
-      .money {{ aliSum}} ￥
-    el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
-      svg.iconfont(aria-hidden='true')
-        use(xlink:href='#icon-weixin')
-      .money {{ wxSum }} ￥
-    //- el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
-    //-   svg.iconfont(aria-hidden='true' style="width:200px")
-    //-     use(xlink:href='#icon-yinhangqia')
-    //-   .money(style="margin-left:0") {{ 4 }} ￥
-    el-col.layout-row.align-center(:md="24" :lg="8" :xl="8")
-      span.font-60 总计
-      .money {{ Number(wxSum)+Number(aliSum) }} ￥
-  .line
+  //- .wjp-title
+  //-   el-divider(content-position='left') 收益查询
+  //- .wjp-tools.layout-row.align-center.justify-end
+  //-   Date-picker.time-picker(@change="getBody" ,:date.sync="time")
+  .line(style="flex:1")
 </template>
 
 <script>
@@ -120,21 +104,78 @@ export default {
   },
   methods: {
     setOption(data) {
-      data = sortBy(data, "time");
-      let xAxis = uniqBy(data, "time").map(item => item.time);
+      // data = sortBy(data, "time");
+      // let xAxis = uniqBy(data, "time").map(item => item.time);
+      // let option = {
+      //   name: ["支付宝", "微信"],
+      //   data: [[], []],
+      //   xAxis
+      // };
+      // xAxis.map(time => {
+      //   let obj = data.filter(item => item.time == time);
+      //   let zfb = obj.find(item => item.name == "支付宝");
+      //   let wx = obj.find(item => item.name == "微信");
+      //   option.data[0].push((zfb && zfb.sum) || 0);
+      //   option.data[1].push((wx && wx.sum) || 0);
+      // });
+      // line.setOption(drawLine(option), true);
+      let aliData = [13, 20, 23, 43, 65, 45, 76, 98, 199, 200, 311, 433, 450, 490, 510, 555, 579, 600]
+      let wxData = [3, 10, 13, 23, 35, 45, 56, 68, 199, 211, 311, 333, 350, 390, 410, 455, 479, 500]
+      let ysfData = [24, 31, 33, 53, 65, 75, 96, 188, 299, 400, 511, 633, 750, 890, 910, 1555, 1579, 1600]
       let option = {
-        name: ["支付宝", "微信"],
-        data: [[], []],
-        xAxis
-      };
-      xAxis.map(time => {
-        let obj = data.filter(item => item.time == time);
-        let zfb = obj.find(item => item.name == "支付宝");
-        let wx = obj.find(item => item.name == "微信");
-        option.data[0].push((zfb && zfb.sum) || 0);
-        option.data[1].push((wx && wx.sum) || 0);
-      });
-      line.setOption(drawLine(option), true);
+        color: ['#1aadec', '#07de6d', '#f72520'],
+        grid: {
+          top: '10%'
+        },
+        legend: {
+          data: ['微信', '支付宝', '云闪付'],
+          x: 'center',
+          y: '5%'
+        },
+        title: {
+          text: '今日收款'
+        },
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          name: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
+          type: 'category',
+          data: ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'],
+          splitLine: {
+            show: false
+          }
+        },
+        yAxis: {
+          name: '金额(万)',
+          type: 'value',
+          boundaryGap: [0, '100%'],
+          splitLine: {
+            show: false
+          }
+        },
+        series: [
+          {
+            name: '支付宝',
+            type: 'line',
+            showSymbol: false,
+            data: aliData
+          },
+          {
+            name: '微信',
+            type: 'line',
+            showSymbol: false,
+            data: wxData
+          },
+          {
+            name: '云闪付',
+            type: 'line',
+            showSymbol: false,
+            data: ysfData
+          },
+        ]
+      }
+      line.setOption(option)
     },
     copy() {
       // `${website}/#/register?pid=${userinfo.id}`

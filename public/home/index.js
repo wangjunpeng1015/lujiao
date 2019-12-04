@@ -124,6 +124,14 @@ const payWay = {
           3.点击右上角相册选择保存的二维码支付</span><br/>
           <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
         `,
+            buttons: [
+              {
+                  text: '确认已支付',
+                  onClick: function () {
+
+                  }
+              }
+          ]
             // <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrurl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
         })
     }

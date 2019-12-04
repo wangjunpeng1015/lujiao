@@ -1,15 +1,18 @@
 <template lang="pug">
 .orders-container.layout-column
   .wjp-tools.layout-row
-    el-input(v-model='userName',@enter="getTableData" placeholder='app名称' style="width:200px;")
+    el-input(v-model='appName',@enter="getTableData" placeholder='app名称' style="width:200px;")
     el-button(type='primary' @click="getTableData" :disabled="loading" size="mini") 搜 索
     el-button(type='primary' @click="addTableData" :disabled="loading" size="mini") 添 加
   .wjp-content.flex.layout-column
     el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
-      el-table-column(prop='shopName', label='商户名称')
-      el-table-column(prop='name', label='应用名称')
-      el-table-column(prop='appid', label='APPID')
-      el-table-column(prop='createTime', label='创建时间')
+      el-table-column(prop='userName', label='商户名称')
+      el-table-column(prop='appName', label='应用名称')
+      el-table-column(prop='appId', label='APPID')
+      el-table-column(prop='settlementStatus', label='状态',)
+        template(slot-scope='scope')
+          el-button(type="danger" @click="deleteApp(scope.row)") 删除
+      //- el-table-column(prop='createTime', label='创建时间')
     .page.layout-row.align-center.right
       span 每页显示
       el-pagination.statistics(
@@ -26,7 +29,7 @@
 
 <script>
 import { debounce } from "lodash";
-import { getSettlementList } from "@/api/order";
+import { getAppList, saveApp, delApp } from "@/api/app";
 import { mapGetters, mapState } from "vuex";
 export default {
   name: "orders",
@@ -34,12 +37,9 @@ export default {
     return {
       loading: false,
       type: "",
-      userName: "",
-      account: "", //
-      tableData: [
-        {name: '大润发棋牌', appid: 'QW2131s23', shopName: '香港bc集团'},
-        {name: '太阳城棋牌', appid: 'DF312323', shopName: '柬埔寨bc集团'},
-      ],
+      appName: "",
+      account: "",
+      tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
       pageSize: 15 //当前页显示数量
@@ -57,46 +57,45 @@ export default {
     this.getTableData();
   },
   methods: {
+    deleteApp (row) {
+      console.log(row)
+      delApp(row.appId).then(res => {
+        console.log(res)
+      })
+    },
     addTableData () {
       this.$prompt('请填写应用名称', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(({ value }) => {
-        this.$message({
-          type: 'success',
-          message: '你的邮箱是: ' + value
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        });
-      });
+        saveApp({
+          appName: value,
+        }).then(res => {
+          this.getTableData();
+        })
+      })
     },
     getTableData() {
       this.loading = true;
-      getSettlementList({
+      getAppList({
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          userName: this.userName, //姓名
-          settlementWay: this.type, //支付方式
-          account: this.account //账号
         }
       })
         .then(res => {
           if (res.success) {
-            // const {
-            //   totalRecords,
-            //   pageNo,
-            //   pageSize,
-            //   totalPage,
-            //   content
-            // } = res.data;
-            // this.totalPage = totalRecords;
-            // this.pageSize = pageSize;
-            // this.currentPage = pageNo;
-            // this.tableData = content;
+            const {
+              totalRecords,
+              pageNo,
+              pageSize,
+              totalPage,
+              content
+            } = res.data;
+            this.totalPage = totalRecords;
+            this.pageSize = pageSize;
+            this.currentPage = pageNo;
+            this.tableData = content;
           } else {
             this.$message.error("获取表格数据失败！");
           }
