@@ -1,5 +1,5 @@
-const baseUrl = 'http://192.168.8.105:8092/backend'
-const frontUrl = 'http://192.168.8.110:9528'
+const baseUrl = location.hostname + ':8092/backend'
+const frontUrl = location.host
 let isInPay = false
 let orderNo = ''
 const payWay = {

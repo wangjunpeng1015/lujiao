@@ -21,7 +21,7 @@
       </el-menu>
     </el-scrollbar>
     <a
-      href="http://wpa.qq.com/msgrd?v=3&amp;uin=286888414&amp;site=qq&amp;menu=yes"
+      href="http://wpa.qq.com/msgrd?v=3&amp;uin=&amp;site=qq&amp;menu=yes"
       target="_blank"
       class="contact-us"
     >

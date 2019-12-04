@@ -1,7 +1,7 @@
 <template lang="pug">
 .orders-container.layout-column
   .wjp-tools.layout-row
-    el-input(v-model='appName',@enter="getTableData" placeholder='app名称' style="width:200px;")
+    el-input(v-model='appName',@keyup.enter="getTableData" placeholder='app名称' style="width:200px;")
     el-button(type='primary' @click="getTableData" :disabled="loading" size="mini") 搜 索
     el-button(type='primary' @click="addTableData" :disabled="loading" size="mini") 添 加
   .wjp-content.flex.layout-column
@@ -57,23 +57,22 @@ export default {
     this.getTableData();
   },
   methods: {
-    deleteApp (row) {
-      console.log(row)
-      delApp(row.appId).then(res => {
-        console.log(res)
-      })
+    deleteApp(row) {
+      delApp(row.id).then(res => {
+        this.getTableData();
+      });
     },
-    addTableData () {
-      this.$prompt('请填写应用名称', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
+    addTableData() {
+      this.$prompt("请填写应用名称", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
       }).then(({ value }) => {
         saveApp({
-          appName: value,
+          appName: value
         }).then(res => {
           this.getTableData();
-        })
-      })
+        });
+      });
     },
     getTableData() {
       this.loading = true;
@@ -81,6 +80,7 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
+          appName: this.appName
         }
       })
         .then(res => {

@@ -5,7 +5,7 @@
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-input(v-model='orderNo',@enter="getTableData" placeholder='订单号' style="width:200px;")
+        el-input(v-model='orderNo',@keyup.enter="getTableData" placeholder='订单号' style="width:200px;")
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content.flex.layout-column
         el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')

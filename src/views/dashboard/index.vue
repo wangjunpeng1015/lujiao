@@ -23,7 +23,7 @@
         .layout-row__between
           .num {{ list.aggregate }}
             span.unit 元
-          el-button(type="text") 申请提现
+          el-button(@click="visible=true" type="text") 申请提现
         //- .field
         //-   span(@click="copy") 推荐好友
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
@@ -39,12 +39,14 @@
   //- .wjp-tools.layout-row.align-center.justify-end
   //-   Date-picker.time-picker(@change="getBody" ,:date.sync="time")
   .line(style="flex:1")
+  SettleModal(:visible.sync="visible")
 </template>
 
 <script>
 import echarts from "echarts";
 import { drawLine } from "@/utils/echarts";
 import DatePicker from "@/components/DatePicker";
+import SettleModal from "@/components/Settlement";
 import { getHead, getBody } from "@/api/index";
 import { mapGetters } from "vuex";
 import dayjs from "dayjs";
@@ -53,13 +55,15 @@ let line;
 export default {
   name: "Dashboard",
   components: {
-    DatePicker
+    DatePicker,
+    SettleModal
   },
   computed: {
     ...mapGetters(["userinfo"])
   },
   data() {
     return {
+      visible: false,
       version: "1.0.0",
       time: [
         dayjs()

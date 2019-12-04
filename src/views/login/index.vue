@@ -85,8 +85,8 @@ export default {
     };
     return {
       loginForm: {
-        account: "admin",
-        password: "admin"
+        account: "",
+        password: ""
       },
       loginRules: {
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
