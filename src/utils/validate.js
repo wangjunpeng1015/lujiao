@@ -21,3 +21,6 @@ export function validUsername(str) {
 export function validPassword(str) {
   return /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,20}$/.test(str)
 }
+export function validPhone(str) {
+  return /^1[3456789]\d{9}$/.test(str)
+}

@@ -3,14 +3,15 @@
   el-form.login-form(ref='form', :model='form', :rules='loginRules',label-width="90px" auto-complete='on', label-position='left')
     .title-container.center
       h3.title 自助申请商户
-    el-form-item(label="用户类型"  prop='type')
-      el-select(style="width: 100%")
-        el-option(label="商户")
-        el-option(label="码商")
+    el-form-item(label="用户类型"  prop='roleIds')
+      el-select(style="width: 100%" v-model="form.roleIds")
+        el-option(v-for='(item,i) in roles' :key="i" :label="item.roleName" :value="item.id")
     el-form-item(label="账号"  prop='account')
       el-input(v-model='form.account', placeholder='账号', name='account', type='text',  auto-complete='on')
     el-form-item(label="密码"  prop='userPassword')
       el-input(v-model='form.userPassword', placeholder='密码', type="password" name='userPassword', auto-complete='on')
+    el-form-item(label="手机号"  prop='phone')
+      el-input(v-model='form.phone', placeholder='手机号',  name='phone', auto-complete='on')
     //- el-form-item(label="真实姓名"  prop='userName')
     //-   el-input(v-model='form.userName', placeholder='真实姓名', name='userName', type='text', , auto-complete='on')
     //- el-form-item(label="您的域名"  prop='webSiteDomain')
@@ -33,7 +34,8 @@
 </template>
 
 <script>
-import { validPassword } from "@/utils/validate";
+import { getRoles } from "@/api/user";
+import { validPassword, validPhone } from "@/utils/validate";
 export default {
   name: "register",
   data() {
@@ -48,7 +50,19 @@ export default {
         }
       }
     };
+    const validPhones = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入手机号"));
+      } else {
+        if (validPhone(this.form.phone)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的手机号"));
+        }
+      }
+    };
     return {
+      roles: [],
       payWay: [
         {
           value: "支付宝",
@@ -64,29 +78,21 @@ export default {
         }
       ],
       form: {
-        settlementWay: "",
-        settlementAccount: "",
+        roleIds: "",
         account: "",
         userPassword: "",
-        userName: "",
-        webSiteDomain: "",
         phone: "",
         pId: ""
       },
       loginRules: {
-        settlementWay: [{ trigger: "blur", message: "请选择结算方式" }],
-        settlementAccount: [{ trigger: "blur", message: "请输入结算账号" }],
+        roleIds: [
+          { required: true, trigger: "blur", message: "请选择用户类型" }
+        ],
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
         userPassword: [
           { required: true, validator: validatePass, trigger: "blur" }
         ],
-        userName: [
-          { required: true, trigger: "blur", message: "请输入真实姓名" }
-        ],
-        webSiteDomain: [
-          { required: true, trigger: "blur", message: "请输入域名" }
-        ],
-        phone: [{ required: true, trigger: "blur", message: "请输入手机号" }]
+        phone: [{ required: true, validator: validPhones, trigger: "blur" }]
       },
       loading: false,
       passwordType: "password",
@@ -102,11 +108,20 @@ export default {
     }
   },
   computed: {},
+  mounted() {
+    this.getRoles();
+  },
   methods: {
+    getRoles() {
+      getRoles().then(res => {
+        this.roles = res.data;
+      });
+    },
     handleRegister() {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true;
+          this.form.roleIds = [this.form.roleIds];
           this.$store
             .dispatch("user/register", this.form)
             .then(() => {

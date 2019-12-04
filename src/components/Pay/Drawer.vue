@@ -49,7 +49,6 @@ import { cloneDeep } from "lodash";
 import { mapState } from "vuex";
 import { decrypt } from "@/utils/index";
 import AddModal from "@/components/Pay/AddModal";
-import { debuggerStatement } from "babel-types";
 export default {
   props: ["visible", "account"],
   components: {

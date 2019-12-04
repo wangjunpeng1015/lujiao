@@ -144,7 +144,6 @@ import { getPays, updateUse, updateConfigPay } from "@/api/pay";
 import { mapGetters, mapState } from "vuex";
 import { cloneDeep, isEmpty } from "lodash";
 import { decrypt } from "@/utils/index";
-import { debuggerStatement } from "babel-types";
 
 export default {
   name: "pay",

@@ -49,8 +49,6 @@ import { getHead, getBody } from "@/api/index";
 import { mapGetters } from "vuex";
 import dayjs from "dayjs";
 import { uniqBy, sortBy } from "lodash";
-import { debuggerStatement } from "babel-types";
-import { options } from "runjs";
 let line;
 export default {
   name: "Dashboard",
@@ -119,63 +117,144 @@ export default {
       //   option.data[1].push((wx && wx.sum) || 0);
       // });
       // line.setOption(drawLine(option), true);
-      let aliData = [13, 20, 23, 43, 65, 45, 76, 98, 199, 200, 311, 433, 450, 490, 510, 555, 579, 600]
-      let wxData = [3, 10, 13, 23, 35, 45, 56, 68, 199, 211, 311, 333, 350, 390, 410, 455, 479, 500]
-      let ysfData = [24, 31, 33, 53, 65, 75, 96, 188, 299, 400, 511, 633, 750, 890, 910, 1555, 1579, 1600]
+      let aliData = [
+        13,
+        20,
+        23,
+        43,
+        65,
+        45,
+        76,
+        98,
+        199,
+        200,
+        311,
+        433,
+        450,
+        490,
+        510,
+        555,
+        579,
+        600
+      ];
+      let wxData = [
+        3,
+        10,
+        13,
+        23,
+        35,
+        45,
+        56,
+        68,
+        199,
+        211,
+        311,
+        333,
+        350,
+        390,
+        410,
+        455,
+        479,
+        500
+      ];
+      let ysfData = [
+        24,
+        31,
+        33,
+        53,
+        65,
+        75,
+        96,
+        188,
+        299,
+        400,
+        511,
+        633,
+        750,
+        890,
+        910,
+        1555,
+        1579,
+        1600
+      ];
       let option = {
-        color: ['#1aadec', '#07de6d', '#f72520'],
+        color: ["#1aadec", "#07de6d", "#f72520"],
         grid: {
-          top: '10%'
+          top: "10%"
         },
         legend: {
-          data: ['微信', '支付宝', '云闪付'],
-          x: 'center',
-          y: '5%'
+          data: ["微信", "支付宝", "云闪付"],
+          x: "center",
+          y: "5%"
         },
         title: {
-          text: '今日收款'
+          text: "今日收款"
         },
         tooltip: {
-          trigger: 'axis'
+          trigger: "axis"
         },
         xAxis: {
-          name: new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(),
-          type: 'category',
-          data: ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'],
+          name:
+            new Date().getFullYear() +
+            "-" +
+            (new Date().getMonth() + 1) +
+            "-" +
+            new Date().getDate(),
+          type: "category",
+          data: [
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
+            "22:00",
+            "23:00",
+            "24:00"
+          ],
           splitLine: {
             show: false
           }
         },
         yAxis: {
-          name: '金额(万)',
-          type: 'value',
-          boundaryGap: [0, '100%'],
+          name: "金额(万)",
+          type: "value",
+          boundaryGap: [0, "100%"],
           splitLine: {
             show: false
           }
         },
         series: [
           {
-            name: '支付宝',
-            type: 'line',
+            name: "支付宝",
+            type: "line",
             showSymbol: false,
             data: aliData
           },
           {
-            name: '微信',
-            type: 'line',
+            name: "微信",
+            type: "line",
             showSymbol: false,
             data: wxData
           },
           {
-            name: '云闪付',
-            type: 'line',
+            name: "云闪付",
+            type: "line",
             showSymbol: false,
             data: ysfData
-          },
+          }
         ]
-      }
-      line.setOption(option)
+      };
+      line.setOption(option);
     },
     copy() {
       // `${website}/#/register?pid=${userinfo.id}`

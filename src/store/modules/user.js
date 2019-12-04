@@ -2,7 +2,6 @@ import { login, logout, getInfo, register, changePassword } from '@/api/user'
 import { getIp } from '@/api/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { router, resetRouter } from '@/router'
-import store from '../index'
 const state = {
   token: getToken(),
   userinfo: null,
@@ -23,9 +22,10 @@ const actions = {
     const { account, password, type } = userInfo
     return new Promise((resolve, reject) => {
       login({ account: account.trim(), password: password.trim(), type, ip: returnCitySN.cip }).then(response => {
-        store.dispatch("settings/getdic")
         const { data } = response
         commit('SET_TOKEN', data.token)
+        this.dispatch('user/getInfo')
+        this.dispatch("settings/getdic")
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -63,6 +63,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout().then(() => {
         commit('SET_TOKEN', '')
+        commit('SET_USER_INFO', '')
         removeToken()
         resetRouter()
         resolve()

@@ -268,9 +268,6 @@ const payWay = {
       }
       const { orderNum, payMoney } = data
       const { pId } = JSON.parse(data.payContent)
-      // 坑：支付宝中只能拿到url中第一个参数
-      // todo：需要在此处创建订单，在支付宝url中获取订单信息
-      // let url = 'alipays://platformapi/startapp?appId=20000067&url=http://192.168.0.103:5500/zhuanzhang.html?uid=' + uid + '&amount=' + amount + '&remark=' + remark
       const params = JSON.stringify({
         amount: payMoney,
         remark: orderNum,
@@ -295,7 +292,6 @@ const payWay = {
         myId
       })
       let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/hb.html?' + escape(params)
-      debugger
       window.location.href = url
     })
   },

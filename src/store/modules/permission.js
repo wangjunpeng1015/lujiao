@@ -5,9 +5,9 @@ import { asyncRoutes, constantRoutes } from '@/router'
  * @param roles
  * @param route
  */
-function hasPermission(roleId, route) {
+function hasPermission(roles, route) {
     if (route.meta && route.meta.roles) {
-        return route.meta.roleId.includes(roleId)
+        return roles.some(role => route.meta.roles.includes(role))
     } else {
         return true
     }
@@ -18,14 +18,13 @@ function hasPermission(roleId, route) {
  * @param routes asyncRoutes
  * @param roles
  */
-export function filterAsyncRoutes(routes, roleId) {
+export function filterAsyncRoutes(routes, roles) {
     const res = []
-
     routes.forEach(route => {
         const tmp = { ...route }
-        if (hasPermission(roleId, tmp)) {
+        if (hasPermission(roles, tmp)) {
             if (tmp.children) {
-                tmp.children = filterAsyncRoutes(tmp.children, roleId)
+                tmp.children = filterAsyncRoutes(tmp.children, roles)
             }
             res.push(tmp)
         }
@@ -47,13 +46,15 @@ const mutations = {
 }
 
 const actions = {
-    generateRoutes({ commit }, roleId) {
+    generateRoutes({ commit }, roles) {
         return new Promise(resolve => {
             let accessedRoutes
-            if (roleId == 1) {
+            //超级管理员
+            const role = roles.map(m => m.id)
+            if (role.includes(1)) {
                 accessedRoutes = asyncRoutes || []
             } else {
-                accessedRoutes = filterAsyncRoutes(asyncRoutes, roleId)
+                accessedRoutes = filterAsyncRoutes(asyncRoutes, role)
             }
             commit('SET_ROUTES', accessedRoutes)
             resolve(accessedRoutes)

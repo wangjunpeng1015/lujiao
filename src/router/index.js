@@ -60,19 +60,6 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'el-icon-s-home' }
     }]
   },
-  //订单
-  {
-    path: '/orders',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'orders',
-        component: () => import('@/views/orders/index'),
-        meta: { title: '订单管理', icon: 'el-icon-s-order' }
-      }
-    ]
-  },
   //结算
   {
     path: '/settlement',
@@ -82,20 +69,20 @@ export const constantRoutes = [
         path: 'index',
         name: 'settlement',
         component: () => import('@/views/settlement/index'),
-        meta: { title: '结算管理', icon: 'el-icon-money' }
+        meta: { title: '结算管理', icon: 'el-icon-money', roles: [1, 2, 3] }
       }
     ]
   },
-  // 应用
+  //订单
   {
-    path: '/app',
+    path: '/orders',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: 'app',
-        component: () => import('@/views/app/index'),
-        meta: { title: '应用管理', icon: 'el-icon-s-platform' }
+        name: 'orders',
+        component: () => import('@/views/orders/index'),
+        meta: { title: '订单管理', icon: 'el-icon-s-order', roles: [1, 2, 3] }
       }
     ]
   },
@@ -112,12 +99,21 @@ export const constantRoutes = [
       }
     ]
   },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+export const asyncRoutes = [
   {
     path: '/channel',
     component: Layout,
     redirect: '/channel/pay',
     name: 'channel',
-    meta: { title: '支付通道', icon: 'example' },
+    meta: {
+      title: '支付通道',
+      icon: 'example',
+      roles: [1, 3],
+    },
     children: [
       {
         path: 'pay',
@@ -126,17 +122,20 @@ export const constantRoutes = [
         meta: {
           title: '支付通道配置',
           icon: 'el-icon-s-tools',
-          roles: [1],
+          roles: [1, 3],
         }
       }
     ]
-  },
-  {
+  }, {
     path: '/doc',
     component: Layout,
     redirect: '/doc/index',
     name: 'doc',
-    meta: { title: '帮助文档', icon: 'el-icon-document' },
+    meta: {
+      title: '帮助文档',
+      icon: 'el-icon-document',
+      roles: [1, 3]
+    },
     children: [
       {
         path: 'index',
@@ -170,146 +169,25 @@ export const constantRoutes = [
       },
     ]
   },
-  // {
-  //   path: '/channel',
-  //   component: Layout,
-  //   redirect: '/channel/pay',
-  //   name: 'channel',
-  //   meta: { title: '支付通道', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'pay',
-  //       name: 'pay',
-  //       component: () => import('@/views/channel/pay'),
-  //       meta: {
-  //         title: '支付通道配置',
-  //         icon: 'el-icon-s-tools',
-  //         roles: ['admin'],
-  //       }
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/doc',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: 'Form', icon: 'form' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'Nested',
-  //   meta: {
-  //     title: 'Nested',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: 'Menu1' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: 'Menu1-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2'),
-  //           name: 'Menu1-2',
-  //           meta: { title: 'Menu1-2' },
-  //           children: [
-  //             {
-  //               path: 'menu1-2-1',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //               name: 'Menu1-2-1',
-  //               meta: { title: 'Menu1-2-1' }
-  //             },
-  //           ]
-  //         },
-  //         {
-  //           path: 'menu1-3',
-  //           component: () => import('@/views/nested/menu1/menu1-3'),
-  //           name: 'Menu1-3',
-  //           meta: { title: 'Menu1-3' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu2',
-  //       component: () => import('@/views/nested/menu2/index'),
-  //       meta: { title: 'menu2' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
-]
-export const asyncRoutes = [
+  // 应用
   {
-    path: '/channel',
+    path: '/app',
     component: Layout,
-    redirect: '/channel/pay',
-    name: 'channel',
-    meta: { title: '支付通道', icon: 'example' },
+
     children: [
       {
-        path: 'pay',
-        name: 'pay',
-        component: () => import('@/views/channel/pay'),
+        path: 'index',
+        name: 'app',
+        component: () => import('@/views/app/index'),
         meta: {
-          title: '支付通道配置',
-          icon: 'el-icon-s-tools',
-          roles: [1],
+          title: '应用管理',
+          icon: 'el-icon-s-platform',
+          roles: [1, 3]
         }
       }
     ]
   },
+
 ]
 const createRouter = () => new Router({
   // mode: 'history', // require service support

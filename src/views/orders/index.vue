@@ -21,7 +21,7 @@
             el-table-column(prop='remark', label='备注',show-overflow-tooltip)
             el-table-column(prop='payStatusDictValue', label='状态',)
                 template(slot-scope='scope')
-                    span(:class="[scope.row.payStatusDictValue=='支付成功'?'green':'red']") {{ scope.row.payStatusDictValue }}
+                  span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
             el-table-column(prop='payStatusDictValue', label='操作',)
                 template(slot-scope='scope')
                     el-button(type="danger" size="mini" @click="del(scope.row.id)") 删 除
@@ -93,6 +93,21 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    getClass(value) {
+      let cs = "";
+      switch (value) {
+        case "支付成功":
+          cs = "green";
+          break;
+        case "支付中":
+          cs = "blue";
+          break;
+        default:
+          cs = "red";
+          break;
+      }
+      return cs;
     },
     //补单
     supplement(id) {

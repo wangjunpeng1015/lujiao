@@ -30,6 +30,13 @@ export function getInfo() {
     method: 'get',
   })
 }
+//用户信息
+export function getRoles() {
+  return request({
+    url: `/role/getRole`,
+    method: 'get',
+  })
+}
 //修改密码
 export function changePassword(data) {
   return request({
