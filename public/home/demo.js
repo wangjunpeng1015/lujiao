@@ -119,12 +119,12 @@ function createOrder(id, callback) {
 }
 
 // 检测订单状态 payStatusDictId
-function getOrderStatus (orderNum) {
+function getOrderStatus(orderNum) {
   let siv = setInterval(() => {
     $.ajax({
       type: "POST",
       url: `${baseUrl}/order/findOrderNum`,
-      data: {orderNum: orderNo},
+      data: { orderNum: orderNo },
       success: function (data, textStatus) {
         if (data.data.payStatusDictId !== 1) {
           clearInterval(siv)
@@ -340,12 +340,12 @@ const payWay = {
         `,
         buttons: [
           {
-              text: '若已支付，请点击此处',
-              onClick: function () {
+            text: '若已支付，请点击此处',
+            onClick: function () {
 
-              }
+            }
           }
-      ]
+        ]
         // <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrurl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
       })
     })
@@ -366,14 +366,24 @@ const payWay = {
         `,
         buttons: [
           {
-              text: '若已支付，请点击此处',
-              onClick: function () {
+            text: '若已支付，请点击此处',
+            onClick: function () {
 
-              }
+            }
           }
-      ]
+        ]
         // <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrurl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
       })
+    })
+  },
+  //支付宝扫码点单
+  18: () => {
+    createOrder('18', function (data) {
+      if (!countdown()) {
+        return false
+      }
+      const { qrUrl } = JSON.parse(data.payContent)
+      window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
     })
   }
 }
