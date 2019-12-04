@@ -90,10 +90,14 @@ const payWay = {
     //(跳转)支付宝银行卡-隐藏卡号
     10: (data) => {
         const { payMoney } = data
-        const { cardNum } = JSON.parse(data.payContent)
+        const {
+            mark,
+            bankName,
+            name,
+            cardIndex
+        } = JSON.parse(data.payContent)
         let params = JSON.stringify({
             amount: payMoney,
-            cardNum,
             mark,
             bankName,
             name,
