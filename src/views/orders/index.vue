@@ -71,6 +71,15 @@ export default {
   },
   mounted() {
     this.getTableData();
+    this.$eventBus.$on("", data => {
+      this.tableData.concat(data);
+      if (data.payWayDictValue === "") {
+        this.$notify.info({
+          title: "消息",
+          message: "你有新的需要手动确定的订单，请处理！"
+        });
+      }
+    });
   },
   methods: {
     //删除订单

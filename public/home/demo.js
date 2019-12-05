@@ -1,5 +1,7 @@
 // 全局变量
-const baseUrl = location.hostname + ':8092/backend'
+// const baseUrl = location.hostname + ':8092/backend'
+const baseUrl = 'http://192.168.8.105:8092/backend'
+// const frontUrl = 'http://192.168.8.110:9528'
 const frontUrl = location.host
 let isInPay = false
 let orderNo = ''
@@ -112,8 +114,12 @@ function createOrder(id, callback) {
       })
     },
     success: function (data, textStatus) {
-      orderNo = data.data.data.orderNum
-      callback(data.data.data)
+      try {
+        orderNo = data.data.data.orderNum
+        callback(data.data.data)
+      } catch (err) {
+        $.toast(data.message);
+      }
     },
   })
 }

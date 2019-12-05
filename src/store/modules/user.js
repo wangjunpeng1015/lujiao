@@ -2,6 +2,8 @@ import { login, logout, getInfo, register, changePassword } from '@/api/user'
 import { getIp } from '@/api/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { router, resetRouter } from '@/router'
+import { initWebSocket } from '@/api/socket'
+
 const state = {
   token: getToken(),
   userinfo: null,
@@ -50,6 +52,7 @@ const actions = {
         if (!data) {
           reject('请重新登录！')
         }
+        initWebSocket(data.account)
         commit('SET_USER_INFO', data)
         resolve(data)
       }).catch(error => {

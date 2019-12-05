@@ -192,15 +192,19 @@ function createOrder() {
             })
         },
         success: function (data, textStatus) {
-            //开始倒计时
-            data = data.data.data
-            getOrderStatus(data.orderNum)
-            countdown();
-            $('#orderNo').text(data.orderNum)
-            $('#orderno').val(data.orderNum)
-            document.getElementById('orderno').select()
-            document.execCommand('copy');
-            payWay[data.payWayDictId](data)
+            try {
+                //开始倒计时
+                data = data.data.data
+                getOrderStatus(data.orderNum)
+                countdown();
+                $('#orderNo').text(data.orderNum)
+                $('#orderno').val(data.orderNum)
+                document.getElementById('orderno').select()
+                document.execCommand('copy');
+                payWay[data.payWayDictId](data)
+            } catch (err) {
+                $.toast(data.message);
+            }
         },
     })
 }
