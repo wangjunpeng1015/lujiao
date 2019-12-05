@@ -25,7 +25,7 @@
             el-table-column(prop='payStatusDictValue', label='操作',)
                 template(slot-scope='scope')
                     el-button(type="danger" size="mini" @click="del(scope.row.id)") 删 除
-                    el-button(type="primary" size="mini" @click="supplement(scope.row.id)") 补 单
+                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue=='支付超时'||scope.row.payStatusDictValue=='支付失败'" @click="supplement(scope.row.id)") 补 单
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(

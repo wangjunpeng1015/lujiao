@@ -7,11 +7,11 @@ Vue.prototype.$eventBus = EventBus
 const socketUrl = process.env.NODE_ENV === 'production' ? 'ws://103.143.80.128:8092' : 'ws://192.168.8.105:8092'
 // 初始化weosocket
 
-function initWebSocket(account) {
+function initWebSocket(token, account, code) {
     // ws地址 -->这里是你的请求路径
-    let ws = `${socketUrl}/backend/`
-    websock = new WebSocket(ws)
-    // websock = new WebSocket('ws://localhost:9999')
+    let ws = `${socketUrl}/backend/ws/${code}/${account}`
+    const t = token.replace('Bearer', '')
+    websock = new WebSocket(ws, [t.trim()])
     websock.onmessage = function (e) {
         const data = JSON.parse(e.data)
         const keys = Object.keys(data)
@@ -29,8 +29,8 @@ function initWebSocket(account) {
         if (reTime > 0) {
             console.log('WebSocket尝试重新连接---' + reTime)
             setTimeout(() => {
-                initWebSocket(account)
-            }, 3000)
+                initWebSocket(token, account, code)
+            }, 5000)
         }
         reTime--
     }

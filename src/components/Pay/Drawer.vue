@@ -11,7 +11,7 @@ div
           el-select(v-model='used', placeholder='是否启用' clearable @change="getPays")
             el-option(label='启用', :value='true')
             el-option(label='禁用', :value='false')
-      .wjp-content.layout-column.flex
+      .wjp-content
         el-table.wjp-table(v-loading="loading" :data='table', style='width: 100%', height='250')
           el-table-column(fixed prop='id', label='id', width='50')
           el-table-column(prop='payWayDictId', label='支付名称')
@@ -28,6 +28,9 @@ div
           el-table-column(label='操作')
             template(slot-scope='scope')
               el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
+          el-table-column(width="100")
+            template(slot-scope='scope')
+              el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
         .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -44,7 +47,7 @@ div
 </template>
 
 <script>
-import { getPays, updatePayUse } from "@/api/pay";
+import { getPays, updatePayUse, delConfigPay } from "@/api/pay";
 import { cloneDeep } from "lodash";
 import { mapState } from "vuex";
 import { decrypt } from "@/utils/index";
@@ -131,6 +134,26 @@ export default {
         .catch(err => {})
         .finally(_ => {
           this.loading = false;
+        });
+    },
+    del(id) {
+      this.$confirm("确定删除当前通道?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          delConfigPay(id)
+            .then(res => {
+              this.getPays();
+            })
+            .catch(err => {});
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
     },
     useChange(id, used) {

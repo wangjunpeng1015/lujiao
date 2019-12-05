@@ -1,6 +1,6 @@
 <template lang="pug">
 .dashboard-container.layout-column
-  el-row.box-card(type="flex" justify="center" align="middle" :gutter="20")
+  el-row.box-card( :gutter="20")
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" )
       el-card
         .title 今日订单总数
@@ -103,6 +103,9 @@ export default {
     this.$nextTick(() => {
       line = echarts.init(this.$el.querySelector(".line"));
     });
+    // window.resize = () => {
+    //   line.resize();
+    // };
   },
   methods: {
     setOption(data) {

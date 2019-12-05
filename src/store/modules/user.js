@@ -52,7 +52,8 @@ const actions = {
         if (!data) {
           reject('请重新登录！')
         }
-        initWebSocket(data.account)
+        // let hash = Math.random().toString(36).substr(2)
+        // initWebSocket(getToken(), data.account, hash)
         commit('SET_USER_INFO', data)
         resolve(data)
       }).catch(error => {

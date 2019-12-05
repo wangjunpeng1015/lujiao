@@ -32,6 +32,13 @@ export function updateConfigPay(data) {
         data
     })
 }
+//删除通道
+export function delConfigPay(id) {
+    return request({
+        url: `/payConfig/${id}`,
+        method: 'delete',
+    })
+}
 //获取全部账号
 export function getAllAcount(data) {
     return request({
@@ -46,5 +53,12 @@ export function addAcount(data) {
         url: '/pcAccount',
         method: 'post',
         data
+    })
+}
+//删除账号
+export function delAcount(id) {
+    return request({
+        url: `/pcAccount/${id}`,
+        method: 'delete',
     })
 }

@@ -31,9 +31,12 @@
       el-table-column(label='编辑')
         template(slot-scope='scope')
           el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
-      el-table-column(label='操作')
+      el-table-column(label='操作' width="200")
         template(slot-scope='scope')
           el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
+      el-table-column(width="100")
+        template(slot-scope='scope')
+          el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
   .page.layout-row.align-center.right
     span 每页显示
     el-pagination.statistics(
@@ -66,7 +69,13 @@
 </template>
 
 <script>
-import { getAllAcount, updateUse, updateConfigPay, addAcount } from "@/api/pay";
+import {
+  getAllAcount,
+  delAcount,
+  updateUse,
+  updateConfigPay,
+  addAcount
+} from "@/api/pay";
 import { mapState } from "vuex";
 import Drawer from "@/components/Pay/Drawer";
 export default {
@@ -175,6 +184,26 @@ export default {
         })
         .catch(err => {
           this.$message.error("添加账号失败！");
+        });
+    },
+    del(id) {
+      this.$confirm("确定删除这个账号?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          delAcount(id)
+            .then(res => {
+              this.getAllAcount();
+            })
+            .catch(err => {});
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
     },
     cancel() {
