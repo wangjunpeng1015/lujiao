@@ -1,5 +1,5 @@
 <template lang="pug">
- el-dialog(title='配置', :visible.sync='visible',  width='40%' :close-on-click-modal="false")
+ el-dialog(title='配置', :visible.sync='visible',  width='40%' :close-on-click-modal="false" :before-close="cancel")
     el-form(:model='form', ref='form', label-width='120px')
       el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
         el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")

@@ -9,15 +9,18 @@
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content.flex.layout-column
         el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
-            el-table-column(fixed prop='id', label='id', width='50')
+            //- el-table-column(fixed prop='id', label='id', width='50')
             //- el-table-column(prop='name', label='订单号', )
             el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
             //- el-table-column(prop='orderName', label='名称', )
-            el-table-column(prop='money', label='金额',show-overflow-tooltip)
+            el-table-column(label='金额',show-overflow-tooltip)
+              template(slot-scope='scope')
+                span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.money }}
+                span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.money }}
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
-            el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
+            //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
             el-table-column(prop='remark', label='备注',show-overflow-tooltip)
             el-table-column(prop='payStatusDictValue', label='状态',)
                 template(slot-scope='scope')
@@ -25,7 +28,7 @@
             el-table-column(prop='payStatusDictValue', label='操作',)
                 template(slot-scope='scope')
                     el-button(type="danger" size="mini" @click="del(scope.row.id)") 删 除
-                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue=='支付超时'||scope.row.payStatusDictValue=='支付失败'" @click="supplement(scope.row.id)") 补 单
+                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row.id)") 补 单
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(

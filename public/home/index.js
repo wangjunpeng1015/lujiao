@@ -1,5 +1,6 @@
-const baseUrl = location.hostname + ':8092/backend'
-const frontUrl = location.host
+const host = location.host
+const baseUrl = 'http://' + host + '/backend'
+const frontUrl = 'http://' + host
 let isInPay = false
 let orderNo = ''
 const payWay = {
@@ -10,41 +11,43 @@ const payWay = {
     },
     //(跳转)个人付款-用户手输金额
     6: (data) => {
-        const { payMoney } = data
+        const amount = data.payMoney
         const { qrUrl } = JSON.parse(data.payContent)
         $.modal({
             title: '注意！',
             text: `
-              <span>1. 请输入<b style="color:red">准确金额：${payMoney}</b></span><br/>
-              <span style="color:red">否则可能无法到账！!!</span>
-            `,
+                  <span>1. 请输入<b>准确金额:${amount}</b></span><br/>
+                  <span style="color:red">否则无法到账！!!</span>
+                  <span>如遇无法支付提示'暂不支持此方式':<br/>
+              1.请截图保存该页面<br/>
+              2.打开支付宝扫一扫<br/>
+              3.点击右上角相册选择保存的二维码支付</span><br/>
+              <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+                `,
             buttons: [
                 {
                     text: '支付',
                     onClick: function () {
                         window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
+                        window.location.href = url
                     }
                 }
             ]
         })
     },
-    //暂时屏蔽
-    //(跳转)个人付款-自动生成金额
+    //个人付款-自动生成金额
     7: (data) => {
         let orderNo = data.orderNum
         const { qrUrl } = JSON.parse(data.payContent)
         $.modal({
             title: '注意！',
             text: `
-          <span>请在备注中输入订单号:<b>${orderNo}</b><br/>
-          (已复制订单号，直接在支付宝中粘贴即可)</span><br/>
-          <span style="color:red">否则可能无法到账！!!</span>
-          <span>此方法在某些机型、支付版版本上会出现“<b>暂不支持此种方式，请在支付宝内打开操作</b>”</span><br/>
-          <span>如果无法支付:<br/>
-          1.请截图保存该页面<br/>
-          2.打开支付宝扫一扫<br/>
-          3.点击右上角相册选择保存的二维码支付</span><br/>
-          <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
+            <span>此方法在某些机型、支付版版本上会出现“<b>暂不支持此种方式，请在支付宝内打开操作</b>”</span><br/>
+            <span>如果无法支付:<br/>
+            1.请截图保存该页面<br/>
+            2.打开支付宝扫一扫<br/>
+            3.点击右上角相册选择保存的二维码支付</span><br/>
+            <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
         `,
             buttons: [
                 {

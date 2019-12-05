@@ -1,8 +1,9 @@
 // 全局变量
 // const baseUrl = location.hostname + ':8092/backend'
-const baseUrl = 'http://192.168.8.105:8092/backend'
+const host = location.host
+const baseUrl = 'http://' + host + '/backend'
 // const frontUrl = 'http://192.168.8.110:9528'
-const frontUrl = 'http://' + location.host
+const frontUrl = 'http://' + host
 let isInPay = false
 let orderNo = ''
 

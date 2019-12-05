@@ -60,19 +60,7 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'el-icon-s-home' }
     }]
   },
-  //结算
-  {
-    path: '/settlement',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'settlement',
-        component: () => import('@/views/settlement/index'),
-        meta: { title: '结算管理', icon: 'el-icon-money', roles: [1, 2, 3] }
-      }
-    ]
-  },
+
   //订单
   {
     path: '/orders',
@@ -82,7 +70,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'orders',
         component: () => import('@/views/orders/index'),
-        meta: { title: '订单管理', icon: 'el-icon-s-order', roles: [1, 2, 3] }
+        meta: { title: '订单管理', icon: 'el-icon-s-order', }
       }
     ]
   },
@@ -126,7 +114,21 @@ export const asyncRoutes = [
         }
       }
     ]
-  }, {
+  },
+  //结算
+  {
+    path: '/settlement',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'settlement',
+        component: () => import('@/views/settlement/index'),
+        meta: { title: '结算管理', icon: 'el-icon-money', roles: [1, 2] }
+      }
+    ]
+  },
+  {
     path: '/doc',
     component: Layout,
     redirect: '/doc/index',
@@ -134,38 +136,38 @@ export const asyncRoutes = [
     meta: {
       title: '帮助文档',
       icon: 'el-icon-document',
-      roles: [1, 3]
+      roles: [1, 2, 3]
     },
     children: [
       {
         path: 'index',
         name: 'index',
         component: () => import('@/views/doc/index'),
-        meta: { title: '商户API文档', icon: 'el-icon-document' }
+        meta: { title: '商户API文档', icon: 'el-icon-document', roles: [1, 2] }
       },
       {
         path: 'aliPid',
         name: 'aliPid',
         component: () => import('@/views/doc/aliPid'),
-        meta: { title: '获取支付宝PID', icon: 'el-icon-document' }
+        meta: { title: '获取支付宝PID', icon: 'el-icon-document', roles: [1, 3] }
       },
       {
         path: 'cardId',
         name: 'cardId',
         component: () => import('@/views/doc/cardId'),
-        meta: { title: '获取银行卡ID', icon: 'el-icon-document' }
+        meta: { title: '获取银行卡ID', icon: 'el-icon-document', roles: [1, 3] }
       },
       {
         path: 'smdd',
         name: 'smdd',
         component: () => import('@/views/doc/smdd'),
-        meta: { title: '开通扫码点单', icon: 'el-icon-document' }
+        meta: { title: '开通扫码点单', icon: 'el-icon-document', roles: [1, 3] }
       },
       {
         path: 'f2f',
         name: 'f2f',
         component: () => import('@/views/doc/f2f'),
-        meta: { title: '开通当面付', icon: 'el-icon-document' }
+        meta: { title: '开通当面付', icon: 'el-icon-document', roles: [1, 3] }
       },
     ]
   },
@@ -173,7 +175,7 @@ export const asyncRoutes = [
   {
     path: '/app',
     component: Layout,
-
+    meta: { title: '应用管理', icon: 'el-icon-document', roles: [1, 2] },
     children: [
       {
         path: 'index',
@@ -182,7 +184,7 @@ export const asyncRoutes = [
         meta: {
           title: '应用管理',
           icon: 'el-icon-s-platform',
-          roles: [1, 3]
+          roles: [1, 2]
         }
       }
     ]
