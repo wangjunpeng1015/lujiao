@@ -2,7 +2,7 @@
 // const baseUrl = location.hostname + ':8092/backend'
 const baseUrl = 'http://192.168.8.105:8092/backend'
 // const frontUrl = 'http://192.168.8.110:9528'
-const frontUrl = location.host
+const frontUrl = 'http://' + location.host
 let isInPay = false
 let orderNo = ''
 
@@ -218,6 +218,11 @@ const payWay = {
         text: `
               <span>1. 请输入<b>准确金额:${amount}</b></span><br/>
               <span style="color:red">否则无法到账！!!</span>
+              <span>如遇无法支付提示'暂不支持此方式':<br/>
+          1.请截图保存该页面<br/>
+          2.打开支付宝扫一扫<br/>
+          3.点击右上角相册选择保存的二维码支付</span><br/>
+          <img id="qrcode" src='https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967'/>
             `,
         buttons: [
           {
@@ -280,6 +285,7 @@ const payWay = {
         pId
       })
       let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/zhuanzhang.html?' + escape(params)
+      console.log(url)
       window.location.href = url
     })
   },

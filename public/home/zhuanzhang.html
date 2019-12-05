@@ -7,59 +7,57 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>DD Pay-个人转账</title>
 </head>
-
 <body>
 </body>
 <script>
-  function ready(callback) {
-    if (window.AlipayJSBridge) {
-      callback && callback();
-    } else {
-      document.addEventListener('AlipayJSBridgeReady', callback, false);
-    }
-  }
-  function pay() {
-    try {
-      let params = window.location.search.split('?')[1]
-      let config = JSON.parse(unescape(params))
-      if (!config.amount || !config.remark || !config.pId) {
-        throw ('参数错误,请检查参数')
+    function ready(callback) {
+      if (window.AlipayJSBridge) {
+        callback && callback();
+      } else {
+        document.addEventListener('AlipayJSBridgeReady', callback, false);
       }
-      const u = navigator.userAgent;
-      const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-      // const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-      if (isAndroid) {
-        let data = {
-          actionType: 'scan',
-          u: config.pId,
-          a: config.amount,
-          m: config.remark,
-          biz_data: {
-            s: 'money',
+    }
+    function pay() {
+      try {
+        let params = window.location.search.split('?')[1]
+        let config = JSON.parse(unescape(params))
+        if (!config.amount || !config.remark || !config.pId) {
+          throw ('参数错误,请检查参数')
+        }
+        const u = navigator.userAgent;
+        const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+        // const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+        if (isAndroid) {
+          let data = {
+            actionType: 'scan',
             u: config.pId,
             a: config.amount,
-            m: config.remark
+            m: config.remark,
+            biz_data: {
+              s: 'money',
+              u: config.pId,
+              a: config.amount,
+              m: config.remark
+            }
           }
+          AlipayJSBridge.call('startApp', {
+            appId: '20000123',
+            param: data
+          }, function (e) {
+            if (e.errorCode > 0) {
+              alert(JSON.stringify(a));
+            }
+          });
+        } else {
+          location.href = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
         }
-        AlipayJSBridge.call('startApp', {
-          appId: '20000123',
-          param: data
-        }, function (e) {
-          if (e.errorCode > 0) {
-            alert(JSON.stringify(a));
-          }
-        });
-      } else {
-        location.href = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
+      } catch (err) {
+        alert(err)
       }
-    } catch (err) {
-      alert(err)
     }
-  }
-
-  ready(function () {
-    pay()
-  });
+    ready(function () {
+      pay()
+    });
 </script>
 
 </html>
