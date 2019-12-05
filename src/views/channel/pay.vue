@@ -183,7 +183,7 @@ export default {
           this.cancel();
         })
         .catch(err => {
-          this.$message.error("添加账号失败！");
+          this.$message.error(err.message);
         });
     },
     del(id) {

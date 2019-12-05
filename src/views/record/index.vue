@@ -8,18 +8,18 @@
             el-table-column(prop='ip', label='ip', )
             el-table-column(prop='loginPlace', label='地点', )
             el-table-column(prop='createTime', label='登录时间', )
-        //- .page.layout-row.align-center.right
-        //-     span 每页显示
-        //-     el-pagination.statistics(
-        //-     background
-        //-     prev-text="上一页"
-        //-     next-text="下一页"
-        //-     @size-change="sizeChange"
-        //-     @current-change="getTableData"
-        //-     :current-page.sync="currentPage"
-        //-     :page-size="pageSize"
-        //-     layout=" prev, pager, next,total"
-        //-     :total="totalPage")
+        .page.layout-row.align-center.right
+            span 每页显示
+            el-pagination.statistics(
+            background
+            prev-text="上一页"
+            next-text="下一页"
+            @size-change="sizeChange"
+            @current-change="getTableData"
+            :current-page.sync="currentPage"
+            :page-size="pageSize"
+            layout=" prev, pager, next,total"
+            :total="totalPage")
     
 </template>
 
@@ -33,7 +33,10 @@ export default {
       loading: false,
       type: "",
       state: "",
-      tableData: []
+      tableData: [],
+      totalPage: 0, //总条数
+      currentPage: 1, //当前页
+      pageSize: 15 //当前页显示数量
     };
   },
   watch: {},
@@ -46,9 +49,18 @@ export default {
   methods: {
     getTableData() {
       this.loading = true;
-      getloginLog()
+      getloginLog({
+        pageNo: this.currentPage,
+        pageSize: this.pageSize,
+        param: {}
+      })
         .then(res => {
-          this.tableData = res.data;
+          const { totalRecords, pageNo, pageSize, content } = res.data;
+          this.totalPage = totalRecords;
+          this.pageSize = pageSize;
+          this.currentPage = pageNo;
+          this.tableData = content;
+          // this.tableData = res.data;
         })
         .catch(err => {
           this.$message.error("获取表格数据失败！");
@@ -56,6 +68,10 @@ export default {
         .finally(_ => {
           this.loading = false;
         });
+    },
+    sizeChange(num) {
+      this.pageSize = num;
+      this.getTableData();
     }
   }
 };

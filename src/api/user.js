@@ -17,10 +17,11 @@ export function register(data) {
   })
 }
 //用户登录记录
-export function getloginLog() {
+export function getloginLog(data) {
   return request({
     url: '/loginlog/list',
-    method: 'get',
+    method: 'post',
+    data
   })
 }
 //用户信息
