@@ -3,6 +3,7 @@ const baseUrl = 'http://' + host + '/backend'
 const frontUrl = 'http://' + host
 let isInPay = false
 let orderNo = ''
+let fiveMinsTime
 const payWay = {
     //当面付款
     5: (data) => {
@@ -214,29 +215,33 @@ function createOrder() {
 // 检测订单状态 payStatusDictId
 function getOrderStatus(orderNo) {
     let siv = setInterval(() => {
-        $.ajax({
-            type: "POST",
-            url: `${baseUrl}/order/findOrderNum`,
-            data: { orderNum: orderNo },
-            success: function (data, textStatus) {
-                if (data.data.payStatusDictId !== 1) {
-                    clearInterval(siv)
-                    $('#time').css('display', 'none')
-                    $('#status-fail').css('display', 'none')
-                    $('#status-success').css('display', 'block')
+        if (fiveMinsTime == 0) {
+            clearInterval(siv)
+        } else {
+            $.ajax({
+                type: "POST",
+                url: `${baseUrl}/order/findOrderNum`,
+                data: { orderNum: orderNo },
+                success: function (data, textStatus) {
+                    if (data.data.payStatusDictId !== 1) {
+                        clearInterval(siv)
+                        $('#time').css('display', 'none')
+                        $('#status-fail').css('display', 'none')
+                        $('#status-success').css('display', 'block')
+                    }
+                    // clearInterval(siv)
+                },
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
                 }
-                // clearInterval(siv)
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-            }
-        })
+            })
+        }
     }, 5000);
 }
 function countdown() {
     if (!isInPay) {
         isInPay = true
-        let fiveMinsTime = 60 * 5
+        fiveMinsTime = 60 * 5
         let siv = setInterval(function () {
             fiveMinsTime = fiveMinsTime - 1
             $('#countdown').text(fiveMinsTime + '秒')
