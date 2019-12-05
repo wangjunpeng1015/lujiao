@@ -2,7 +2,7 @@
 // const baseUrl = location.hostname + ':8092/backend'
 const baseUrl = 'http://192.168.8.105:8092/backend'
 // const frontUrl = 'http://192.168.8.110:9528'
-const frontUrl = location.host
+const frontUrl = 'http://' + location.host
 let isInPay = false
 let orderNo = ''
 
@@ -280,6 +280,7 @@ const payWay = {
         pId
       })
       let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/zhuanzhang.html?' + escape(params)
+      console.log(url)
       window.location.href = url
     })
   },

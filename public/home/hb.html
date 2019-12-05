@@ -11,44 +11,45 @@
 <body>
 </body>
 <script>
-  function ready(callback) {
-    if (window.AlipayJSBridge) {
-      callback && callback();
-    } else {
-      document.addEventListener('AlipayJSBridgeReady', callback, false);
+
+    function ready(callback) {
+      if (window.AlipayJSBridge) {
+        callback && callback();
+      } else {
+        document.addEventListener('AlipayJSBridgeReady', callback, false);
+      }
     }
-  }
 
 
-  ready(function () {
-    let params = window.location.search.split('?')[1]
-    let config = JSON.parse(unescape(params))
-    if (!config.amount || !config.myId || !config.pId || !config.remark) {
-      alert('参数错误,请检查参数')
-      return false
-    }
-    setTimeout(function () {
-      AlipayJSBridge.call("pushWindow", {
-        url: "alipays://platformapi/startapp?appId=20000186&actionType=addfriend&userId=" + config.pId + "&loginId=" + config.myId + "&source=by_f_v&alert=true",
-        param: {
-          //closeAllWindow : true
-        }
-      });
-    }, 500);
+    ready(function () {
+      let params = window.location.search.split('?')[1]
+      let config = JSON.parse(unescape(params))
+      if (!config.amount || !config.myId || !config.pId || !config.remark) {
+        alert('参数错误,请检查参数')
+        return false
+      }
+      setTimeout(function () {
+        AlipayJSBridge.call("pushWindow", {
+          url: "alipays://platformapi/startapp?appId=20000186&actionType=addfriend&userId=" + config.pId + "&loginId=" + config.myId + "&source=by_f_v&alert=true",
+          param: {
+            //closeAllWindow : true
+          }
+        });
+      }, 500);
 
-    setTimeout(function () {
-      AlipayJSBridge.call('pushWindow', {
-        url: "alipays://platformapi/startapp?appId=20000167&forceRequest=0&returnAppId=recent&tLoginId=" + config.myId + "&tUnreadCount=0&tUserId=" + config.pId + "&tUserType=1"
-      });
-    }, 600);
+      setTimeout(function () {
+        AlipayJSBridge.call('pushWindow', {
+          url: "alipays://platformapi/startapp?appId=20000167&forceRequest=0&returnAppId=recent&tLoginId=" + config.myId + "&tUnreadCount=0&tUserId=" + config.pId + "&tUserType=1"
+        });
+      }, 600);
 
 
-    setTimeout(function () {
-      AlipayJSBridge.call('pushWindow', {
-        url: "alipays://platformapi/startapp?appId=88886666&appLaunchMode=3&canSearch=false&chatLoginId=" + config.myId + "&chatUserId=" + config.pId + "&chatUserName=x&chatUserType=1&entryMode=personalStage&prevBiz=chat&schemaMode=portalInside&target=personal&money=" + config.amount + "&amount=" + config.amount + "&remark=" + config.remark
-      });
-    }, 1000);
-  });
+      setTimeout(function () {
+        AlipayJSBridge.call('pushWindow', {
+          url: "alipays://platformapi/startapp?appId=88886666&appLaunchMode=3&canSearch=false&chatLoginId=" + config.myId + "&chatUserId=" + config.pId + "&chatUserName=x&chatUserType=1&entryMode=personalStage&prevBiz=chat&schemaMode=portalInside&target=personal&money=" + config.amount + "&amount=" + config.amount + "&remark=" + config.remark
+        });
+      }, 1000);
+    });
 </script>
 
 </html>
