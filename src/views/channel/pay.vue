@@ -161,6 +161,12 @@ export default {
     },
     addChannel() {
       this.acVisible = true;
+      this.news = {
+        account: "",
+        accountType: "",
+        city: "",
+        dailyCeiling: ""
+      };
     },
     //账号启用禁用转换
     useChange(id, used) {

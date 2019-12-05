@@ -173,6 +173,9 @@ export default {
       this.$emit("update:visible", false);
     },
     addChannel() {
+      this.form = {
+        contentObj: {}
+      };
       this.isAdd = true;
       this.drawerVisible = true;
     },

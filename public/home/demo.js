@@ -89,6 +89,7 @@ function getway(way) {
 
 // 创建订单
 function createOrder(id, callback) {
+  $.showPreloader('订单创建中...请稍后')
   let data = new FormData()
   // data.append('userId', getUserParam('id'))
   data.append('money', $('#amount_val').val())
@@ -100,6 +101,7 @@ function createOrder(id, callback) {
     contentType: false,//不要设置content-Type
     data,
     error: function (XHR, textStatus, errorThrown) {
+      $.hidePreloader();
       $.modal({
         title: '注意！',
         text: `
@@ -116,6 +118,7 @@ function createOrder(id, callback) {
       })
     },
     success: function (data, textStatus) {
+      $.hidePreloader();
       try {
         orderNo = data.data.data.orderNum
         callback(data.data.data)
