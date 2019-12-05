@@ -169,7 +169,7 @@ function getUserParam(variable) {
 }
 function createOrder() {
     let data = new FormData()
-    data.append('userId', getUserParam('id'))
+    // data.append('userId', getUserParam('id'))
     data.append('money', getUserParam('amount'))
     data.append('payWay', getUserParam('type'))
     $.ajax({

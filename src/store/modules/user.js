@@ -46,14 +46,12 @@ const actions = {
   },
   // get user info
   getInfo({ commit, state }) {
-    debugger
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const { data } = response
         if (!data) {
           reject('请重新登录！')
         }
-        debugger
         // let hash = Math.random().toString(36).substr(2)
         // initWebSocket(getToken(), data.account, hash)
         commit('SET_USER_INFO', data)

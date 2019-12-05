@@ -37,7 +37,8 @@ function validateAmount() {
 function getPayWay(value, callback) {
   $.ajax({
     type: "get",
-    url: `${baseUrl}/payConfig/findPay?value=${value}&id=${getUserParam('id')}`,
+    // url: `${baseUrl}/payConfig/findPay?value=${value}&id=${getUserParam('id')}`,
+    url: `${baseUrl}/payConfig/findPay?value=${value}`,
     error: function (XHR, textStatus, errorThrown) {
 
     },
@@ -89,7 +90,7 @@ function getway(way) {
 // 创建订单
 function createOrder(id, callback) {
   let data = new FormData()
-  data.append('userId', getUserParam('id'))
+  // data.append('userId', getUserParam('id'))
   data.append('money', $('#amount_val').val())
   data.append('payWayDictId', id)
   $.ajax({

@@ -23,7 +23,7 @@
         .layout-row__between
           .num {{ list.aggregate }}
             span.unit 元
-          el-button(@click="visible=true" type="text") 申请提现
+          el-button(v-if="hasPermission" @click="visible=true" type="text") 申请提现
         //- .field
         //-   span(@click="copy") 推荐好友
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
@@ -58,9 +58,6 @@ export default {
     DatePicker,
     SettleModal
   },
-  computed: {
-    ...mapGetters(["userinfo"])
-  },
   data() {
     return {
       visible: false,
@@ -83,6 +80,7 @@ export default {
   },
   computed: {
     ...mapState(["settings"]),
+    ...mapGetters(["userinfo"]),
     wxSum() {
       let obj = this.body.filter(item => item.name == "微信");
       return obj.reduce((total, val) => {
@@ -94,6 +92,9 @@ export default {
       return obj.reduce((total, val) => {
         return total + Number(val.sum);
       }, 0);
+    },
+    hasPermission() {
+      return !!this.userinfo.roles.filter(n => n.id == 1 || n.id == 2).length;
     }
   },
   created() {
@@ -112,25 +113,36 @@ export default {
     setOption(data) {
       data = sortBy(data, "time");
       let xAxis = uniqBy(data, "time").map(item => item.time);
+      //如果只有一条数据，增加前一天  方便看图
+      if (xAxis.length === 1) {
+        const pre = dayjs()
+          .subtract(1, "day")
+          .format("YYYY-MM-DD");
+        xAxis.unshift(pre);
+      }
+      const name = this.settings.payWay.map(n => n.label);
       let option = {
-        name: this.mapState.payWay.map(n => n.label),
-        data: [[], []],
+        name,
+        data: name.map(n => {
+          return {
+            name: n,
+            type: "line",
+            symbol: "circle", //标记的图形为实心圆
+            showSymbol: false,
+            data: []
+          };
+        }),
         xAxis
       };
-      debugger;
+
       xAxis.map(time => {
         let obj = data.filter(item => item.time == time);
-        let zfb = obj.find(item => item.name == "支付宝");
-        let wx = obj.find(item => item.name == "微信");
-        option.data[0].push((zfb && zfb.sum) || 0);
-        option.data[1].push((wx && wx.sum) || 0);
+        name.map(n => {
+          let d = obj.find(item => item.name == n);
+          let temp = option.data.find(m => m.name === n);
+          temp.data.push((d && d.sum) || 0);
+        });
       });
-      let a = {
-        name: "支付宝",
-        type: "line",
-        showSymbol: false,
-        data: aliData
-      };
       line.setOption(drawLine(option), true);
     },
     copy() {
