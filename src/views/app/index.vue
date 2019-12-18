@@ -42,7 +42,7 @@ export default {
       tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
-      pageSize: 15 //当前页显示数量
+      pageSize: 10 //当前页显示数量
     };
   },
   watch: {},

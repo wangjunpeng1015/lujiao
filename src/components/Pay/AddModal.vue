@@ -87,13 +87,9 @@
         el-input(v-model='form.singleCeilingMax' placeholder="设置单次最大金额(以防风控)" style="width:45%")
       el-form-item(label='备注', prop='remark')
         el-input(v-model='form.remark' placeholder="备注(主要用于备注二维码用途)")
-      el-form-item(label='启用时间', prop='forNight')
-        el-select(v-model='form.forNight', placeholder='启用时间')
-          el-option(label='白天', :value='false')
-          el-option(label='晚上', :value='true')
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
-      el-button(type='primary', @click='submitForm') 确 定
+      el-button(type='primary',v-loading="loading" @click='submitForm') 确 定
 </template>
 
 <script>
@@ -116,6 +112,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       form: {
         contentObj: {}
       },
@@ -130,6 +127,7 @@ export default {
         this.$message.error("请填写支付配置内容！");
         return;
       }
+      this.loading = true;
       updateConfigPay({
         ...this.form,
         payConfigAccountId: this.account.id
@@ -141,6 +139,9 @@ export default {
         })
         .catch(err => {
           this.$message.error("修改失败！");
+        })
+        .finally(_ => {
+          this.loading = false;
         });
     },
     isEmpty(data) {

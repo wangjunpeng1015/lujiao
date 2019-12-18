@@ -170,6 +170,7 @@ export default {
     },
     //账号启用禁用转换
     useChange(id, used) {
+      this.loading = true;
       updateUse({
         id,
         used
@@ -178,10 +179,12 @@ export default {
           this.$message.success("状态修改成功！");
         })
         .finally(_ => {
+          this.loading = false;
           this.getAllAcount();
         });
     },
     addAccount() {
+      this.loading = true;
       addAcount(this.news)
         .then(res => {
           this.getAllAcount();
@@ -190,6 +193,9 @@ export default {
         })
         .catch(err => {
           this.$message.error(err.message);
+        })
+        .finally(e => {
+          this.loading = false;
         });
     },
     del(id) {
@@ -199,11 +205,15 @@ export default {
         type: "warning"
       })
         .then(() => {
+          this.loading = true;
           delAcount(id)
             .then(res => {
               this.getAllAcount();
             })
-            .catch(err => {});
+            .catch(err => {})
+            .finally(e => {
+              this.loading = false;
+            });
         })
         .catch(() => {
           this.$message({

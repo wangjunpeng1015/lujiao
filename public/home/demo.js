@@ -405,35 +405,6 @@ const payWay = {
   }
 }
 
-
-
-
-function orderState() {
-  let siv = setInterval(() => {
-    $.ajax({
-      type: "POST",
-      url: `${baseUrl}/order/create`,
-      data:
-        JSON.stringify(
-          {
-            money: $('#amount_val').val(),
-            payWay
-          }),
-      error: function (XHR, textStatus, errorThrown) {
-
-      },
-      success: function (data, textStatus) {
-
-        clearInterval(siv)
-      },
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      }
-    })
-  }, 1000);
-}
-
-
 // https://qr.alipay.com/fkx03562pfglokkqkpg3afa?t=1574131936724
 $('.ali-methods').on('click', function () {
   getway('ali')

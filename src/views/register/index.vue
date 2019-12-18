@@ -23,8 +23,8 @@
     //-     el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
     //- el-form-item(label="结算账号"  prop='settlementAccount')
     //-   el-input(v-model='form.settlementAccount', placeholder='结算账号', name='settlementAccount', type='text', , auto-complete='on')
-    el-form-item(label="邀请人-ID"  prop='pId')
-      el-input(v-model='form.pId', placeholder='邀请人-ID(可不填)', name='pId', type='text',  auto-complete='on')
+    el-form-item(label="邀请人账号"  prop='parentAccount' v-if="form.roleIds == 3")
+      el-input(v-model='form.parentAccount', placeholder='邀请人账号(可不填)', name='parentAccount', type='text',  auto-complete='on')
     .tips.right
       router-link(to='/login') 商户登录
     .btn
@@ -82,11 +82,11 @@ export default {
         account: "",
         userPassword: "",
         phone: "",
-        pId: ""
+        parentAccount: ""
       },
       loginRules: {
         roleIds: [
-          { required: true, trigger: "blur", message: "请选择用户类型" }
+          { required: true, trigger: "change", message: "请选择用户类型" }
         ],
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
         userPassword: [
@@ -121,9 +121,12 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.loading = true;
-          this.form.roleIds = [this.form.roleIds];
+          let params = {
+            ...this.form
+          };
+          params.roleIds = [params.roleIds];
           this.$store
-            .dispatch("user/register", this.form)
+            .dispatch("user/register", params)
             .then(() => {
               this.loading = false;
               this.$router.push("/login");

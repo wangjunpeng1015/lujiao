@@ -19,6 +19,7 @@
               template(slot-scope='scope')
                 span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.money }}
                 span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.money }}
+            el-table-column(prop='payAccount', label='收款账号',show-overflow-tooltip)
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
@@ -29,7 +30,7 @@
             el-table-column(prop='payStatusDictValue', label='操作',)
                 template(slot-scope='scope')
                     el-button(type="danger" size="mini" @click="del(scope.row.id)") 删 除
-                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row.id)") 补 单
+                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(
@@ -52,6 +53,7 @@ export default {
   name: "orders",
   data() {
     return {
+      suppLoading: false,
       loading: false,
       type: "",
       state: "",
@@ -59,7 +61,7 @@ export default {
       tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
-      pageSize: 15 //当前页显示数量
+      pageSize: 10 //当前页显示数量
     };
   },
   watch: {},
@@ -123,14 +125,19 @@ export default {
       return cs;
     },
     //补单
-    supplement(id) {
-      this.$prompt("请输入补单备注：", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputPlaceholder: "补单备注"
-      }).then(({ value }) => {
+    supplement(data) {
+      this.$prompt(
+        "请输入补单备注：",
+        `单号：${data.orderNum}  金额：${data.money}`,
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          inputPlaceholder: "补单备注"
+        }
+      ).then(({ value }) => {
+        this.loading = true;
         supplement({
-          id,
+          id: data.id,
           remark: value
         })
           .then(res => {
@@ -140,6 +147,7 @@ export default {
             this.$message.error("补单失败！");
           })
           .finally(_ => {
+            this.loading = false;
             this.getTableData();
           });
       });

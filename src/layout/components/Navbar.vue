@@ -10,7 +10,7 @@
 
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
-        <span>{{ userinfo.roles[0].roleName }}</span>
+        <span>{{ userinfo.roles[0] && userinfo.roles[0].roleName }}</span>
         <el-divider direction="vertical"></el-divider>
         <span>{{ userinfo.account }}</span>
         <!-- <div class="avatar-wrapper">

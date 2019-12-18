@@ -18,9 +18,6 @@ div
             template(slot-scope='scope')
               span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
-          el-table-column(label='启用时间')
-            template(slot-scope='scope')
-              span {{ scope.row.forNight?'晚上':'白天' }}
           el-table-column(prop='remark', label='备注')
           el-table-column(label='编辑')
             template(slot-scope='scope')
@@ -143,11 +140,15 @@ export default {
         type: "warning"
       })
         .then(() => {
+          this.loading = true;
           delConfigPay(id)
             .then(res => {
               this.getPays();
             })
-            .catch(err => {});
+            .catch(err => {})
+            .finally(e => {
+              this.loading = false;
+            });
         })
         .catch(() => {
           this.$message({
@@ -157,6 +158,7 @@ export default {
         });
     },
     useChange(id, used) {
+      this.loading = true;
       updatePayUse({
         id,
         used
@@ -165,6 +167,7 @@ export default {
           this.$message.success("状态修改成功！");
         })
         .finally(_ => {
+          this.loading = false;
           this.getPays();
         });
     },

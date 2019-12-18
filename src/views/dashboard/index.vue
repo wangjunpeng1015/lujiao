@@ -3,17 +3,27 @@
   el-row.box-card( :gutter="20")
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" )
       el-card
-        .title 今日订单总数
+        .title 订单总数
         .num {{ list.orders }}
           span.unit  笔
         //- .field
         //-   span 当前时间
         //-   span {{ nowTime }}
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
+    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" v-if="!!this.userinfo.roles.filter(n => n.id == 1).length")
       el-card
-        .title 商户/应用数量
-        .num {{ list.merchants }}/{{ list.merchants }}
+        .title 商户/码商/应用数量
+        .num {{ list.merchants || 0}}/{{list.code_merchants|| 0}}/{{ list.merchant_num || 0}}
           span.unit  个
+    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" v-else-if="!!this.userinfo.roles.filter(n => n.id == 2).length")
+      el-card
+        .title 应用数量
+        .num {{ list.merchant_num || 0}}
+          span.unit  个
+    //- el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" v-else)
+    //-   el-card
+    //-     .title 商户/应用数量
+    //-     .num {{ list.merchants }}/{{ list.merchants }}
+    //-       span.unit  个
         //- .field
         //-   span 当前版本
         //-   span {{ version }}
@@ -21,7 +31,7 @@
       el-card
         .title 总计余额
         .layout-row__between
-          .num {{ list.aggregate }}
+          .num {{ list.aggregate || 0}}
             span.unit 元
           el-button(v-if="hasPermission" @click="visible=true" type="text") 申请提现
         //- .field
@@ -29,7 +39,7 @@
     el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
       el-card
         .title 已结算金额
-        .num {{ list.settlementMoney }}
+        .num {{ list.settlementSuccessMoney || 0}}
           span.unit 元
         //- .field
         //-   span 程序购买
@@ -38,7 +48,12 @@
   //-   el-divider(content-position='left') 收益查询
   //- .wjp-tools.layout-row.align-center.justify-end
   //-   Date-picker.time-picker(@change="getBody" ,:date.sync="time")
-  .line(style="flex:1")
+  el-row.layout-row.flex
+    el-col.line(:span="12")
+    el-col.layout-column(:span="12")
+      .rate(v-for="(v,k) in list.successRate" :key="k")
+        label.right {{ k }}:
+        span {{ v*100 }}%
   SettleModal(:visible.sync="visible")
 </template>
 
@@ -72,8 +87,11 @@ export default {
       list: {
         orders: 0,
         merchants: 0,
+        code_merchants: 0,
+        merchant_num: 0,
         aggregate: 0,
-        settlementMoney: 0
+        settlementSuccessMoney: 0,
+        successRate: {}
       },
       body: []
     };
@@ -112,9 +130,10 @@ export default {
   methods: {
     setOption(data) {
       data = sortBy(data, "time");
-      let xAxis = uniqBy(data, "time").map(item => item.time);
+      let xAxis = [];
+      xAxis = uniqBy(data, "time").map(item => item.time);
       //如果只有一条数据，增加前一天  方便看图
-      if (xAxis.length === 1) {
+      if (xAxis.length < 2) {
         const pre = dayjs()
           .subtract(1, "day")
           .format("YYYY-MM-DD");
@@ -206,6 +225,17 @@ export default {
   }
   .line {
     height: 300px;
+  }
+  .rate {
+    margin-top: 20px;
+    label {
+      font-size: 24px;
+      display: inline-block;
+      width: 300px;
+    }
+    span {
+      font-size: 24px;
+    }
   }
   .money {
     margin-left: 15px;
