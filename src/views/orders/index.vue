@@ -1,11 +1,15 @@
 <template lang="pug">
 .orders-container.layout-column
-    .wjp-tools.layout-row
+    .wjp-tools.layout-row__between
+      div
+         el-button(type='primary' @click="addOrder") 新增订单
+      .layout-row.buttons.align-center
         el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-input(v-model='orderNo',@keyup.enter="getTableData" placeholder='订单号' style="width:200px;")
+        el-date-picker(v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期')
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
         el-button(type='primary' @click="getTableData" :disabled="loading") 刷 新
     .wjp-content.flex.layout-column
@@ -47,7 +51,7 @@
 </template>
 
 <script>
-import { getOrdersList, delOrder, supplement } from "@/api/order";
+import { getOrdersList, delOrder, supplement, createOrder } from "@/api/order";
 import { mapGetters, mapState } from "vuex";
 export default {
   name: "orders",
@@ -57,6 +61,7 @@ export default {
       loading: false,
       type: "",
       state: "",
+      time: "",
       orderNo: "", //搜索订单号
       tableData: [],
       totalPage: 0, //总条数
@@ -88,6 +93,13 @@ export default {
     });
   },
   methods: {
+    //手动创建订单
+    addOrder() {
+      createOrder()
+        .then(res => {})
+        .catch(err => {})
+        .finally(_ => {});
+    },
     //删除订单
     del(id) {
       this.$confirm("确定删除这条订单记录?", "提示", {

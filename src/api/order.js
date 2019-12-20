@@ -34,3 +34,11 @@ export function settleCreate(data) {
         data
     })
 }
+//创建订单
+export function createOrder(data) {
+    return request({
+        url: `/order/optimalPay`,
+        method: 'post',
+        data: Qs.stringify(data)
+    })
+}

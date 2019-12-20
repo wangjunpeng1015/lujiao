@@ -26,9 +26,9 @@ const actions = {
       login({ account: account.trim(), password: password.trim(), type, ip: returnCitySN.cip }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        setToken(data.token)
         this.dispatch('user/getInfo')
         this.dispatch("settings/getdic")
-        setToken(data.token)
         resolve()
       }).catch(error => {
         reject(error)

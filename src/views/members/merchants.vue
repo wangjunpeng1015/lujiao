@@ -1,19 +1,22 @@
 <template lang="pug">
 .orders-container.layout-column
-  .wjp-tools.layout-row
-      el-input(v-model='account',@keyup.enter="getTableData" placeholder='商户账号' style="width:200px;")
-      el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+  .wjp-tools.layout-row.align-center
+    el-input(v-model='account',@keyup.enter="getTableData" placeholder='商户账号' style="width:200px;")
+    el-input(v-model='minRate',@keyup.enter="getTableData" placeholder='最小利率' style="width:100px;")
+    div -
+    el-input(v-model='maxRate',@keyup.enter="getTableData" placeholder='最大利率' style="width:100px;")
+    el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
           el-table-column(prop='account', label='账号', )
           el-table-column(prop='userName', label='商户姓名', )
           el-table-column(prop='phone', label='手机号', )
           el-table-column(prop='ordersMoney', label='订单金额', )
-          el-table-column(label='利率',)
-            template(slot-scope='scope')
-                el-input(v-if="scope.row.show" v-model='scope.row.merchantInterestRate',@blur="changeRate(scope.row)" placeholder='利率' style="width:100px;")
-                span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.merchantInterestRate }}
           el-table-column(prop='createTime', label='创建时间',)
+          el-table-column(label='操作',)
+            template(slot-scope='scope')
+              el-button(size="mini" type='primary' @click="edit(scope.row)") 编辑
+              el-button(size="mini" type='danger' @click="del(scope.row)") 删除
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -26,17 +29,24 @@
           :page-size="pageSize"
           layout=" prev, pager, next,total"
           :total="totalPage")
-    
+  drawer(:visible.sync="drawerVisible" :data="chooseMerchants")
 </template>
 
 <script>
-import { getMerchants, changeRate } from "@/api/members";
+import { getMerchants, delMerchant } from "@/api/members";
+import drawer from "@/views/members/merchants/drawer";
 export default {
-  components: {},
+  components: {
+    drawer
+  },
   data() {
     return {
+      drawerVisible: false,
+      chooseMerchants: {},
       loading: false,
       account: "", //
+      minRate: "", //
+      maxRate: "", //
       tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
@@ -49,24 +59,36 @@ export default {
     this.getTableData();
   },
   methods: {
-    //修改利率
-    changeRate(data) {
-      this.loading = true;
-      changeRate({
-        userId: data.id,
-        interestRate: data.merchantInterestRate
+    edit(data) {
+      this.chooseMerchants = data;
+      this.drawerVisible = true;
+    },
+    del(data) {
+      this.$confirm(`确定删除商户 ${data.account}?`, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
-        .then(res => {
-          this.$message.success("修改利率成功！");
+        .then(() => {
+          delMerchant(data.id)
+            .then(res => {
+              this.$message.success("删除成功！");
+            })
+            .catch(err => {
+              this.$message.error("删除失败！");
+            })
+            .finally(_ => {
+              this.getTableData();
+            });
         })
-        .catch(err => {
-          this.$message.error("修改利率失败！");
-        })
-        .finally(_ => {
-          this.loading = false;
-          this.getTableData();
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
     },
+
     getTableData() {
       this.loading = true;
       getMerchants({
@@ -74,7 +96,8 @@ export default {
         pageSize: this.pageSize,
         param: {
           account: this.account, //账号
-          type: 1 //商户
+          minRate: this.minRate, //
+          maxRate: this.maxRate //
         }
       })
         .then(res => {

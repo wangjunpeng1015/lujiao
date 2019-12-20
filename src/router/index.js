@@ -121,7 +121,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'settlement',
         component: () => import('@/views/settlement/index'),
-        meta: { title: '结算管理', icon: 'el-icon-money', roles: [1, 2] }
+        meta: { title: '结算管理', icon: 'el-icon-money', roles: [1, 2, 3] }
       }
     ]
   },
@@ -132,21 +132,27 @@ export const asyncRoutes = [
     meta: {
       title: '客户管理',
       icon: 'el-icon-user-solid',
-      roles: [1]
+      roles: [1, 2, 3]
     },
     children: [
+      {
+        path: 'agent',
+        name: 'agent',
+        component: () => import('@/views/members/agent'),
+        meta: { title: '代理管理', icon: 'el-icon-position', roles: [1] }
+      },
       {
         path: 'merchants',
         name: 'merchants',
         component: () => import('@/views/members/merchants'),
-        meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1] }
+        meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 2, 3] }
       },
-      {
-        path: 'code',
-        name: 'code',
-        component: () => import('@/views/members/code'),
-        meta: { title: '码商管理', icon: 'el-icon-coordinate', roles: [1] }
-      }
+      // {
+      //   path: 'code',
+      //   name: 'code',
+      //   component: () => import('@/views/members/code'),
+      //   meta: { title: '码商管理', icon: 'el-icon-coordinate', roles: [1] }
+      // }
     ]
   },
   {
@@ -192,29 +198,43 @@ export const asyncRoutes = [
       },
     ]
   },
-  // 应用
+  //字典配置
   {
-    path: '/app',
+    path: '/dicConfig',
     component: Layout,
-    meta: { title: '应用管理', icon: 'el-icon-document', roles: [1, 2] },
     children: [
       {
         path: 'index',
-        name: 'app',
-        component: () => import('@/views/app/index'),
-        meta: {
-          title: '应用管理',
-          icon: 'el-icon-s-platform',
-          roles: [1, 2]
-        }
+        name: 'dicConfig',
+        component: () => import('@/views/dicConfig/index'),
+        meta: { title: '字典配置', icon: 'el-icon-setting', roles: [1] }
       }
     ]
   },
+  // 应用
+  // {
+  //   path: '/app',
+  //   component: Layout,
+  //   meta: { title: '应用管理', icon: 'el-icon-document', roles: [1, 2] },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'app',
+  //       component: () => import('@/views/app/index'),
+  //       meta: {
+  //         title: '应用管理',
+  //         icon: 'el-icon-s-platform',
+  //         roles: [1, 2]
+  //       }
+  //     }
+  //   ]
+  // },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
 const createRouter = () => new Router({
   // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
