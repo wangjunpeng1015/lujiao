@@ -20,9 +20,10 @@
           el-table-column(prop='poundage', label='手续费',)
           el-table-column(prop='settlementIR', label='利率',)
           el-table-column(prop='createTime', label='创建时间',)
-          el-table-column(prop='settlementStatus', label='状态',)
+          el-table-column(label='状态',)
               template(slot-scope='scope')
-                  span(:class="[scope.row.settlementStatus?'green':'red']") {{ scope.row.settlementStatus?'成功':'失败' }}
+                el-button(v-if="" type='primary' @click="sure") 确认
+                span(v-else :class="[scope.row.settlementStatus?'green':'orange']") {{ scope.row.settlementStatus?'成功':'失败' }}
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(

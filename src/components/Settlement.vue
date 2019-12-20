@@ -1,6 +1,9 @@
 <template lang="pug">
   el-dialog(title='申请提现', :visible.sync='visible')
     el-form(:model='form', :rules='rules', ref='form', label-width='120px')
+      el-form-item(label='对方', prop='partner')
+        el-select(v-model='form.partner', placeholder='' clearable)
+          el-option(v-for='(item,i) in payWay' :key="i" :label='item.label', :value='item.value')
       el-form-item(label='结算方式', prop='settlementWay')
         el-select(v-model='form.settlementWay', placeholder='结算方式' clearable)
           el-option(v-for='(item,i) in payWay' :key="i" :label='item.label', :value='item.value')

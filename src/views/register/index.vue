@@ -1,19 +1,16 @@
 <template lang="pug">
 .register-container
-  el-form.login-form(ref='form', :model='form', :rules='loginRules',label-width="90px" auto-complete='on', label-position='left')
+  el-form.login-form(ref='form', :model='form', :rules='loginRules',label-width="100px" auto-complete='on', label-position='left')
     .title-container.center
       h3.title 自助申请商户
-    el-form-item(label="用户类型"  prop='roleIds')
-      el-select(style="width: 100%" v-model="form.roleIds")
-        el-option(v-for='(item,i) in roles' :key="i" :label="item.roleName" :value="item.id")
     el-form-item(label="账号"  prop='account')
       el-input(v-model='form.account', placeholder='账号', name='account', type='text',  auto-complete='on')
     el-form-item(label="密码"  prop='userPassword')
       el-input(v-model='form.userPassword', placeholder='密码', type="password" name='userPassword', auto-complete='on')
     el-form-item(label="手机号"  prop='phone')
       el-input(v-model='form.phone', placeholder='手机号',  name='phone', auto-complete='on')
-    //- el-form-item(label="真实姓名"  prop='userName')
-    //-   el-input(v-model='form.userName', placeholder='真实姓名', name='userName', type='text', , auto-complete='on')
+    el-form-item(label="姓名"  prop='userName')
+      el-input(v-model='form.userName', placeholder='姓名', name='userName', type='text', , auto-complete='on')
     //- el-form-item(label="您的域名"  prop='webSiteDomain')
     //-   el-input(v-model='form.webSiteDomain', placeholder='用于成功后回调', name='webSiteDomain', type='text', , auto-complete='on')
     //- el-form-item(label="手机号"  prop='phone')
@@ -23,10 +20,10 @@
     //-     el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
     //- el-form-item(label="结算账号"  prop='settlementAccount')
     //-   el-input(v-model='form.settlementAccount', placeholder='结算账号', name='settlementAccount', type='text', , auto-complete='on')
-    el-form-item(label="邀请人账号"  prop='parentAccount' v-if="form.roleIds == 3")
-      el-input(v-model='form.parentAccount', placeholder='邀请人账号(可不填)', name='parentAccount', type='text',  auto-complete='on')
+    el-form-item(label="邀请人账号"  prop='parentAccount')
+      el-input(v-model='form.parentAccount', placeholder='邀请人账号', name='parentAccount', type='text',  auto-complete='on')
     .tips.right
-      router-link(to='/login') 商户登录
+      router-link(to='/login') 登录
     .btn
         .wrap-btn
         el-button(:loading='loading', type='primary', @click.native.prevent='handleRegister') 注 册
@@ -34,7 +31,6 @@
 </template>
 
 <script>
-import { getRoles } from "@/api/user";
 import { validPassword, validPhone } from "@/utils/validate";
 export default {
   name: "register",
@@ -62,7 +58,6 @@ export default {
       }
     };
     return {
-      roles: [],
       payWay: [
         {
           value: "支付宝",
@@ -78,8 +73,9 @@ export default {
         }
       ],
       form: {
-        roleIds: "",
+        roleIds: [2],
         account: "",
+        userName: "",
         userPassword: "",
         phone: "",
         parentAccount: ""
@@ -89,6 +85,10 @@ export default {
           { required: true, trigger: "change", message: "请选择用户类型" }
         ],
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
+        userName: [{ required: true, trigger: "blur", message: "请输入姓名" }],
+        parentAccount: [
+          { required: true, trigger: "blur", message: "请输邀请码" }
+        ],
         userPassword: [
           { required: true, validator: validatePass, trigger: "blur" }
         ],
@@ -108,15 +108,8 @@ export default {
     }
   },
   computed: {},
-  mounted() {
-    this.getRoles();
-  },
+  mounted() {},
   methods: {
-    getRoles() {
-      getRoles().then(res => {
-        this.roles = res.data;
-      });
-    },
     handleRegister() {
       this.$refs.form.validate(valid => {
         if (valid) {
@@ -124,7 +117,6 @@ export default {
           let params = {
             ...this.form
           };
-          params.roleIds = [params.roleIds];
           this.$store
             .dispatch("user/register", params)
             .then(() => {

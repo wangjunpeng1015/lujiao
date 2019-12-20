@@ -64,7 +64,7 @@
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
       el-button(type='primary', @click='addAccount') 确 定
-  Drawer(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount")
+  Drawer(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
   
 </template>
 
@@ -76,6 +76,7 @@ import {
   updateConfigPay,
   addAcount
 } from "@/api/pay";
+import { getAllchannel } from "@/api/agent";
 import { mapState } from "vuex";
 import Drawer from "@/components/Pay/Drawer";
 export default {
@@ -86,7 +87,18 @@ export default {
   computed: {
     ...mapState(["settings"]),
     payWay() {
-      return this.settings.payWay;
+      let array = [];
+      this.channels.map(m => {
+        const way = this.settings.dict.PayWay.dicts.find(
+          n => n.id == m.payWayDictId
+        );
+        if (way) {
+          array.push(way);
+        }
+      });
+      return this.settings.payWay.filter(n => {
+        return array.some(m => m.dictValue.includes(n.value));
+      });
     }
   },
   data() {
@@ -118,6 +130,7 @@ export default {
       accountType: "",
       min: "",
       max: "",
+      channels: [],
       dqyhpz: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
@@ -126,9 +139,23 @@ export default {
   },
   created() {
     this.getAllAcount();
+    this.getAllchannel();
   },
   mounted() {},
   methods: {
+    getAllchannel() {
+      getAllchannel({
+        pageNo: 1,
+        pageSize: 100,
+        param: {}
+      })
+        .then(res => {
+          this.channels = res.data.content;
+        })
+        .catch(err => {
+          this.$message.error("获取通道失败！");
+        });
+    },
     edit(data) {
       this.chooseAccount = data;
       this.visible = true;

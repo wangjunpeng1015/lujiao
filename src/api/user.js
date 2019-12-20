@@ -11,7 +11,7 @@ export function login(data) {
 //注册
 export function register(data) {
   return request({
-    url: '/base/user',
+    url: '/base/user/save',
     method: 'post',
     data
   })

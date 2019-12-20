@@ -34,7 +34,7 @@ const mutations = {
       return item.id != 7 && item.id != 12 && item.id != 13;
     })
     state.dict = value
-  }
+  },
 }
 
 const actions = {
@@ -42,10 +42,14 @@ const actions = {
     commit('CHANGE_SETTING', data)
   },
   getdic({ commit }) {
-    getConfig().then(response => {
-      const { data } = response
-      commit('SET_DIC', data.dictMap)
-    }).catch(error => {
+    return new Promise((resolve, reject) => {
+      getConfig().then(response => {
+        const { data } = response
+        commit('SET_DIC', data.dictMap)
+        resolve()
+      }).catch(error => {
+        reject()
+      })
     })
   },
 }

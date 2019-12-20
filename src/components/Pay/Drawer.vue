@@ -50,7 +50,7 @@ import { mapState } from "vuex";
 import { decrypt } from "@/utils/index";
 import AddModal from "@/components/Pay/AddModal";
 export default {
-  props: ["visible", "account"],
+  props: ["visible", "account", "channels"],
   components: {
     AddModal
   },
@@ -59,7 +59,7 @@ export default {
     payWay() {
       if (this.settings.dict && !!this.account) {
         return this.settings.dict.PayWay.dicts.filter(item => {
-          return item.dictValue.startsWith(this.account.accountType);
+          return this.channels.some(n => n.id == item.id);
         });
       } else {
         return [];
