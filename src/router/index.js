@@ -160,6 +160,7 @@ export const asyncRoutes = [
       roles: [1, 2, 3]
     },
     children: [
+
       {
         path: 'index',
         name: 'index',
@@ -189,6 +190,12 @@ export const asyncRoutes = [
         name: 'f2f',
         component: () => import('@/views/doc/f2f'),
         meta: { title: '开通当面付', icon: 'el-icon-document', roles: [1, 3] }
+      },
+      {
+        path: 'f2fkey',
+        name: 'f2fkey',
+        component: () => import('@/views/doc/f2fkey'),
+        meta: { title: '获取当面付参数', icon: 'el-icon-document', roles: [1, 2] }
       },
     ]
   },
