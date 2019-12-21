@@ -9,7 +9,9 @@
     <breadcrumb class="breadcrumb-container"/>
 
     <div class="right-menu">
-      <span v-if="userinfo.roleId === 2">商户UID: <span style="font-weight: bold">{{userinfo.uid}}</span></span>
+      <span @click="sk === '点击查看/隐藏' ? sk = userinfo.secretKey : sk = '点击查看/隐藏'" v-if="userinfo.roleId === 2">密钥: <span style="font-weight: bold">{{sk}}</span></span>
+      <el-divider direction="vertical" v-if="userinfo.roleId === 2"></el-divider>
+      <span v-if="userinfo.roleId === 2">商户UID: <span style="font-weight: bold">{{userinfo.uid || '空'}}</span></span>
       <el-divider direction="vertical" v-if="userinfo.roleId === 2"></el-divider>
       <span v-if="userinfo.roleId === 3">商户注册邀请码: <span style="font-weight: bold">{{userinfo.id}}</span></span>
       <el-divider v-if="userinfo.roleId === 3" direction="vertical"></el-divider>
@@ -90,6 +92,7 @@ export default {
         newPassword: "",
         oldPassword: ""
       },
+      sk: '点击查看/隐藏', // 密钥
       rules: {
         oldPassword: [
           { required: true, message: "请输入旧密码", trigger: "blur" }
