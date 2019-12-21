@@ -14,6 +14,13 @@ export function getAllchannel(data) {
         data
     })
 }
+//代理下所有配置的通道
+export function getProxyChannel() {
+    return request({
+        url: '/proxyCA',
+        method: 'get',
+    })
+}
 
 export function delChannel(id) {
     return request({

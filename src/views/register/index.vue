@@ -20,8 +20,8 @@
     //-     el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
     //- el-form-item(label="结算账号"  prop='settlementAccount')
     //-   el-input(v-model='form.settlementAccount', placeholder='结算账号', name='settlementAccount', type='text', , auto-complete='on')
-    el-form-item(label="邀请人账号"  prop='parentAccount')
-      el-input(v-model='form.parentAccount', placeholder='邀请人账号', name='parentAccount', type='text',  auto-complete='on')
+    el-form-item(label="邀请码"  prop='parentAccount')
+      el-input(v-model='form.parentAccount', placeholder='请输入邀请码', name='parentAccount', type='text',  auto-complete='on')
     .tips.right
       router-link(to='/login') 登录
     .btn

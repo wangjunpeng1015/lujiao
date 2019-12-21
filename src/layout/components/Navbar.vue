@@ -10,6 +10,8 @@
 
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
+        <span v-if="userinfo.roleId === 3">商户注册邀请码: <span style="font-weight: bold">{{userinfo.id}}</span></span>
+        <el-divider direction="vertical"></el-divider>
         <span>{{ userinfo.roles[0] && userinfo.roles[0].roleName }}</span>
         <el-divider direction="vertical"></el-divider>
         <span>{{ userinfo.account }}</span>
@@ -17,6 +19,7 @@
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom"/>
         </div>-->
+
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>

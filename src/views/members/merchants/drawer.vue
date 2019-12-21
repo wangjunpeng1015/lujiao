@@ -2,7 +2,7 @@
 el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
     .wjp-tools.layout-row__between
       div
-        el-button(type='primary' @click="addVisible = true") 添加通道
+        el-button(v-if="userinfo.roleId == 3" type='primary' @click="addVisible = true") 添加通道
       .buttons.layout-row.align-center
         el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
         div - 
@@ -13,13 +13,12 @@ el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='r
       el-table-column(label='通道名称')                        
         template(slot-scope='scope')
           p {{ dicFilter(scope.row.proxyOpenPayConfigPayDictId) }}
-      
       el-table-column(label='通道利率' width="80")
         template(slot-scope='scope')
           div(v-if="userinfo.roleId != 2")
               el-input(v-if="scope.row.show" v-model='scope.row.interestRate',@blur="changeRate(scope.row)" placeholder='利率' style="width:100px;")
               span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.interestRate }}
-          p(v-else) {{ scope.row.interestRate }}
+          p(v-else) {{ scope.row.interestRate  }}
       el-table-column(prop='createTime', label='创建时间')
       el-table-column(label='操作' v-if="userinfo.roleId!=2")
         template(slot-scope='scope')
@@ -125,7 +124,7 @@ export default {
       this.loading = true;
       changeRate({
         id: data.id,
-        rate: data.merchantInterestRate
+        rate: data.interestRate
       })
         .then(res => {
           this.$message.success("修改利率成功！");

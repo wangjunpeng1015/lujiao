@@ -1,10 +1,10 @@
 <template lang="pug">
-el-dialog(title="添加通道", :visible.sync='visible' width="30%")
+el-dialog(title="添加通道", :visible.sync='visible' width="30%" :append-to-body="true")
     el-form(ref="form" :model='form' :rules="rules")
         .layout-row__between
             el-form-item(label='通道', prop="proxyOpenPayConfigId")
                 el-select(v-model='form.proxyOpenPayConfigId', placeholder='通道' clearable)
-                    el-option(v-for='(item,i) in payWay' :key="i" :label='item.dictValueDisplayName', :value='item.id')
+                    el-option(v-for='(item,i) in channel' :key="i" :label='item.payWayValue', :value='item.payConfigId')
             el-form-item(label='利率', prop="interestRate")
                 el-input(v-model='form.interestRate')
     .dialog-footer(slot='footer')
@@ -13,9 +13,8 @@ el-dialog(title="添加通道", :visible.sync='visible' width="30%")
 </template>
 
 <script>
-import { toDicChannel } from "@/utils";
 import { addMerchantChannel } from "@/api/members";
-import { getAllchannel } from "@/api/agent";
+import { getProxyChannel } from "@/api/agent";
 import { mapState, mapGetters } from "vuex";
 export default {
   props: {
@@ -34,10 +33,7 @@ export default {
   },
   computed: {
     ...mapGetters(["userinfo"]),
-    ...mapState(["settings"]),
-    payWay() {
-      return toDicChannel(this.channel, this.settings.dict.PayWay.dicts);
-    }
+    ...mapState(["settings"])
   },
   data() {
     return {
@@ -57,18 +53,14 @@ export default {
     };
   },
   mounted() {
-    this.getAllchannel();
+    this.getProxyChannel();
   },
   methods: {
     //获取代理开通通道
-    getAllchannel() {
-      getAllchannel({
-        pageNo: 1,
-        pageSize: 100,
-        param: { proxyAccount: this.userinfo.account, minRate: "", maxRate: "" }
-      })
+    getProxyChannel() {
+      getProxyChannel()
         .then(res => {
-          this.channel = res.data.content;
+          this.channel = res.data;
         })
         .catch(err => {
           this.$message.error("获取代理通道失败");

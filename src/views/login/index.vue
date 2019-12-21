@@ -223,7 +223,7 @@ $light_gray: #eee;
 
   .tips {
     font-size: 14px;
-    color: #fff;
+    color: #000;
     margin-bottom: 10px;
 
     span {
