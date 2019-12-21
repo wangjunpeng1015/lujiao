@@ -76,7 +76,7 @@
         .layout-column
           div 成功率
           div.num {{item.rate}}%
-  .layout-column__between
+  .layout-column__between(v-if="userinfo.roleId===1")
     el-divider(content-position="left") 昨日代理数据
     el-table(:data="proxyList" :stripe="true" border)
       el-table-column(label="代理名称" prop="name")

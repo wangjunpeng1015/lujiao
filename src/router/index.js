@@ -147,12 +147,6 @@ export const asyncRoutes = [
         component: () => import('@/views/members/merchants'),
         meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 2, 3] }
       },
-      {
-        path: 'code',
-        name: 'code',
-        component: () => import('@/views/members/code'),
-        meta: { title: '码商管理', icon: 'el-icon-s-custom', roles: [1, 3] }
-      },
       // {
       //   path: 'code',
       //   name: 'code',
@@ -172,12 +166,11 @@ export const asyncRoutes = [
       roles: [1, 2, 3]
     },
     children: [
-
       {
         path: 'index',
         name: 'index',
         component: () => import('@/views/doc/index'),
-        meta: { title: '商户API文档', icon: 'el-icon-document', roles: [1, 2] }
+        meta: { title: '商户API文档', icon: 'el-icon-document', roles: [1, 2, 3] }
       },
       {
         path: 'aliPid',
@@ -207,7 +200,7 @@ export const asyncRoutes = [
         path: 'f2fkey',
         name: 'f2fkey',
         component: () => import('@/views/doc/f2fkey'),
-        meta: { title: '获取当面付参数', icon: 'el-icon-document', roles: [1, 2] }
+        meta: { title: '获取当面付参数', icon: 'el-icon-document', roles: [1, 3] }
       },
     ]
   },
