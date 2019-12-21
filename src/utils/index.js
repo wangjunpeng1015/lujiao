@@ -134,3 +134,18 @@ export function toDicChannel(data, dic) {
     });
   });
 }
+export function channelToPayWay(data, dic, payWay) {
+  let array = [];
+  data.map(m => {
+    const way = dic.find(
+      n => n.id == m.id
+    );
+    if (way) {
+      array.push(way);
+    }
+  });
+  debugger
+  return payWay.filter(n => {
+    return array.some(m => m.dictValue.includes(n.value));
+  });
+}

@@ -52,13 +52,14 @@
             :page-size="pageSize"
             layout="sizes, prev, pager, next,total"
             :total="totalPage")
-    add-order(@finish="getTableData" :visible.sync="addVisible")
+    add-order(@finish="getTableData" :visible.sync="addVisible" :payWay='payWay')
 </template>
 
 <script>
+import { toDicChannel } from "@/utils";
 import addOrder from "@/views/orders/addOrder";
 import { getOrdersList, delOrder, supplement, createOrder } from "@/api/order";
-
+import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
 import { debuglog } from "util";
 export default {
@@ -90,14 +91,11 @@ export default {
       return this.settings.dict && this.settings.dict.PayStatus.dicts;
     },
     payWay() {
-      return this.settings.dict.PayWay.dicts.filter(item => {
-        return this.channel.find(n => {
-          item.id === n.payWayDictId;
-        });
-      });
+      return toDicChannel(this.channel, this.settings.dict.PayWay.dicts);
     }
   },
   mounted() {
+    this.getAllchannel();
     this.getTableData();
     this.$eventBus.$on("", data => {
       this.tableData.concat(data);
@@ -114,7 +112,20 @@ export default {
     addOrder() {
       this.addVisible = true;
     },
-
+    getAllchannel() {
+      getAllchannel({
+        pageNo: 1,
+        pageSize: 100,
+        param: { proxyAccount: this.userinfo.account, minRate: "", maxRate: "" }
+      })
+        .then(res => {
+          this.channel = res.data.content;
+        })
+        .catch(err => {
+          this.$message.error("获取通道失败");
+        })
+        .finally(_ => {});
+    },
     //删除订单
     del(id) {
       this.$confirm("确定删除这条订单记录?", "提示", {
