@@ -65,7 +65,7 @@
       el-button(@click='cancel') 取 消
       el-button(type='primary', @click='addAccount') 确 定
   Drawer(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
-  
+
 </template>
 
 <script>

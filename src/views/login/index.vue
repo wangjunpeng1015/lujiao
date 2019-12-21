@@ -1,5 +1,6 @@
 <template >
   <div class="login-container">
+    <div id="login"></div>
     <el-form
       ref="loginForm"
       :model="loginForm"
@@ -9,7 +10,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">支付登录</h3>
+        <h3 class="title">七七支付</h3>
       </div>
 
       <!-- <el-form-item prop="type" class="type">
@@ -71,6 +72,7 @@
 </template>
 
 <script>
+import Particle from "zhihu-particle";
 export default {
   name: "Login",
   data() {
@@ -95,6 +97,9 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted () {
+    new Particle(document.getElementById("login"));
   },
   methods: {
     showPwd() {
@@ -145,6 +150,15 @@ $cursor: #fff;
 }
 /* reset element-ui css */
 .login-container {
+  position: relative;
+  #login{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
   .el-input {
     display: inline-block;
     height: 47px;
@@ -156,7 +170,8 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      // color: $light_gray;
+      color: #000;
       height: 47px;
       caret-color: $cursor;
 
@@ -193,7 +208,7 @@ $light_gray: #eee;
   min-height: 100%;
   width: 100%;
   // background-color: $bg;
-  background: url("../../assets/img/bg-01.jpg") 100% 100%/100% 100% no-repeat;
+  // background: url("../../assets/img/bg-01.jpg") 100% 100%/100% 100% no-repeat;
   overflow: hidden;
 
   .login-form {
@@ -203,6 +218,7 @@ $light_gray: #eee;
     padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
+    z-index: 100;
   }
 
   .tips {
@@ -231,7 +247,8 @@ $light_gray: #eee;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
+      // color: $light_gray;
+      color: #000;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
