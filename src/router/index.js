@@ -125,14 +125,14 @@ export const asyncRoutes = [
         path: 'index',
         name: 'settlement',
         component: () => import('@/views/settlement/index'),
-        meta: { title: '申请结算', icon: 'el-icon-money', roles: [1, 2, 3] }
+        meta: { title: '结算管理', icon: 'el-icon-money', roles: [1, 2, 3] }
       },
-      {
-        path: 'records',
-        name: 'records',
-        component: () => import('@/views/settlement/records'),
-        meta: { title: '结算记录', icon: 'el-icon-money', roles: [1, 2, 3] }
-      }
+      // {
+      //   path: 'records',
+      //   name: 'records',
+      //   component: () => import('@/views/settlement/records'),
+      //   meta: { title: '结算记录', icon: 'el-icon-money', roles: [1, 2, 3] }
+      // }
     ]
   },
   //人员管理

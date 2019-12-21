@@ -21,6 +21,14 @@ export function getSettlement(data) {
         data
     })
 }
+//结算
+export function goSettlement(data) {
+    return request({
+        url: '/settlement/save',
+        method: 'post',
+        data
+    })
+}
 export function delOrder(id) {
     return request({
         url: `/order/${id}`,

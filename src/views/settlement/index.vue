@@ -2,10 +2,10 @@
 .orders-container.layout-column
   .wjp-tools.layout-row__between
     .buttons
-      el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
-        el-option(v-for='(item,i) in payWay', :key='i', :label='item.label', :value='item.value')
-      el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='结算账号' style="width:200px;")
-      el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+      //- el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
+      //-   el-option(v-for='(item,i) in payWay', :key='i', :label='item.label', :value='item.value')
+      //- el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='结算账号' style="width:200px;")
+      el-button(type='primary' @click="getTableData" :disabled="loading") 刷 新
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
           el-table-column(prop='account', label='账号', )
@@ -20,9 +20,9 @@
           el-table-column(prop='state',  label='状态',)
             template(slot-scope='scope')
               p {{ scope.row.state?'开启':'关闭' }}
-          el-table-column(label='操作',)
-              template(slot-scope='scope')
-                el-button(type='primary' @click="settlement") 申请结算
+          //- el-table-column(label='操作',)
+          //-     template(slot-scope='scope')
+          //-       el-button(type='primary' @click="settlement(scope.row)") 申请结算
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
