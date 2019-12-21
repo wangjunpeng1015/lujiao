@@ -177,6 +177,12 @@ export const asyncRoutes = [
     },
     children: [
       {
+        path: 'proxyDoc',
+        name: 'proxyDoc',
+        component: () => import('@/views/doc/proxy'),
+        meta: { title: '后台使用帮助', icon: 'el-icon-document', roles: [1, 3] }
+      },
+      {
         path: 'index',
         name: 'index',
         component: () => import('@/views/doc/index'),

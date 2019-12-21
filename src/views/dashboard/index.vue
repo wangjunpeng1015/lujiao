@@ -50,32 +50,32 @@
         .layout-column
           div 成功率
           div.num {{amountData.today.successRate * 100}}%
-    el-card(shadow="hover")
-      div(slot="header")
-        .layout-row__between
-          div 总结算金额
-          .money {{amountData.settlement.amount || 0}} 元
-      .card-item.layout-row__between
-        .layout-column
-          div 已结算金额
-          div.num {{amountData.settlement.hasBeenSettled || 0}}
-        .layout-column
-          div 待结算金额
-          div.num {{amountData.settlement.forThe || 0}}
-  el-divider(content-position="left") 昨日通道数据
-  .layout-row
-    el-card(shadow="hover" v-for="(item, index) in payList" v-show="item.name")
-      div(slot="header")
-        .layout-row__between
-          div {{item.name}}
-          .money {{item.amount}} 元
-      .card-item.layout-row__between
-        .layout-column
-          div 订单数
-          div.num {{item.num}}笔
-        .layout-column
-          div 成功率
-          div.num {{item.rate}}%
+    //- el-card(shadow="hover")
+    //-   div(slot="header")
+    //-     .layout-row__between
+    //-       div 总结算金额
+    //-       .money {{amountData.settlement.amount || 0}} 元
+    //-   .card-item.layout-row__between
+    //-     .layout-column
+    //-       div 已结算金额
+    //-       div.num {{amountData.settlement.hasBeenSettled || 0}}
+    //-     .layout-column
+    //-       div 待结算金额
+    //-       div.num {{amountData.settlement.forThe || 0}}
+  //- el-divider(content-position="left") 昨日通道数据
+  //- .layout-row
+  //-   el-card(shadow="hover" v-for="(item, index) in payList" v-show="item.name")
+  //-     div(slot="header")
+  //-       .layout-row__between
+  //-         div {{item.name}}
+  //-         .money {{item.amount}} 元
+  //-     .card-item.layout-row__between
+  //-       .layout-column
+  //-         div 订单数
+  //-         div.num {{item.num}}笔
+  //-       .layout-column
+  //-         div 成功率
+  //-         div.num {{item.rate}}%
   .layout-column__between(v-if="userinfo.roleId===1")
     el-divider(content-position="left") 昨日代理数据
     el-table(:data="proxyList" :stripe="true" border)
@@ -83,7 +83,7 @@
       el-table-column(label="金额" prop="amount")
       el-table-column(label="订单数量" prop="orders")
       el-table-column(label="成功率" prop="successRate")
-  .layout-column__between
+  .layout-column__between(v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
     el-divider(content-position="left") 昨日商户数据
     el-table(:data="merchantList" :stripe="true" border)
       el-table-column(label="商户名称" prop="name")
@@ -112,6 +112,13 @@ export default {
   data() {
     return {
       amountData: {
+        payWay: {
+          'alipay-当面付原生': {},
+          'alipay-个码': {},
+          'wx-个码': {amount: 0},
+          '云闪付': {},
+          'alipay-个人红包': {}
+        },
         all: {
           amount: 0,
           successRate: 0,
@@ -211,6 +218,7 @@ export default {
     getHead() {
       getHead()
         .then(res => {
+          console.log(res)
           this.amountData = res.data
         })
         .catch(err => {});

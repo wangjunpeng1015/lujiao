@@ -9,11 +9,15 @@
     <breadcrumb class="breadcrumb-container"/>
 
     <div class="right-menu">
+      <span v-if="userinfo.roleId === 2">商户UID: <span style="font-weight: bold">{{userinfo.uid}}</span></span>
+      <el-divider direction="vertical" v-if="userinfo.roleId === 2"></el-divider>
+      <span v-if="userinfo.roleId === 3">商户注册邀请码: <span style="font-weight: bold">{{userinfo.id}}</span></span>
+      <el-divider v-if="userinfo.roleId === 3" direction="vertical"></el-divider>
+      <span>{{ userinfo.roles[0] && userinfo.roles[0].roleName }}</span>
+      <el-divider direction="vertical"></el-divider>
+
       <el-dropdown class="avatar-container" trigger="click">
-        <span v-if="userinfo.roleId === 3">商户注册邀请码: <span style="font-weight: bold">{{userinfo.id}}</span></span>
-        <el-divider direction="vertical"></el-divider>
-        <span>{{ userinfo.roles[0] && userinfo.roles[0].roleName }}</span>
-        <el-divider direction="vertical"></el-divider>
+
         <span>{{ userinfo.account }}</span>
         <!-- <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">

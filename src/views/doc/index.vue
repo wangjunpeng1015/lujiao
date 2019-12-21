@@ -3,9 +3,11 @@
   #doc1
     h1.line.layout-row
       span(style="margin-right: 10px;align-self:center") 1.
-      el-tag(size="small" style="align-self:center") 发起支付请求
-    h1.line 地址: http://pay.z-deer.com/backend/order/optimalPay
+      el-tag(size="small" style="align-self:center") 创建订单
+    h1.line 地址: http://103.143.80.32:9909/backend/order/optimalPay
     p.line 用户在商户应用选择对应方式、金额后，应用跳转到网页进行支付
+    p.line 支付页面: http://103.143.80.32:9909/pay.html?orderNo={orderNo}
+    p.line 方式：POST
     h1.line 参数说明:
     el-table(:data="createOrderParams" style="width: 100%" border stripe)
       el-table-column(prop="paramName" label="参数名")
@@ -17,7 +19,7 @@
     h1.line.layout-row(style="margin-top: 20px;margin-bttom: 10px")
       span(style="margin-right: 10px;align-self:center") 1.
       el-tag(size="small" style="align-self:center") 异步通知
-    p.line 用户支付成功或失败过后，由支付系统向商户应用发送post请求通知
+    p.line 用户支付成功后，由支付系统向商户应用发送post请求通知
     p.line 方式: POST
     h1.line 参数说明:
     el-table(:data="notifyParams" style="width: 100%" border stripe)
@@ -34,45 +36,45 @@ export default {
     return {
       createOrderParams: [
         {
-          paramName: "type",
-          exp: "支付类型",
+          paramName: "merchantNum",
+          exp: "UID",
           type: "String",
-          desc: "1=支付宝 2=微信",
+          desc: "商户UID",
           isRequired: "是"
         },
         {
-          paramName: "uid",
-          exp: "商户ID",
+          paramName: "sign",
+          exp: "签名",
           type: "String",
-          desc: "商户应用的用户ID",
+          desc: "md5(商户号+支付金额+商户秘钥)",
           isRequired: "是"
         },
         {
-          paramName: "userId",
-          exp: "自定义用户id",
+          paramName: "money",
+          exp: "充值金额",
           type: "String",
-          desc: "商户应用的用户ID",
+          desc: "用户充值的金额",
           isRequired: "是"
         },
         {
-          paramName: "addData",
-          exp: "自定义附加数据",
+          paramName: "payWay",
+          exp: "支付方式",
           type: "String",
-          desc: "商户应用的附加数据",
+          desc: "支付方式(支付通道账户类型) ali/wx",
+          isRequired: "是"
+        },
+        {
+          paramName: "ip",
+          exp: "用户IP",
+          type: "String",
+          desc: "非必填",
           isRequired: "否"
         },
         {
-          paramName: "amount",
-          exp: "支付金额",
-          type: "Number",
-          desc: "支付金额",
-          isRequired: "是"
-        },
-        {
-          paramName: "goodsName",
-          exp: "商品名称",
+          paramName: "remark",
+          exp: "自定义数据",
           type: "String",
-          desc: "商品名称",
+          desc: "自定义数据（回调的时候返回）",
           isRequired: "否"
         }
       ],
@@ -87,31 +89,19 @@ export default {
           paramName: "status",
           exp: "支付状态",
           type: "String",
-          desc: "success=成功 fail=失败"
+          desc: "SuccessPay=成功 FailurePay=失败"
         },
         {
-          paramName: "price",
+          paramName: "actualAmount",
           exp: "支付金额",
           type: "String",
           desc: "支付金额"
         },
         {
-          paramName: "type",
-          exp: "支付类型",
+          paramName: "remark",
+          exp: "商户创建订单时候传得备注",
           type: "String",
-          desc: "1=支付宝 2=微信"
-        },
-        {
-          paramName: "userId",
-          exp: "自定义用户名",
-          type: "String",
-          desc: "商户网站/APP的用户ID"
-        },
-        {
-          paramName: "uid",
-          exp: "商户ID",
-          type: "String",
-          desc: "商户应用的用户ID"
+          desc: "商户创建订单时候传得备注"
         }
       ]
     };
