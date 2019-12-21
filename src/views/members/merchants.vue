@@ -1,15 +1,19 @@
 <template lang="pug">
 .orders-container.layout-column
   .wjp-tools.layout-row.align-center
-    el-input(v-model='account',@keyup.enter="getTableData" placeholder='商户账号' style="width:200px;")
-    el-input(v-model='minRate',@keyup.enter="getTableData" placeholder='最小利率' style="width:100px;")
+    el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='商户账号' style="width:200px;")
+    el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
     div -
-    el-input(v-model='maxRate',@keyup.enter="getTableData" placeholder='最大利率' style="width:100px;")
+    el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
     el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
           el-table-column(prop='account', label='账号', )
           el-table-column(prop='userName', label='商户姓名', )
+          el-table-column(label='支付回调', )
+            template(slot-scope='scope')
+              el-input(v-if="scope.row.show" v-model='scope.row.returnUrl',@blur="changeUrl(scope.row)" placeholder='支付回调' style="width:100px;")
+              span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.returnUrl||'localhost:8080' }}
           el-table-column(prop='phone', label='手机号', )
           el-table-column(prop='ordersMoney', label='订单金额', )
           el-table-column(prop='createTime', label='创建时间',)
@@ -33,7 +37,7 @@
 </template>
 
 <script>
-import { getMerchants, delMerchant } from "@/api/members";
+import { getMerchants, delMerchant, changeUrl } from "@/api/members";
 import drawer from "@/views/members/merchants/drawer";
 export default {
   components: {
@@ -88,7 +92,28 @@ export default {
           });
         });
     },
-
+    //修改利率
+    changeUrl(data) {
+      this.$set(data, "show", false);
+      if (data.oldreturnUrl === data.returnUrl) {
+        return;
+      }
+      this.loading = true;
+      changeUrl({
+        id: data.id,
+        returnUrl: data.returnUrl
+      })
+        .then(res => {
+          this.$message.success("修改回调成功！");
+        })
+        .catch(err => {
+          this.$message.error("修改回调失败！");
+        })
+        .finally(_ => {
+          this.loading = false;
+          this.getTableData();
+        });
+    },
     getTableData() {
       this.loading = true;
       getMerchants({
@@ -106,6 +131,9 @@ export default {
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;
+            content.map(item => {
+              item.oldreturnUrl = item.returnUrl;
+            });
             this.tableData = content;
           } else {
             this.$message.error("获取表格数据失败！");

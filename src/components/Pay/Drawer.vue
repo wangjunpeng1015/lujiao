@@ -59,7 +59,7 @@ export default {
     payWay() {
       if (this.settings.dict && !!this.account) {
         return this.settings.dict.PayWay.dicts.filter(item => {
-          return this.channels.some(n => n.id == item.id);
+          return this.channels.find(n => n.payWayDictId == item.id);
         });
       } else {
         return [];

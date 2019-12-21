@@ -19,9 +19,9 @@ export default {
   props: {
     id: {
       default() {
-        return "0";
+        return 0;
       },
-      type: String
+      type: Number
     },
     visible: {
       default() {

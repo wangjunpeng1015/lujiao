@@ -3,6 +3,7 @@ import { getConfig } from '@/api/index'
 const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
+  channel: null,
   payWay: [{
     label: '支付宝',
     value: 'ali'
@@ -34,6 +35,9 @@ const mutations = {
       return item.id != 7 && item.id != 12 && item.id != 13;
     })
     state.dict = value
+  },
+  SET_CHANNEL: (state, value) => {
+    state.channel = value
   },
 }
 

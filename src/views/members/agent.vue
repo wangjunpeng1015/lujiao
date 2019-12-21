@@ -44,10 +44,9 @@
       div
         el-button(type='primary' @click="cedit") 添加通道
       .layout-row.buttons.align-center
-        el-input(v-model='proxyAccount',@keyup.enter="getAllchannel" placeholder='代理账号' style="width:200px;")
-        el-input(v-model='minRate',@keyup.enter="getAllchannel" placeholder='最小利率' style="width:100px;")
+        el-input(v-model='minRate',@keyup.enter.native="getAllchannel" placeholder='最小利率' style="width:100px;")
         div - 
-        el-input(v-model='maxRate',@keyup.enter="getAllchannel" placeholder='最大利率' style="width:100px;")
+        el-input(v-model='maxRate',@keyup.enter.native="getAllchannel" placeholder='最大利率' style="width:100px;")
         el-button(type='primary' @click="getAllchannel" :disabled="loading") 搜 索
     el-table.wjp-table(v-loading="loading" ,:height="450", :data='drawerData', style='width: 100%', height='250')
       el-table-column(prop='proxyAccount', label='代理名称')
@@ -55,7 +54,6 @@
         template(slot-scope='scope')
           p {{ dicFilter(scope.row.payWayDictId) }}
       //- el-table-column(prop='state', label='状态')
-      el-table-column(prop='userName', label='通道费')
       el-table-column(prop='createTime', label='创建时间')
       el-table-column(label='通道利率')
         template(slot-scope='scope')
@@ -97,6 +95,7 @@ import {
   delChannel,
   getAllchannel
 } from "@/api/agent";
+import { debuglog } from "util";
 export default {
   components: {
     addChannel
@@ -141,7 +140,6 @@ export default {
       },
       drawerVisible: false,
       channelVisible: false,
-      proxyAccount: "",
       minRate: "",
       maxRate: "",
       chooseProxy: {},
@@ -235,7 +233,7 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          proxyAccount: this.proxyAccount,
+          proxyAccount: this.chooseProxy.account,
           minRate: this.minRate,
           maxRate: this.maxRate
         }

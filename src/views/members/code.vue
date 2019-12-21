@@ -1,7 +1,7 @@
 <template lang="pug">
 .orders-container.layout-column
   .wjp-tools.layout-row
-      el-input(v-model='account',@keyup.enter="getTableData" placeholder='码商账号' style="width:200px;")
+      el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='码商账号' style="width:200px;")
       el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')

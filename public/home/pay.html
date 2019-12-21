@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DD Pay</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            padding-top: 2rem;
+            height: 100vh;
+            /* background: cadetblue; */
+            text-align: center;
+        }
+
+        .blue {
+            color: #0062cc;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .effective-tip {
+            font-size: 24px;
+        }
+
+        .help {
+            margin-top: .3125rem
+                /* 5/16 */
+            ;
+            line-height: 25px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        button {
+            color: #FFF;
+            background-color: #409EFF;
+            border-color: #409EFF;
+            display: inline-block;
+            line-height: 1;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid #DCDFE6;
+            -webkit-appearance: none;
+            text-align: center;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            outline: 0;
+            margin: 0;
+            -webkit-transition: .1s;
+            transition: .1s;
+            font-weight: 500;
+            padding: .75rem
+                /* 12/16 */
+                .75rem;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .scan-tip {
+            margin: 10px 0;
+        }
+
+        img {
+            margin: 2.3125rem 0;
+            width: 12.5rem;
+            height: 12.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <h3>￥{{orderData.payMoney ||0}}</h3>
+        <div class="order">订单号：{{getUserParam('orderNo')}}</div>
+        <div class="effective-tip red">【二维码仅本次有效】</div>
+        <div class="effective-tip red">修改金额不到账,概不负责</div>
+        <!-- <div id="qrcode"></div> -->
+        <div v-if="orderData.payStatusDictId && orderData.payStatusDictId != 1">支付成功！</div>
+        <div v-else>
+            <div v-if="diffTime!=0">
+                <img id="qrcode" :src='qrcode' />
+                <button class="scan-tip" @click="goPay">点击支付</button>
+                <div class="red">如点击支付按钮失效，请手动扫描二维码</div>
+            </div>
+            <div v-else>
+                <img src='./overdue.png' />
+            </div>
+            <div class="remainseconds">
+                <span>[支付有效时间]</span>
+                <span class="red" v-html="stateHtml"></span>
+            </div>
+        </div>
+        <div class="help">任何问题请联系客服</div>
+
+    </div>
+
+</body>
+<script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
+<script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script>
+<!-- <script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script> -->
+<script type='text/javascript' src='./utils.js' charset='utf-8'></script>
+<script type='text/javascript' src='./aes.js' charset='utf-8'></script>
+<script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
+<!-- <script src="./index.js"></script> -->
+<script>
+    var payVM = new Vue({
+        el: '#app',
+        data() {
+            return {
+                baseUrl: 'http://192.168.8.105:8092/backend',
+                orderNo: '',
+                diffTime: 0,
+                orderData: {},
+                qrcode: '',
+                stateHtml: '0分 0秒',
+                first: true,
+                siv: null,
+                dSiv: null,
+            }
+        },
+        mounted() {
+            this.orderState()
+            this.siv = setInterval(() => {
+                // this.orderState()
+            }, 3000);
+        },
+        methods: {
+            getUserParam(variable) {
+                let query = window.location.search.substring(1);
+                let vars = query.split("&");
+                for (let i = 0; i < vars.length; i++) {
+                    let pair = vars[i].split("=");
+                    if (pair[0] == variable) { return pair[1]; }
+                }
+                return (false);
+            },
+            orderState() {
+                axios({
+                    method: "POST",
+                    url: this.baseUrl + '/order/findOrderNum',
+                    data: {
+                        orderNum: this.getUserParam("orderNo"),
+                        sign: this.getUserParam("sign"),
+                    },
+                }).then(res => {
+                    if (res.code == 200) {
+                        let data = res.data.data;
+                        if (this.first) {
+                            const { qrUrl } = JSON.parse(data.payContent)
+                            this.qrcode = `https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967`
+                            this.orderData = data
+                            this.countDown(data.createTime || '2019-12-21')
+                            this.first = false;
+                        }
+                        if (data.data.payStatusDictId !== 1) {
+                            clearInterval(this.siv)
+                            clearInterval(this.dSiv)
+                            this.stateHtml = '支付成功！'
+                        }
+                    } else {
+                        throw (res.data.message)
+                    }
+                }).catch(err => {
+                    alert(err)
+                }).finally(_ => {
+
+                })
+            },
+            countDown(createTime) {
+                let endTime = dayjs(createTime).add(5, 'm')
+                this.dSiv = (() => {
+                    this.diffTime = endTime.diff(dayjs(), 's')
+                    let modulo = this.diffTime % (60 * 60 * 24) % (60 * 60);
+                    //分钟
+                    const minutes = Math.floor(modulo / 60);
+                    const seconds = modulo % 60;
+                    this.stateHtml = `${minutes}分 ${seconds}秒`
+                    if (this.diffTime === 0) {
+                        clearInterval(this.dSiv)
+                    }
+                }, 1000);
+            },
+            goPay() {
+                ddPayWay[this.orderData.payWayDictId](this.orderData)
+            }
+        },
+    })
+</script>
+
+</html>

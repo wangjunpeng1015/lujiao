@@ -1,31 +1,27 @@
 <template lang="pug">
 el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
-    .wjp-tools.layout-row__between
-      div
-        //- el-button(type='primary' @click="edit") 添加通道
-      .layout-row.buttons.align-center
-        el-input(v-model='proxyAccount',@keyup.enter="getTableData" placeholder='账号' style="width:200px;")
-        el-input(v-model='minRate',@keyup.enter="getTableData" placeholder='最小利率' style="width:100px;")
+    .wjp-tools.layout-row.buttons.align-center.justify-end
+        el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
         div - 
-        el-input(v-model='maxRate',@keyup.enter="getTableData" placeholder='最大利率' style="width:100px;")
+        el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
     el-table.wjp-table(v-loading="loading" ,:height="450", :data='drawerData', style='width: 100%', height='250')
-      el-table-column(prop='proxyAccount', label='代理名称')
-      el-table-column(label='通道名称')
+      el-table-column(prop='merchantAccount', label='商户账号')
+      el-table-column(label='通道名称')                        
         template(slot-scope='scope')
-          p {{ dicFilter(scope.row.payWayDictId) }}
-      el-table-column(prop='userName', label='通道费')
+          p {{ dicFilter(scope.row.proxyOpenPayConfigPayDictId) }}
+      
+      el-table-column(label='通道利率' width="80")
+        template(slot-scope='scope')
+          div(v-if="userinfo.roleId != 2")
+              el-input(v-if="scope.row.show" v-model='scope.row.interestRate',@blur="changeRate(scope.row)" placeholder='利率' style="width:100px;")
+              span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.interestRate }}
+          p(v-else) {{ scope.row.interestRate }}
       el-table-column(prop='createTime', label='创建时间')
-      el-table-column(label='通道利率')
-        template(slot-scope='scope')
-            div(v-if="userinfo.id!=2")
-                el-input(v-if="scope.row.show" v-model='scope.row.channelRate',@blur="changeRate(scope.row)" placeholder='利率' style="width:100px;")
-                span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.channelRate }}
-            p(v-else) {{ scope.row.channelRate }}
-      el-table-column(label='操作' v-if="userinfo.id!=2")
+      el-table-column(label='操作' v-if="userinfo.roleId!=2")
         template(slot-scope='scope')
             el-switch(v-model='scope.row.state', @change="shutdownChannel(scope.row.id)" :active-text="scope.row.state?'开启':'关闭'")
-            el-button(size="mini" type='danger' @click="delMerchantChannel(scope.row)") 删除
+            el-button(style="margin-left:10px" size="mini" type='danger' @click="delMerchantChannel(scope.row)") 删除
     .page.layout-row.align-center.right
       span 每页显示
       el-pagination.statistics(
@@ -57,7 +53,7 @@ export default {
       },
       type: Boolean
     },
-    form: {
+    data: {
       default() {
         return {};
       },
@@ -84,11 +80,9 @@ export default {
   },
   data() {
     return {
-      proxyAccount: "",
       minRate: "",
       maxRate: "",
       loading: false,
-      account: "", //
       drawerData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
@@ -104,8 +98,12 @@ export default {
     //关闭/开启通道
     shutdownChannel(id) {
       shutdownChannel(id)
-        .then(ers => {})
-        .catch(err => {})
+        .then(ers => {
+          this.$message.success("状态修改成功！");
+        })
+        .catch(err => {
+          this.$message.error("状态修改失败！");
+        })
         .finally(_ => {
           this.getTableData();
         });
@@ -113,7 +111,7 @@ export default {
     //修改利率
     changeRate(data) {
       this.$set(data, "show", false);
-      if (data.oldchannelRate === data.channelRate) {
+      if (data.oldinterestRate === data.interestRate) {
         return;
       }
       this.loading = true;
@@ -134,7 +132,7 @@ export default {
     },
     //删除通道
     delMerchantChannel() {
-      const name = this.dicFilter(data.payWayDictId);
+      const name = this.dicFilter(data.proxyOpenPayConfigPayDictId);
       this.$confirm(`确定删除通道 ${name}?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -149,7 +147,7 @@ export default {
               this.$message.error("删除失败！");
             })
             .finally(_ => {
-              this.getAllchannel();
+              this.getTableData();
             });
         })
         .catch(() => {
@@ -168,18 +166,20 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          proxyAccount: this.proxyAccount,
+          merchantAccount: this.data.account,
           minRate: this.minRate,
           maxRate: this.maxRate
         }
       })
         .then(res => {
-          debugger;
           if (res.success) {
             const { totalRecords, pageNo, pageSize, content } = res.data;
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;
+            content.map(item => {
+              item.oldinterestRate = item.interestRate;
+            });
             this.drawerData = content;
           } else {
             this.$message.error("获取表格数据失败！");

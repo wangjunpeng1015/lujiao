@@ -16,6 +16,14 @@ export const changeRate = (data) => {
         data: Qs.stringify(data)
     })
 }
+//修改回调url
+export const changeUrl = (data) => {
+    return request({
+        url: '/merchantSign',
+        method: 'post',
+        data: Qs.stringify(data)
+    })
+}
 //关闭通道
 export const shutdownChannel = (id) => {
     return request({

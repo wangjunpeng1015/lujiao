@@ -2,17 +2,15 @@
 .orders-container.layout-column
   .wjp-tools.layout-row__between
     div
-      el-button(type='primary' @click="settlement") 结 算
-    div
+      el-button(type='primary' @click="settlement") 申请结算
+    .buttons
       el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
         el-option(v-for='(item,i) in payWay', :key='i', :label='item.label', :value='item.value')
-      //- el-input(v-model='userName',@keyup.enter="getTableData" placeholder='姓名' style="width:200px;")
-      el-input(v-model='account',@keyup.enter="getTableData" placeholder='结算账号' style="width:200px;")
+      el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='结算账号' style="width:200px;")
       el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
           el-table-column(prop='account', label='账号', )
-          //- el-table-column(prop='userName', label='姓名', )
           el-table-column(label='结算方式', )
             template(slot-scope='scope')
               span {{ filterDic(scope.row.settlementWay) }}
@@ -22,8 +20,8 @@
           el-table-column(prop='createTime', label='创建时间',)
           el-table-column(label='状态',)
               template(slot-scope='scope')
-                el-button(v-if="true" type='primary' @click="sure") 确认
-                span(v-else :class="[scope.row.settlementStatus?'green':'orange']") {{ scope.row.settlementStatus?'成功':'失败' }}
+                el-button(v-if="scope.row.myState" type='primary' @click="accept(scope.row)") 确认
+                span(v-else :class="[scope.row.youState?'green':'orange']") {{ scope.row.youState?'交易完成':'等待对方确认' }}
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -74,6 +72,8 @@ export default {
     this.getTableData();
   },
   methods: {
+    //同意收款、付款
+    accept(data) {},
     filterDic(val) {
       return this.payWay.find(n => n.value == val).label;
     },

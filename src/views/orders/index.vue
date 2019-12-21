@@ -8,7 +8,7 @@
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-input(v-model='orderNo',@keyup.enter="getTableData" placeholder='订单号' style="width:200px;")
+        el-input(v-model='orderNo',@keyup.enter.native="getTableData" placeholder='订单号' style="width:200px;")
         el-date-picker(v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期')
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
         el-button(type='primary' @click="getTableData" :disabled="loading") 刷 新
@@ -17,13 +17,18 @@
             //- el-table-column(fixed prop='id', label='id', width='50')
             //- el-table-column(prop='name', label='订单号', )
             el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
+            el-table-column(prop='orderUserAccount', label='商户账号', show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
             //- el-table-column(prop='orderName', label='名称', )
-            el-table-column(label='金额',show-overflow-tooltip)
+            el-table-column(label='原始金额',show-overflow-tooltip)
               template(slot-scope='scope')
-                span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.money }}
-                span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.money }}
-            el-table-column(prop='payAccount', label='收款账号',show-overflow-tooltip)
+                span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.amount }}
+                span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.amount }}
+            el-table-column(label='实际金额',show-overflow-tooltip)
+              template(slot-scope='scope')
+                span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.actualAmount }}
+                span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.actualAmount }}
+            el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
@@ -47,17 +52,25 @@
             :page-size="pageSize"
             layout="sizes, prev, pager, next,total"
             :total="totalPage")
-    
+    add-order(@finish="getTableData" :visible.sync="addVisible")
 </template>
 
 <script>
+import addOrder from "@/views/orders/addOrder";
 import { getOrdersList, delOrder, supplement, createOrder } from "@/api/order";
+
 import { mapGetters, mapState } from "vuex";
+import { debuglog } from "util";
 export default {
   name: "orders",
+  components: {
+    addOrder
+  },
   data() {
     return {
+      addVisible: false,
       suppLoading: false,
+      channel: [],
       loading: false,
       type: "",
       state: "",
@@ -77,7 +90,18 @@ export default {
       return this.settings.dict && this.settings.dict.PayStatus.dicts;
     },
     payWay() {
-      return this.settings.dict && this.settings.dict.PayWay.dicts;
+      return this.settings.dict.PayWay.dicts.filter(item => {
+        return this.channel.find(n => {
+          item.id === n.id;
+        });
+      });
+      console.log(
+        this.settings.dict.PayWay.dicts.filter(item => {
+          return this.channel.find(n => {
+            item.id === n.id;
+          });
+        })
+      );
     }
   },
   mounted() {
@@ -95,11 +119,9 @@ export default {
   methods: {
     //手动创建订单
     addOrder() {
-      createOrder()
-        .then(res => {})
-        .catch(err => {})
-        .finally(_ => {});
+      this.addVisible = true;
     },
+
     //删除订单
     del(id) {
       this.$confirm("确定删除这条订单记录?", "提示", {
@@ -140,7 +162,7 @@ export default {
     supplement(data) {
       this.$prompt(
         "请输入补单备注：",
-        `单号：${data.orderNum}  金额：${data.money}`,
+        `单号：${data.orderNum}  金额：${data.actualAmount}`,
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
