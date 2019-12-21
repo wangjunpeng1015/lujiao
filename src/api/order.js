@@ -35,6 +35,18 @@ export function delOrder(id) {
         method: 'delete',
     })
 }
+export function getMerchants() {
+    return request({
+        url: `/order`,
+        method: 'get',
+    })
+}
+export function changeStatus(id) {
+    return request({
+        url: `/pay/${id}`,
+        method: 'get',
+    })
+}
 export function supplement(data) {
     return request({
         url: `/order/replacementOrder`,

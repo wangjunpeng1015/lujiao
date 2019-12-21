@@ -3,7 +3,7 @@ el-dialog(title='添加订单', :close-on-click-modal="false",:visible.sync='vis
   el-form(:model='form' :rules="rules" ref="form" label-width="100px")
     el-form-item(label='商户账号', prop="merchantNum")
       el-select(v-model='form.merchantNum', placeholder='请选择收款通道方式'  @change="getAllchannel" style='width:200px')
-        el-option(v-for='item in merchants', :key='item.id', :label='item.account', :value='item.merchantNumber')
+        el-option(v-for='(item,i) in merchants', :key='i', :label='item.userAccount', :value='item.merchantNumber')
     el-form-item(label='收款方式', prop="payWay")
       el-select(v-model='form.payWay', placeholder='请选择收款通道方式' style='width:200px' ,:disabled="loading")
         el-option(v-for='item in channels', :key='item.value', :label='item.label', :value='item.value')
@@ -19,8 +19,7 @@ import md5 from "js-md5";
 import { channelToPayWay } from "@/utils";
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
-import { createOrder } from "@/api/order";
-import { getMerchants } from "@/api/members";
+import { createOrder, getMerchants } from "@/api/order";
 export default {
   props: {
     visible: {
@@ -78,15 +77,11 @@ export default {
   mounted() {},
   methods: {
     getMerchants() {
-      getMerchants({
-        pageNo: 1,
-        pageSize: 1000,
-        param: {}
-      })
+      this.loading = true;
+      getMerchants()
         .then(res => {
           if (res.success) {
-            const { content } = res.data;
-            this.merchants = content;
+            this.merchants = res.data;
           } else {
             this.$message.error("获取商户数据失败！");
           }
@@ -132,11 +127,11 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           let merchant = this.merchants.find(
-            item => item.merchantNumber == this.form.merchantNum.merchantNum
+            item => item.merchantNumber == this.form.merchantNum
           );
           //商户号+支付金额+商户秘钥
           const sign = md5(
-            this.form.merchantNum + this.form.money + this.form.secretKey
+            this.form.merchantNum + this.form.money + merchant.secretKey
           );
           createOrder({
             ...this.form,

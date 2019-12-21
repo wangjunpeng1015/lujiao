@@ -20,7 +20,7 @@
         />
       </el-menu>
     </el-scrollbar>
-    <a
+    <!-- <a
       href="http://wpa.qq.com/msgrd?v=3&amp;uin=&amp;site=qq&amp;menu=yes"
       target="_blank"
       class="contact-us"
@@ -29,7 +29,7 @@
         <use xlink:href="#icon-QQ"></use>
       </svg>
       <span>联系客服</span>
-    </a>
+    </a>-->
   </div>
 </template>
 

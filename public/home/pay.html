@@ -88,6 +88,18 @@
             margin: 10px 0;
         }
 
+        #qrcode {
+            margin: 0 auto;
+            width: 12.5rem;
+            height: 12.5rem;
+        }
+
+        .success {
+            font-size: 1.5rem;
+            margin: 5rem 0;
+            color: green;
+        }
+
         .mini-img {
             display: block;
             width: 3.25rem;
@@ -110,14 +122,18 @@
         <div class="effective-tip red">【二维码仅本次有效】</div>
         <div class="effective-tip red">修改金额不到账,概不负责</div>
         <!-- <div id="qrcode"></div> -->
-        <div v-if="orderData.state && orderData.state == '支付成功'">支付成功！</div>
+        <div class="success" v-if="orderData.state && orderData.state == '支付成功'">
+            支付成功！
+        </div>
         <div v-else>
             <div v-if="diffTime!=0">
                 <img class="mini-img" :src="payWayImg" alt="">
-                <img id="qrcode" :src='qrcode' />
+                <!-- <img id="qrcode" :src='qrcode' /> -->
+                <div id="qrcode"></div>
                 <div class="button">
                     <button class="scan-tip" @click="goPay">点击支付</button>
                 </div>
+                <div class="red">如点击支付按钮失效</div>
                 <div class="red left">
                     1.长按二维码保存</br>
                     2.打开{{orderData.payWay}}扫码
@@ -126,7 +142,6 @@
             <div v-else>
                 <img src='./overdue.png' />
             </div>
-            <div class="red">如点击支付按钮失效</div>
             <div class="remainseconds">
                 <span>[支付有效时间]</span>
                 <span class="red" v-html="stateHtml"></span>
@@ -142,7 +157,7 @@
 <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
 <script src="./vant.js"></script>
 <!-- <script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script> -->
-<!-- <script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script> -->
+<script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='./utils.js' charset='utf-8'></script>
 <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
 <script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
@@ -157,7 +172,7 @@
                 orderNo: '',
                 diffTime: 0,
                 orderData: {},
-                qrcode: '',
+                // qrcode: '',
                 stateHtml: '0分 0秒',
                 first: true,
                 siv: null,
@@ -207,18 +222,32 @@
                         orderNum: this.getUserParam("orderNo"),
                     },
                 }).then(res => {
-                    if (res.data.code == 200 && res.data.data) {
-                        let data = res.data.data;
-                        if (this.first) {
-                            const { qrUrl } = JSON.parse(data.payContent)
-                            this.qrcode = `https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967`
-                            this.orderData = data
-                            this.countDown(data.createTime || dayjs())
-                            this.first = false;
-                        }
-                        if (data.state == '支付成功') {
+                    if (res.data.code == 200) {
+                        if (res.data.data) {
+                            let data = res.data.data;
+                            if (this.first) {
+                                const { qrUrl } = JSON.parse(data.payContent)
+                                // this.qrcode = `https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967`
+                                this.orderData = data
+                                this.countDown(data.createTime || dayjs())
+                                setTimeout(() => {
+                                    new QRCode(document.getElementById("qrcode"), {
+                                        text: qrUrl,
+                                        width: 200,
+                                        height: 200,
+                                        colorDark: "#000000",
+                                        colorLight: "#ffffff",
+                                    });
+                                }, 1000)
+                                this.first = false;
+                            }
+                        } else {
+                            vant.Dialog.alert({
+                                message: '支付成功'
+                            })
                             clearInterval(this.siv)
                             clearInterval(this.dSiv)
+                            this.orderData.state = '支付成功'
                             this.stateHtml = '支付成功！'
                         }
                     } else {
@@ -235,10 +264,11 @@
                 })
             },
             countDown(createTime) {
-                let m = new Date(createTime).getMinutes();
-                let endTime = m.setMinutes(m + 6);
+                let endTime = new Date(createTime)
+                let m = endTime.getMinutes();
+                endTime.setMinutes(m + 6);
                 this.dSiv = setInterval(() => {
-                    this.diffTime = Math.floor((new Date.getTime() - endTime.getTime()) / 1000);
+                    this.diffTime = Math.floor((endTime.getTime() - new Date().getTime()) / 1000);
                     let modulo = this.diffTime % (60 * 60 * 24) % (60 * 60);
                     //分钟
                     const minutes = Math.floor(modulo / 60);

@@ -21,7 +21,6 @@
                 el-form.demo-table-expand(label-position='left', inline='')
                   el-form-item(label='支付地址')
                     el-link(type="primary" ,:href="origin+'/home/pay.html?orderNo='+props.row.orderNum" target="_blank") {{ `${origin}/home/pay.html?orderNo=${props.row.orderNum}` }}
-
             el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
             el-table-column(prop='orderUserAccount', label='商户账号', show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
@@ -38,7 +37,10 @@
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
-            el-table-column(prop='remark', label='备注',show-overflow-tooltip)
+            //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
+            el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
+              template(slot-scope='scope')
+                el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :active-text="scope.row.callBackStatus?'成功':'失败'")
             el-table-column(prop='payStatusDictValue', label='状态',)
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
@@ -64,7 +66,13 @@
 <script>
 import { toDicChannel } from "@/utils";
 import addOrder from "@/views/orders/addOrder";
-import { getOrdersList, delOrder, supplement, createOrder } from "@/api/order";
+import {
+  getOrdersList,
+  delOrder,
+  supplement,
+  changeStatus,
+  createOrder
+} from "@/api/order";
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
 import { debuglog } from "util";
@@ -121,6 +129,31 @@ export default {
     });
   },
   methods: {
+    changeStatus(id) {
+      this.$confirm("确定修改回调状态?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          changeStatus(id)
+            .then(res => {
+              this.$message.success("状态更新成功！");
+            })
+            .catch(err => {
+              this.$message.error("状态更新失败！");
+            })
+            .finally(_ => {
+              this.getTableData();
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
     //手动创建订单
     addOrder() {
       this.addVisible = true;
