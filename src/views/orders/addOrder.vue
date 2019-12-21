@@ -15,6 +15,7 @@ el-dialog(title='添加订单', :close-on-click-modal="false",:visible.sync='vis
 </template>
 
 <script>
+import { channelToPayWay } from "@/utils";
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
 import { createOrder } from "@/api/order";
@@ -26,24 +27,35 @@ export default {
         return false;
       },
       type: Boolean
+    },
+    payWay: {
+      default() {
+        return [];
+      },
+      type: Array
     }
   },
   computed: {
     ...mapGetters(["userinfo"]),
     ...mapState(["settings"]),
     channels() {
-      let array = [];
-      this.channel.map(m => {
-        const way = this.settings.dict.PayWay.dicts.find(
-          n => n.id == m.payWayDictId
-        );
-        if (way) {
-          array.push(way);
-        }
-      });
-      return this.settings.payWay.filter(n => {
-        return array.some(m => m.dictValue.includes(n.value));
-      });
+      return channelToPayWay(
+        this.payWay,
+        this.settings.dict.PayWay.dicts,
+        this.settings.payWay
+      );
+      // let array = [];
+      // this.channel.map(m => {
+      //   const way = this.settings.dict.PayWay.dicts.find(
+      //     n => n.id == m.payWayDictId
+      //   );
+      //   if (way) {
+      //     array.push(way);
+      //   }
+      // });
+      // return this.settings.payWay.filter(n => {
+      //   return array.some(m => m.dictValue.includes(n.value));
+      // });
     }
   },
   watch: {

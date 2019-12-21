@@ -58,7 +58,15 @@ export default {
     ...mapState(["settings"]),
     payWay() {
       if (this.settings.dict && !!this.account) {
-        return this.settings.dict.PayWay.dicts.filter(item => {
+        let alis = this.settings.dict.PayWay.dicts.filter(n => n.dictValue.includes('ali'))
+        let wxs = this.settings.dict.PayWay.dicts.filter(n => n.dictValue.includes('wx'))
+        let dicts = []
+        if (this.account.accountType === 'ali') {
+          dicts = alis
+        } else if (this.account.accountType === 'wx') {
+          dicts = wxs
+        }
+        return dicts.filter(item => {
           return this.channels.find(n => n.payWayDictId == item.id);
         });
       } else {
@@ -68,7 +76,7 @@ export default {
   },
   watch: {
     account: {
-      handler() {
+      handler(val) {
         this.getPays();
       },
       deep: true
@@ -183,7 +191,8 @@ export default {
       this.drawerVisible = true;
     },
     dicFilter(id) {
-      return this.payWay.find(item => id == item.id).dictValueDisplayName;
+      let payWay = this.payWay.find(item => id == item.id)
+      return payWay ? this.payWay.find(item => id == item.id).dictValueDisplayName : ''
     },
     save() {},
     sizeChange(num) {

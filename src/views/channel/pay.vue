@@ -52,13 +52,11 @@
   //添加/修改
   el-dialog(title='添加账号', :visible.sync='acVisible',  width='40%' :close-on-click-modal="false")
     el-form(:model='news', :rules='rules', ref='news', label-width='120px')
-      el-form-item(label='账号', prop='account' )
-        el-input(v-model='news.account' placeholder="请填写新加账号")
-      el-form-item(label='账号所在城市', prop='city')
-        el-input(v-model='news.city' placeholder="账号所在城市")
       el-form-item(label='类型', prop='accountType')
         el-select(v-model='news.accountType', placeholder='请填写类型' style="width:100%")
           el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
+      el-form-item(label='账号', prop='account' )
+        el-input(v-model='news.account' placeholder="请填写新加账号")
       el-form-item(label='每日收款上限', prop='dailyCeiling' placeholder="请填写每日收款上限")
         el-input(v-model='news.dailyCeiling')
     span.dialog-footer(slot='footer')
@@ -106,7 +104,7 @@ export default {
       news: {
         account: "",
         accountType: "",
-        city: "",
+        city: "default",
         dailyCeiling: ""
       },
       rules: {
@@ -114,9 +112,9 @@ export default {
         accountType: [
           { required: true, message: "请选择类型", trigger: "change" }
         ],
-        city: [
-          { required: true, message: "请填写账号所在城市", trigger: "change" }
-        ],
+        // city: [
+        //   { required: true, message: "请填写账号所在城市", trigger: "change" }
+        // ],
         dailyCeiling: [
           { required: true, message: "请输入当日上限", trigger: "change" }
         ]
@@ -191,7 +189,7 @@ export default {
       this.news = {
         account: "",
         accountType: "",
-        city: "",
+        city: "default",
         dailyCeiling: ""
       };
     },

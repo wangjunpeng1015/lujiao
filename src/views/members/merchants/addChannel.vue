@@ -36,7 +36,6 @@ export default {
     ...mapGetters(["userinfo"]),
     ...mapState(["settings"]),
     payWay() {
-      console.log(toDicChannel(this.channel, this.settings.dict.PayWay.dicts));
       return toDicChannel(this.channel, this.settings.dict.PayWay.dicts);
     }
   },
