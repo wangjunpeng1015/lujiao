@@ -125,3 +125,12 @@ export function decrypt(word, keyM) {
   let decrypt = CryptoJS.AES.decrypt(word, key, { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 });
   return JSON.parse(CryptoJS.enc.Utf8.stringify(decrypt));
 }
+
+
+export function toDicChannel(data, dic) {
+  return dic.filter(item => {
+    return data.find(n => {
+      return item.id === n.payWayDictId;
+    });
+  });
+}
