@@ -24,6 +24,21 @@ export function getloginLog(data) {
     data
   })
 }
+//获取用户
+export function getUsers(data) {
+  return request({
+    url: '/base/user/list',
+    method: 'post',
+    data
+  })
+}
+//删除用户
+export function delUser(id) {
+  return request({
+    url: `/base/user/${id}`,
+    method: 'delete',
+  })
+}
 //用户信息
 export function getInfo() {
   return request({

@@ -10,7 +10,7 @@
           el-table-column(label='操作')
             template(slot-scope='scope')
                el-button(size="mini" type='primary' @click="edit(scope.row)") 编辑
-               el-button(size="mini" type='danger' @click="delAgent(scope.row)") 删除
+               el-button(size="mini" type='danger' @click="delUser(scope.row)") 删除
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -37,7 +37,7 @@
           el-input(v-model='form.phone')
     .dialog-footer(slot='footer')
       el-button(@click='agentVisible = false') 取 消
-      el-button(type='primary', @click='submitAgent') 确 定
+      el-button(type='primary', @click='register') 确 定
   
   el-drawer(title='已开通通道',size="50%" ,:visible.sync='drawerVisible', direction='rtl', :before-close='drawerClose')
     .wjp-tools.layout-row__between
@@ -87,14 +87,8 @@ import addChannel from "@/views/members/agent/addChannel";
 import { cloneDeep } from "lodash";
 import { mapGetters, mapState } from "vuex";
 import { validPassword, validPhone } from "@/utils/validate";
-import {
-  changeRate,
-  getAgents,
-  submitAgent,
-  delAgent,
-  delChannel,
-  getAllchannel
-} from "@/api/agent";
+import { changeRate, delChannel, getAllchannel } from "@/api/agent";
+import { register, delUser, getUsers } from "@/api/user";
 import { debuglog } from "util";
 export default {
   components: {
@@ -195,7 +189,7 @@ export default {
     },
     getTableData() {
       this.loading = true;
-      getAgents({
+      getUsers({
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
@@ -254,10 +248,10 @@ export default {
       this.$refs.form.resetFields();
     },
     //添加代理
-    submitAgent() {
+    register() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          submitAgent({
+          register({
             parentAccount: this.userinfo.id,
             roleIds: [3],
             ...this.form
@@ -269,6 +263,7 @@ export default {
               this.$message.error("添加代理失败！");
             })
             .finally(_ => {
+              this.getTableData();
               this.agentVisible = false;
             });
         } else {
@@ -278,14 +273,14 @@ export default {
       });
     },
     //删除代理
-    delAgent(data) {
+    delUser(data) {
       this.$confirm(`确定删除代理 ${data.account}?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
         .then(() => {
-          delAgent(data.id)
+          delUser(data.id)
             .then(res => {
               this.$message.success("删除成功！");
             })

@@ -1,6 +1,9 @@
 <template lang="pug">
 el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
-    .wjp-tools.layout-row.buttons.align-center.justify-end
+    .wjp-tools.layout-row__between
+      div
+        el-button(type='primary' @click="addVisible = true") 添加通道
+      .buttons.layout-row.align-center
         el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
         div - 
         el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
@@ -34,10 +37,11 @@ el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='r
       :page-size="pageSize"
       layout=" prev, pager, next,total"
       :total="totalPage")
-    
+    add-channel(@finish="getTableData" :id="data.id" :visible.sync="addVisible")
 </template>
 
 <script>
+import addChannel from "@/views/members/merchants/addChannel";
 import { mapGetters, mapState } from "vuex";
 import {
   getMerchantChannel,
@@ -46,6 +50,9 @@ import {
   shutdownChannel
 } from "@/api/members";
 export default {
+  components: {
+    addChannel
+  },
   props: {
     visible: {
       default() {
@@ -80,6 +87,7 @@ export default {
   },
   data() {
     return {
+      addVisible: false,
       minRate: "",
       maxRate: "",
       loading: false,

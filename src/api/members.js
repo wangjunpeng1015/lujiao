@@ -40,6 +40,14 @@ export const getMerchantChannel = (data) => {
 
     })
 }
+//商户通道添加
+export const addMerchantChannel = (data) => {
+    return request({
+        url: 'merchantCR/save',
+        method: 'post',
+        data
+    })
+}
 //删除商户
 export function delMerchant(id) {
     return request({

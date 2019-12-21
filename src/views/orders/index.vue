@@ -92,16 +92,9 @@ export default {
     payWay() {
       return this.settings.dict.PayWay.dicts.filter(item => {
         return this.channel.find(n => {
-          item.id === n.id;
+          item.id === n.payWayDictId;
         });
       });
-      console.log(
-        this.settings.dict.PayWay.dicts.filter(item => {
-          return this.channel.find(n => {
-            item.id === n.id;
-          });
-        })
-      );
     }
   },
   mounted() {

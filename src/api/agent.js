@@ -15,26 +15,6 @@ export function getAllchannel(data) {
     })
 }
 
-export function getAgents(data) {
-    return request({
-        url: '/base/user/list',
-        method: 'post',
-        data
-    })
-}
-export function submitAgent(data) {
-    return request({
-        url: '/base/user',
-        method: 'post',
-        data
-    })
-}
-export function delAgent(id) {
-    return request({
-        url: `/base/user/${id}`,
-        method: 'delete',
-    })
-}
 export function delChannel(id) {
     return request({
         url: `/proxyCA/${id}`,

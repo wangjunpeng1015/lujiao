@@ -37,7 +37,8 @@
 </template>
 
 <script>
-import { getMerchants, delMerchant, changeUrl } from "@/api/members";
+import { getMerchants, changeUrl } from "@/api/members";
+import { delUser } from "@/api/user";
 import drawer from "@/views/members/merchants/drawer";
 export default {
   components: {
@@ -74,7 +75,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          delMerchant(data.id)
+          delUser(data.id)
             .then(res => {
               this.$message.success("删除成功！");
             })

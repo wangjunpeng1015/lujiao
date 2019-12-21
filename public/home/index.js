@@ -1,4 +1,3 @@
-import dayjs = require("dayjs");
 
 const host = location.host
 const baseUrl = 'http://' + host + '/backend'
