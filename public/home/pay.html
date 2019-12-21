@@ -28,6 +28,7 @@
         }
 
         .blue {
+            margin-top: .625rem;
             color: #0062cc;
         }
 
@@ -73,6 +74,12 @@
             border-radius: 4px;
         }
 
+        .left {
+            text-align: left;
+            width: 8.125rem;
+            margin: 0 auto;
+        }
+
         .center {
             text-align: center;
         }
@@ -81,8 +88,15 @@
             margin: 10px 0;
         }
 
+        .mini-img {
+            display: block;
+            width: 3.25rem;
+            height: 3.25rem;
+        }
+
         img {
-            margin: 1.3125rem 0;
+
+            margin: 0.3125rem auto;
             width: 12.5rem;
             height: 12.5rem;
         }
@@ -99,15 +113,20 @@
         <div v-if="orderData.state && orderData.state == '支付成功'">支付成功！</div>
         <div v-else>
             <div v-if="diffTime!=0">
+                <img class="mini-img" :src="payWayImg" alt="">
                 <img id="qrcode" :src='qrcode' />
                 <div class="button">
                     <button class="scan-tip" @click="goPay">点击支付</button>
                 </div>
-                <div class="red">如点击支付按钮失效，请手动使用{{orderData.payWay}}扫描二维码</div>
+                <div class="red left">
+                    1.长按二维码保存</br>
+                    2.打开{{orderData.payWay}}扫码
+                </div>
             </div>
             <div v-else>
                 <img src='./overdue.png' />
             </div>
+            <div class="red">如点击支付按钮失效</div>
             <div class="remainseconds">
                 <span>[支付有效时间]</span>
                 <span class="red" v-html="stateHtml"></span>
@@ -121,14 +140,15 @@
 <script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
 <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vant@2.2/lib/vant.min.js"></script>
-<script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script>
+<script src="./vant.js"></script>
+<!-- <script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script> -->
 <!-- <script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script> -->
 <script type='text/javascript' src='./utils.js' charset='utf-8'></script>
 <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
 <script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
 <!-- <script src="./index.js"></script> -->
 <script>
+    Vue.use(vant.ImagePreview);
     var payVM = new Vue({
         el: '#app',
         data() {
@@ -142,6 +162,25 @@
                 first: true,
                 siv: null,
                 dSiv: null,
+            }
+        },
+        computed: {
+            payWayImg() {
+                let img
+                switch (this.orderData.payWay) {
+                    case '支付宝':
+                        img = './alipay.png'
+                        break;
+                    case '微信':
+                        img = './weixin.png'
+                        break;
+                    case '云闪付':
+                        img = './ysf.png'
+                        break;
+                    default:
+                        break;
+                }
+                return img
             }
         },
         mounted() {
@@ -166,7 +205,6 @@
                     url: this.baseUrl + '/order/findOrderNum',
                     data: {
                         orderNum: this.getUserParam("orderNo"),
-                        sign: this.getUserParam("sign"),
                     },
                 }).then(res => {
                     if (res.data.code == 200 && res.data.data) {
@@ -197,15 +235,17 @@
                 })
             },
             countDown(createTime) {
-                let endTime = dayjs(createTime).add(10, 'm')
+                let m = new Date(createTime).getMinutes();
+                let endTime = m.setMinutes(m + 6);
                 this.dSiv = setInterval(() => {
-                    this.diffTime = endTime.diff(dayjs(), 's')
+                    this.diffTime = Math.floor((new Date.getTime() - endTime.getTime()) / 1000);
                     let modulo = this.diffTime % (60 * 60 * 24) % (60 * 60);
                     //分钟
                     const minutes = Math.floor(modulo / 60);
                     const seconds = modulo % 60;
                     this.stateHtml = `${minutes}分 ${seconds}秒`
                     if (this.diffTime === 0) {
+                        clearInterval(this.siv)
                         clearInterval(this.dSiv)
                     }
                 }, 1000);
