@@ -16,6 +16,12 @@
         el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
             //- el-table-column(fixed prop='id', label='id', width='50')
             //- el-table-column(prop='name', label='订单号', )
+            el-table-column(type='expand')
+              template(slot-scope='props')
+                el-form.demo-table-expand(label-position='left', inline='')
+                  el-form-item(label='支付地址')
+                    el-link(type="primary" ,:href="origin+'/home/pay.html?orderNo='+props.row.orderNum" target="_blank") {{ `${origin}/home/pay.html?orderNo=${props.row.orderNum}` }}
+
             el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
             el-table-column(prop='orderUserAccount', label='商户账号', show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
@@ -69,6 +75,7 @@ export default {
   },
   data() {
     return {
+      origin: window.origin,
       addVisible: false,
       suppLoading: false,
       channel: [],
