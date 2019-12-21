@@ -6,6 +6,7 @@
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
         el-table-column(prop='account', label='账号', )
+        el-table-column(prop='account', label='所属代理', )
         el-table-column(prop='phone', label='手机号', )
         el-table-column(prop='ordersMoney', label='订单金额', )
         el-table-column(prop='createTime', label='创建时间',)
@@ -21,7 +22,7 @@
           :page-size="pageSize"
           layout=" prev, pager, next,total"
           :total="totalPage")
-    
+
 </template>
 
 <script>

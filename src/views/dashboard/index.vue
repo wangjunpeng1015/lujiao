@@ -6,11 +6,11 @@
       div(slot="header")
         .layout-row__between
           div 累计收款金额
-          .money {{(amountData.all.amount / 10000).toFixed(6)}} 万元
+          .money {{(amountData.all.amount / 10000).toFixed(6)}} 万
       .card-item.layout-row__between
         .layout-column
           div 订单数
-          div.num {{amountData.all.orders}}万笔
+          div.num {{amountData.all.orders}}笔
         .layout-column
           div 成功率
           div.num {{amountData.all.successRate * 100}}%
@@ -18,7 +18,7 @@
       div(slot="header")
         .layout-row__between
           div 本月收款金额
-          .money {{(amountData.thisMonth.amount/10000).toFixed(6)}} 万元
+          .money {{(amountData.thisMonth.amount/10000).toFixed(6)}} 万
       .card-item.layout-row__between
         .layout-column
           div 订单数
@@ -42,7 +42,7 @@
       div(slot="header")
         .layout-row__between
           div 今日收款金额
-          .money {{(amountData.today.amount/10000).toFixed(6)}} 万元
+          .money {{(amountData.today.amount/10000).toFixed(6)}} 万
       .card-item.layout-row__between
         .layout-column
           div 订单数
