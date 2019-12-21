@@ -10,21 +10,21 @@
       el-form-item(label='金额', prop='settlementMoney')
         el-input(v-model='form.settlementMoney',placeholder='请输入金额' style="width:200px")
       //结算方式配置
-      div( v-if="form.settlementWay=='ali'",)
-        el-form-item(label='支付宝账号',prop='aliAccount')
-          el-input(v-model='form.aliAccount',placeholder='请输入支付宝账号')
-      div( v-if="form.settlementWay=='wx'")
-        el-form-item(label='微信账号',prop='wxAccount')
-          el-input(v-model='form.wxAccount',placeholder='请输入微信账号')
-      div( v-if="form.settlementWay=='bank'")
-        el-form-item(label='银行卡号',prop='bankAccount')
-          el-input(v-model='form.bankAccount',placeholder='请输入银行卡号')
-        el-form-item(label='真实姓名',prop='name')
-          el-input(v-model='form.name',placeholder='请输入真实姓名')
-        el-form-item(label='银行名称',prop='bank')
-          el-input(v-model='form.bank',placeholder='请输入银行名称')
-        el-form-item(label='开户行所在地',prop='address')
-          el-input(v-model='form.address',placeholder='请输入开户行所在地')
+      //- div( v-if="form.settlementWay=='ali'",)
+      //-   el-form-item(label='支付宝账号',prop='aliAccount')
+      //-     el-input(v-model='form.aliAccount',placeholder='请输入支付宝账号')
+      //- div( v-if="form.settlementWay=='wx'")
+      //-   el-form-item(label='微信账号',prop='wxAccount')
+      //-     el-input(v-model='form.wxAccount',placeholder='请输入微信账号')
+      //- div( v-if="form.settlementWay=='bank'")
+      //-   el-form-item(label='银行卡号',prop='bankAccount')
+      //-     el-input(v-model='form.bankAccount',placeholder='请输入银行卡号')
+      //-   el-form-item(label='真实姓名',prop='name')
+      //-     el-input(v-model='form.name',placeholder='请输入真实姓名')
+      //-   el-form-item(label='银行名称',prop='bank')
+      //-     el-input(v-model='form.bank',placeholder='请输入银行名称')
+      //-   el-form-item(label='开户行所在地',prop='address')
+      //-     el-input(v-model='form.address',placeholder='请输入开户行所在地')
     .dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
       el-button(type='primary', @click='sure') 确定结算
@@ -34,7 +34,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { settleCreate } from "@/api/order";
+import { goSettlement } from "@/api/order";
 export default {
   props: ["visible"],
   computed: {
