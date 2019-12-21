@@ -129,7 +129,7 @@ export function decrypt(word, keyM) {
 
 export function toDicChannel(data, dic) {
   return dic.filter(item => {
-    return data.find(n => {
+    return data && data.find(n => {
       return item.id === n.payWayDictId;
     });
   });
@@ -144,7 +144,6 @@ export function channelToPayWay(data, dic, payWay) {
       array.push(way);
     }
   });
-  debugger
   return payWay.filter(n => {
     return array.some(m => m.dictValue.includes(n.value));
   });

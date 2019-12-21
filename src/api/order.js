@@ -14,6 +14,13 @@ export function getSettlementList(data) {
         data
     })
 }
+export function getSettlement(data) {
+    return request({
+        url: '/settlement',
+        method: 'post',
+        data
+    })
+}
 export function delOrder(id) {
     return request({
         url: `/order/${id}`,

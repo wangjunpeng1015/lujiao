@@ -91,11 +91,17 @@ export default {
       return this.settings.dict && this.settings.dict.PayStatus.dicts;
     },
     payWay() {
-      return toDicChannel(this.channel, this.settings.dict.PayWay.dicts);
+      if (this.userinfo.id != 1) {
+        return toDicChannel(this.channel, this.settings.dict.PayWay.dicts);
+      } else {
+        return this.settings.dict.PayWay.dicts;
+      }
     }
   },
   mounted() {
-    this.getAllchannel();
+    if (this.userinfo.id != 1) {
+      this.getAllchannel();
+    }
     this.getTableData();
     this.$eventBus.$on("", data => {
       this.tableData.concat(data);

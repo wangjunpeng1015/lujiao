@@ -44,18 +44,6 @@ export default {
         this.settings.dict.PayWay.dicts,
         this.settings.payWay
       );
-      // let array = [];
-      // this.channel.map(m => {
-      //   const way = this.settings.dict.PayWay.dicts.find(
-      //     n => n.id == m.payWayDictId
-      //   );
-      //   if (way) {
-      //     array.push(way);
-      //   }
-      // });
-      // return this.settings.payWay.filter(n => {
-      //   return array.some(m => m.dictValue.includes(n.value));
-      // });
     }
   },
   watch: {
