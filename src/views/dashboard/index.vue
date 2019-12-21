@@ -1,59 +1,95 @@
 <template lang="pug">
-.dashboard-container.layout-column
-  el-row.box-card( :gutter="20")
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" )
-      el-card
-        .title 订单总数
-        .num {{ list.orders }}
-          span.unit  笔
-        //- .field
-        //-   span 当前时间
-        //-   span {{ nowTime }}
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" v-if="!!this.userinfo.roles.filter(n => n.id == 1).length")
-      el-card
-        .title 商户/码商/应用数量
-        .num {{ list.merchants || 0}}/{{list.code_merchants|| 0}}/{{ list.merchant_num || 0}}
-          span.unit  个
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" v-else-if="!!this.userinfo.roles.filter(n => n.id == 2).length")
-      el-card
-        .title 应用数量
-        .num {{ list.merchant_num || 0}}
-          span.unit  个
-    //- el-col.layout-row.align-center(:md="24" :lg="12" :xl="6" v-else)
-    //-   el-card
-    //-     .title 商户/应用数量
-    //-     .num {{ list.merchants }}/{{ list.merchants }}
-    //-       span.unit  个
-        //- .field
-        //-   span 当前版本
-        //-   span {{ version }}
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
-      el-card
-        .title 总计余额
+.dashboard-container.layout-column(style="overflow: auto")
+  el-divider(content-position="left") 收款数据
+  .layout-row__between
+    el-card(shadow="hover")
+      div(slot="header")
         .layout-row__between
-          .num {{ list.aggregate || 0}}
-            span.unit 元
-          el-button(v-if="hasPermission" @click="visible=true" type="text") 申请提现
-        //- .field
-        //-   span(@click="copy") 推荐好友
-    el-col.layout-row.align-center(:md="24" :lg="12" :xl="6")
-      el-card
-        .title 已结算金额
-        .num {{ list.settlementSuccessMoney || 0}}
-          span.unit 元
-        //- .field
-        //-   span 程序购买
-        //-   span {{ }}
-  //- .wjp-title
-  //-   el-divider(content-position='left') 收益查询
-  //- .wjp-tools.layout-row.align-center.justify-end
-  //-   Date-picker.time-picker(@change="getBody" ,:date.sync="time")
-  el-row.layout-row.flex
-    el-col.line(:span="12")
-    el-col.layout-column(:span="12")
-      .rate(v-for="(v,k) in list.successRate" :key="k")
-        label.right {{ k }}:
-        span {{ v*100 }}%
+          div 累计收款金额
+          .money {{(amountData.all.amount / 10000).toFixed(6)}} 万元
+      .card-item.layout-row__between
+        .layout-column
+          div 订单数
+          div.num {{amountData.all.orders}}万笔
+        .layout-column
+          div 成功率
+          div.num {{amountData.all.successRate * 100}}%
+    el-card(shadow="hover")
+      div(slot="header")
+        .layout-row__between
+          div 本月收款金额
+          .money {{(amountData.thisMonth.amount/10000).toFixed(6)}} 万元
+      .card-item.layout-row__between
+        .layout-column
+          div 订单数
+          div.num {{amountData.thisMonth.orders}}笔
+        .layout-column
+          div 成功率
+          div.num {{amountData.thisMonth.successRate * 100}}%
+    el-card(shadow="hover")
+      div(slot="header")
+        .layout-row__between
+          div 昨日收款金额
+          .money {{(amountData.yesterday.amount/10000).toFixed(6)}} 万
+      .card-item.layout-row__between
+        .layout-column
+          div 订单数
+          div.num {{amountData.yesterday.orders}}笔
+        .layout-column
+          div 成功率
+          div.num {{amountData.yesterday.successRate * 100}}%
+    el-card(shadow="hover")
+      div(slot="header")
+        .layout-row__between
+          div 今日收款金额
+          .money {{(amountData.today.amount/10000).toFixed(6)}} 万元
+      .card-item.layout-row__between
+        .layout-column
+          div 订单数
+          div.num {{amountData.today.orders}}笔
+        .layout-column
+          div 成功率
+          div.num {{amountData.today.successRate * 100}}%
+    el-card(shadow="hover")
+      div(slot="header")
+        .layout-row__between
+          div 总结算金额
+          .money {{amountData.settlement.amount || 0}} 元
+      .card-item.layout-row__between
+        .layout-column
+          div 已结算金额
+          div.num {{amountData.settlement.hasBeenSettled || 0}}
+        .layout-column
+          div 待结算金额
+          div.num {{amountData.settlement.forThe || 0}}
+  el-divider(content-position="left") 昨日通道数据
+  .layout-row
+    el-card(shadow="hover" v-for="(item, index) in payList" v-show="item.name")
+      div(slot="header")
+        .layout-row__between
+          div {{item.name}}
+          .money {{item.amount}} 元
+      .card-item.layout-row__between
+        .layout-column
+          div 订单数
+          div.num {{item.num}}笔
+        .layout-column
+          div 成功率
+          div.num {{item.rate}}%
+  .layout-column__between
+    el-divider(content-position="left") 昨日代理数据
+    el-table(:data="proxyList" :stripe="true" border)
+      el-table-column(label="代理名称" prop="name")
+      el-table-column(label="金额" prop="amount")
+      el-table-column(label="订单数量" prop="orders")
+      el-table-column(label="成功率" prop="successRate")
+  .layout-column__between
+    el-divider(content-position="left") 昨日商户数据
+    el-table(:data="merchantList" :stripe="true" border)
+      el-table-column(label="商户名称" prop="name")
+      el-table-column(label="金额" prop="amount")
+      el-table-column(label="订单数量" prop="orders")
+      el-table-column(label="成功率" prop="successRate")
   SettleModal(:visible.sync="visible")
 </template>
 
@@ -75,6 +111,36 @@ export default {
   },
   data() {
     return {
+      amountData: {
+        all: {
+          amount: 0,
+          successRate: 0,
+          orders: 0
+        },
+        yesterday: {
+          amount: 0,
+          successRate: 0,
+          orders: 0
+        },
+        today: {
+          amount: 0,
+          successRate: 0,
+          orders: 0
+        },
+        payWay: {},
+        thisMonth: {
+          amount: 0,
+          successRate: 0,
+          orders: 0
+        },
+        settlement: {
+          amount: null,
+          hasBeenSettled: null,
+          forThe: null
+        }
+      },
+      merchantList: [],
+      proxyList: [],
       visible: false,
       version: "1.0.0",
       time: [
@@ -99,17 +165,39 @@ export default {
   computed: {
     ...mapState(["settings"]),
     ...mapGetters(["userinfo"]),
-    wxSum() {
-      let obj = this.body.filter(item => item.name == "微信");
-      return obj.reduce((total, val) => {
-        return total + Number(val.sum);
-      }, 0);
-    },
-    aliSum() {
-      let obj = this.body.filter(item => item.name == "支付宝");
-      return obj.reduce((total, val) => {
-        return total + Number(val.sum);
-      }, 0);
+    payList () {
+      return [
+        {
+          name: '微信个码',
+          amount: this.amountData.payWay['wx-个码'].amount || 0,
+          num: this.amountData.payWay['wx-个码'].orders,
+          rate: this.amountData.payWay['wx-个码'].successRate * 100
+        },
+        {
+          name: '支付宝个码',
+          amount: this.amountData.payWay['alipay-个码'].amount || 0,
+          num: this.amountData.payWay['alipay-个码'].orders,
+          rate: this.amountData.payWay['alipay-个码'].successRate * 100
+        },
+        {
+          name: '当面付',
+          amount: this.amountData.payWay['alipay-当面付原生'].amount || 0,
+          num: this.amountData.payWay['alipay-当面付原生'].orders,
+          rate: this.amountData.payWay['alipay-当面付原生'].successRate * 100
+        },
+        {
+          name: '云闪付',
+          amount: this.amountData.payWay['云闪付'].amount || 0,
+          num: this.amountData.payWay['云闪付'].orders,
+          rate: this.amountData.payWay['云闪付'].successRate * 100
+        },
+        {
+          name: '个人红包',
+          amount: this.amountData.payWay['alipay-个人红包'].amount || 0,
+          num: this.amountData.payWay['alipay-个人红包'].orders,
+          rate: this.amountData.payWay['alipay-个人红包'].successRate
+        },
+      ]
     },
     hasPermission() {
       return !!this.userinfo.roles.filter(n => n.id == 1 || n.id == 2).length;
@@ -119,79 +207,69 @@ export default {
     this.getHead();
     this.getBody();
   },
-  mounted() {
-    this.$nextTick(() => {
-      line = echarts.init(this.$el.querySelector(".line"));
-    });
-    window.resize = () => {
-      line.resize();
-    };
-  },
   methods: {
-    setOption(data) {
-      data = sortBy(data, "time");
-      let xAxis = [];
-      xAxis = uniqBy(data, "time").map(item => item.time);
-      //如果只有一条数据，增加前一天  方便看图
-      if (xAxis.length < 2) {
-        const pre = dayjs()
-          .subtract(1, "day")
-          .format("YYYY-MM-DD");
-        xAxis.unshift(pre);
-      }
-      const name = this.settings.payWay.map(n => n.label);
-      let option = {
-        name,
-        data: name.map(n => {
-          return {
-            name: n,
-            type: "line",
-            symbol: "circle", //标记的图形为实心圆
-            showSymbol: false,
-            data: []
-          };
-        }),
-        xAxis
-      };
-
-      xAxis.map(time => {
-        let obj = data.filter(item => item.time == time);
-        name.map(n => {
-          let d = obj.find(item => item.name == n);
-          let temp = option.data.find(m => m.name === n);
-          temp.data.push((d && d.sum) || 0);
-        });
-      });
-      line.setOption(drawLine(option), true);
-    },
-    copy() {
-      // `${website}/#/register?pid=${userinfo.id}`
-    },
     getHead() {
       getHead()
         .then(res => {
-          this.list = res.data;
+          this.amountData = res.data
         })
         .catch(err => {});
     },
     getBody() {
-      getBody({
-        dayNum: dayjs(this.time[1]).diff(this.time[0], "day")
+      // 昨日
+      getBody({dayNum: 1}).then(res => {
+        let proxy = res.data.proxy
+        let merchant = res.data.merchant
+        for (let key in proxy) {
+          let name = key
+          this.proxyList.push({
+            name: key,
+            amount: proxy[key].amount || 0,
+            successRate: proxy[key].successRate * 100 + '%',
+            orders: proxy[key].orders
+          })
+        }
+        for (let item in merchant) {
+          let name = item
+          this.merchantList.push({
+            name: item,
+            amount: merchant[item].amount || 0,
+            successRate: merchant[item].successRate * 100 + '%',
+            orders: merchant[item].orders
+          })
+        }
       })
-        .then(res => {
-          this.body = res.data;
-          this.setOption(res.data);
-        })
-        .catch(err => {});
+
+      // getBody({
+      //   dayNum: dayjs(this.time[1]).diff(this.time[0], "day")
+      // })
+      //   .then(res => {
+      //     this.body = res.data;
+      //     this.setOption(res.data);
+      //   })
+      //   .catch(err => {});
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+
 .dashboard-container {
   >>> .iconfont {
     width: 70px;
+  }
+  >>> .el-card{
+    background: repeating-linear-gradient(to right, #4d83be, #334e9b);
+    color: #fff;
+    .el-card__header{
+      border-bottom: none;
+    }
+  }
+  .card-table{
+    .el-card__body{
+      padding: 5px;
+    }
   }
   .title {
     color: rgba(0, 0, 0, 0.45);
@@ -204,10 +282,10 @@ export default {
     text-overflow: ellipsis;
     word-break: break-all;
     white-space: nowrap;
-    color: rgba(0, 0, 0, 0.85);
+    color: #67C23A;
     margin-top: 4px;
     margin-bottom: 0;
-    font-size: 30px;
+    font-size: 18px;
     line-height: 38px;
     height: 38px;
   }
@@ -239,7 +317,9 @@ export default {
   }
   .money {
     margin-left: 15px;
-    font-size: 40px;
+    font-size: 18px;
+    color: #E6A23C;
+    font-weight: 500;
   }
 }
 </style>
