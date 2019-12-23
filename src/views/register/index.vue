@@ -3,6 +3,9 @@
   el-form.login-form(ref='form', :model='form', :rules='loginRules',label-width="100px" auto-complete='on', label-position='left')
     .title-container.center
       h3.title 自助申请商户
+    el-form-item(label="角色"  prop='roleIds')
+      el-select(v-model='form.roleIds', placeholder='角色' style="width:100%")
+        el-option(v-for='item in user.roles', :key='item.id', :label='item.roleName', :value='item.id')
     el-form-item(label="账号"  prop='account')
       el-input(v-model='form.account', placeholder='账号', name='account', type='text',  auto-complete='on')
     el-form-item(label="密码"  prop='userPassword')
@@ -32,6 +35,7 @@
 
 <script>
 import { validPassword, validPhone } from "@/utils/validate";
+import { mapState } from "vuex";
 export default {
   name: "register",
   data() {
@@ -73,7 +77,7 @@ export default {
         }
       ],
       form: {
-        roleIds: [2],
+        roleIds: "",
         account: "",
         userName: "",
         userPassword: "",
@@ -107,7 +111,9 @@ export default {
       immediate: true
     }
   },
-  computed: {},
+  computed: {
+    ...mapState(["user"])
+  },
   mounted() {},
   methods: {
     handleRegister() {
@@ -117,10 +123,12 @@ export default {
           let params = {
             ...this.form
           };
+          params.roleIds = [params.roleIds];
           this.$store
             .dispatch("user/register", params)
             .then(() => {
               this.loading = false;
+              this.$message.success("注册成功，请登录！");
               this.$router.push("/login");
             })
             .catch(() => {

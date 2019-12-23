@@ -122,6 +122,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           account: this.account, //账号
+          type: 2, //商户
           minRate: this.minRate, //
           maxRate: this.maxRate //
         }

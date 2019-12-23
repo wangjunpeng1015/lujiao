@@ -20,7 +20,8 @@
               template(slot-scope='props')
                 el-form.demo-table-expand(label-position='left', inline='')
                   el-form-item(label='支付地址')
-                    el-link(type="primary" ,:href="origin+'/home/pay.html?orderNo='+props.row.orderNum" target="_blank") {{ `${origin}/home/pay.html?orderNo=${props.row.orderNum}` }}
+                    el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
+                    //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
             el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
             el-table-column(prop='orderUserAccount', label='商户账号', show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
@@ -40,13 +41,13 @@
             //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
               template(slot-scope='scope')
-                el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :active-text="scope.row.callBackStatus?'成功':'失败'")
+                el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
             el-table-column(prop='payStatusDictValue', label='状态',)
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
             el-table-column(prop='payStatusDictValue', label='操作',)
                 template(slot-scope='scope')
-                    el-button(type="danger" size="mini" @click="del(scope.row.id)") 删 除
+                    el-button(v-if="scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
                     el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
         .page.layout-row.align-center.right
             span 每页显示
@@ -83,7 +84,6 @@ export default {
   },
   data() {
     return {
-      origin: window.origin,
       addVisible: false,
       suppLoading: false,
       channel: [],
@@ -129,6 +129,15 @@ export default {
     });
   },
   methods: {
+    getPayUrl(row) {
+      let url =
+        window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
+      if (row.payWayDictValue.startsWith("alipay")) {
+        return "alipays://platformapi/startapp?appId=20000067&url=" + url;
+      } else {
+        return url;
+      }
+    },
     changeStatus(id) {
       this.$confirm("确定修改回调状态?", "提示", {
         confirmButtonText: "确定",

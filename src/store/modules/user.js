@@ -1,4 +1,4 @@
-import { login, logout, getInfo, register, changePassword } from '@/api/user'
+import { login, logout, getInfo, getRoles, register, changePassword } from '@/api/user'
 import { getIp } from '@/api/index'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { router, resetRouter } from '@/router'
@@ -7,6 +7,7 @@ import { initWebSocket } from '@/api/socket'
 const state = {
   token: getToken(),
   userinfo: null,
+  roles: []
 }
 
 const mutations = {
@@ -15,6 +16,9 @@ const mutations = {
   },
   SET_USER_INFO: (state, data) => {
     state.userinfo = data
+  },
+  SET_ROLES: (state, data) => {
+    state.roles = data
   },
 }
 
@@ -38,6 +42,16 @@ const actions = {
   register({ commit }, info) {
     return new Promise((resolve, reject) => {
       register(info).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  getRoles({ commit }) {
+    return new Promise((resolve, reject) => {
+      getRoles().then(response => {
+        commit('SET_ROLES', response.data)
         resolve(response)
       }).catch(error => {
         reject(error)

@@ -60,7 +60,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           account: this.account, //账号
-          type: 2 //码商
+          type: 4 //码商
         }
       })
         .then(res => {

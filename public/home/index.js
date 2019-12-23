@@ -90,7 +90,7 @@ const payWay = {
             pId,
             myId
         })
-        let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/zhuanzhang.html?' + escape(params)
+        let url = 'alipays://platformapi/startapp?appId=20000067&url=' + frontUrl + '/home/hb.html?' + escape(params)
         window.location.href = url
     },
     //(跳转)支付宝银行卡-隐藏卡号

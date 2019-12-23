@@ -17,8 +17,7 @@
         el-form-item(label='阿里公钥', prop='alipayPublicKey')
           el-input(v-model='form.contentObj.alipayPublicKey' placeholder="RSA")
       //个人转账（暂时屏蔽转账自动金额）
-      //- div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
-      div(v-if="form.payWayDictId == 6")
+      div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
         el-form-item(label='收款二维码')
           el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
             el-button(size='small', type='primary') 点击上传

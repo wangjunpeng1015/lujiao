@@ -85,7 +85,7 @@
         }
 
         .scan-tip {
-            margin: 10px 0;
+            margin: 10px auto;
         }
 
         #qrcode {
@@ -106,6 +106,15 @@
             height: 3.25rem;
         }
 
+        .loading .van-loading__spinner {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 4rem;
+            left: calc(50% - 4rem);
+
+        }
+
         img {
 
             margin: 0.3125rem auto;
@@ -117,37 +126,55 @@
 
 <body>
     <div id="app" v-cloak>
-        <h3>￥{{orderData.payMoney ||0}}</h3>
-        <div class="order">订单号：{{getUserParam('orderNo')}}</div>
-        <div class="effective-tip red">【二维码仅本次有效】</div>
-        <div class="effective-tip red">修改金额不到账,概不负责</div>
-        <!-- <div id="qrcode"></div> -->
-        <div class="success" v-if="orderData.state && orderData.state == '支付成功'">
-            支付成功！
-        </div>
-        <div v-else>
-            <div v-if="diffTime!=0">
-                <img class="mini-img" :src="payWayImg" alt="">
-                <!-- <img id="qrcode" :src='qrcode' /> -->
-                <div id="qrcode"></div>
-                <div class="button">
-                    <button class="scan-tip" @click="goPay">点击支付</button>
-                </div>
-                <div class="red">如点击支付按钮失效</div>
-                <div class="red left">
-                    1.长按二维码保存</br>
-                    2.打开{{orderData.payWay}}扫码
-                </div>
+        <van-overlay :show="overlay">
+            <van-loading class="loading" size="8rem" type="spinner" color="#1989fa" />
+        </van-overlay>
+        <div>
+            <h3 v-if="orderData.state && orderData.state == '支付中'">￥{{orderData.payMoney ||0}}</h3>
+            <div class="order">订单号：{{getUserParam('orderNo')}}</div>
+            <div class="effective-tip red">【二维码仅本次有效】</div>
+            <div class="effective-tip red">修改金额不到账,概不负责！！！</div>
+            <div v-if="orderData.state && orderData.state == '支付中'" class="effective-tip red">
+                请一定确认转账金额( {{orderData.payMoney ||0}} )！！！</div>
+            <!-- <div id="qrcode">
+            </div> -->
+            <div class="success" v-if="orderData.state && orderData.state == '支付成功'">
+                支付成功！
             </div>
             <div v-else>
-                <img src='./overdue.png' />
+                <div v-if="diffTime!=0">
+                    <img class="mini-img" :src="payWayImg" alt="">
+                    <!-- <img id="qrcode" :src='qrcode' /> -->
+                    <div v-if="showcode">
+                        <div id="qrcode"></div>
+                    </div>
+                    <div v-else class="button">
+                        <button class="scan-tip" @click="goPay">点击支付</button>
+                    </div>
+                    <div class="scan-tip red left" v-if="orderData && orderData.payWay !='支付宝'">
+                        1.长按二维码保存</br>
+                        2.打开{{orderData.payWay}}扫码
+                    </div>
+                    <div v-else class="scan-tip red">长按二维码识别支付</div>
+                </div>
+                <div v-else>
+                    <img src='./overdue.png' />
+                </div>
+                <div class="remainseconds">
+                    <span>[支付有效时间]</span>
+                    <span class="red" v-html="stateHtml"></span>
+                </div>
             </div>
-            <div class="remainseconds">
-                <span>[支付有效时间]</span>
-                <span class="red" v-html="stateHtml"></span>
-            </div>
+            <div class="help">任何问题请联系客服</div>
         </div>
-        <div class="help">任何问题请联系客服</div>
+        <!-- 倒计时 -->
+        <van-count-down ref="cdown" :time="time" v-show="showTip" :auto-start="false" @finish="finish">
+            <template v-slot="timeData">
+                <span class="item">当前排队用户较多，请等待</span>
+                <!-- <span class="item">{{ timeData.minutes }}分</span> -->
+                <span class="item red">{{ timeData.seconds }}秒</span>
+            </template>
+        </van-count-down>
 
     </div>
 
@@ -156,7 +183,7 @@
 <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
 <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
 <script src="./vant.js"></script>
-<!-- <script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script> -->
+<script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script>
 <script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='./utils.js' charset='utf-8'></script>
 <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
@@ -164,19 +191,24 @@
 <!-- <script src="./index.js"></script> -->
 <script>
     Vue.use(vant.ImagePreview);
+    Vue.use(vant.CountDown);
+    Vue.use(vant.Loading);
     var payVM = new Vue({
         el: '#app',
         data() {
             return {
-                baseUrl: 'http://192.168.8.105:8092/backend',
+                baseUrl: frontUrl + '/backend',
                 orderNo: '',
                 diffTime: 0,
-                orderData: {},
-                // qrcode: '',
+                orderData: null,
+                showcode: true,
                 stateHtml: '0分 0秒',
                 first: true,
                 siv: null,
                 dSiv: null,
+                overlay: true,
+                time: 0,
+                showTip: false,
             }
         },
         computed: {
@@ -226,29 +258,39 @@
                         if (res.data.data) {
                             let data = res.data.data;
                             if (this.first) {
-                                const { qrUrl } = JSON.parse(data.payContent)
-                                // this.qrcode = `https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967`
+                                // this.rcode = `https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967`
                                 this.orderData = data
-                                this.countDown(data.createTime || dayjs())
-                                setTimeout(() => {
-                                    new QRCode(document.getElementById("qrcode"), {
-                                        text: qrUrl,
-                                        width: 200,
-                                        height: 200,
-                                        colorDark: "#000000",
-                                        colorLight: "#ffffff",
-                                    });
-                                }, 1000)
+                                this.countDown(data.createTime)
                                 this.first = false;
+                                if (data.payWayDictId == 8 || data.payWayDictId == 9 || data.payWayDictId == 10) {
+                                    this.showcode = false
+                                } else {
+                                    this.showcode = true
+                                    const { qrUrl } = JSON.parse(data.payContent)
+                                    setTimeout(() => {
+                                        new QRCode(document.getElementById("qrcode"), {
+                                            text: qrUrl,
+                                            width: 200,
+                                            height: 200,
+                                            colorDark: "#000000",
+                                            colorLight: "#ffffff",
+                                        });
+                                    }, 1000)
+                                }
+
                             }
                         } else {
-                            vant.Dialog.alert({
-                                message: '支付成功'
-                            })
-                            clearInterval(this.siv)
-                            clearInterval(this.dSiv)
-                            this.orderData.state = '支付成功'
-                            this.stateHtml = '支付成功！'
+                            if (res.data.message === "订单支付成功") {
+                                vant.Dialog.alert({
+                                    message: '订单支付成功'
+                                })
+                                clearInterval(this.siv)
+                                clearInterval(this.dSiv)
+                                this.orderData.state = '支付成功'
+                                this.stateHtml = '支付成功！'
+                            } else {
+                                throw (res.data.message)
+                            }
                         }
                     } else {
                         throw (res.data.message)
@@ -260,19 +302,17 @@
                         message: err
                     })
                 }).finally(_ => {
-
+                    this.overlay = false;
                 })
             },
             countDown(createTime) {
-                let endTime = new Date(createTime)
-                let m = endTime.getMinutes();
-                endTime.setMinutes(m + 6);
+                let endTime = dayjs(createTime)
+                endTime = endTime.add(6, 'm');
                 this.dSiv = setInterval(() => {
-                    this.diffTime = Math.floor((endTime.getTime() - new Date().getTime()) / 1000);
-                    let modulo = this.diffTime % (60 * 60 * 24) % (60 * 60);
+                    this.diffTime = dayjs(endTime).diff(dayjs(), 'second');
                     //分钟
-                    const minutes = Math.floor(modulo / 60);
-                    const seconds = modulo % 60;
+                    let minutes = Math.floor(this.diffTime / 60);
+                    let seconds = this.diffTime % 60;
                     this.stateHtml = `${minutes}分 ${seconds}秒`
                     if (this.diffTime === 0) {
                         clearInterval(this.siv)
@@ -280,7 +320,32 @@
                     }
                 }, 1000);
             },
+            finish() {
+                this.$refs.cdown.pause();
+                this.time = 0
+            },
+            randomNum(minNum, maxNum) {
+                return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+            },
             goPay() {
+                if (this.orderData.payWayDictId == 10) {
+                    if (!this.showTip) {
+                        this.showTip = true;
+                        this.time = this.randomNum(15, 20) * 1000;
+                        console.log(this.time)
+                        setTimeout(() => {
+                            this.$refs.cdown.start();
+                        }, 100)
+                        return;
+                    } else {
+                        if (this.time != 0) {
+                            vant.Dialog.alert({
+                                message: `当前人数较多！还有${this.time / 1000}秒`
+                            })
+                            return;
+                        }
+                    }
+                }
                 ddPayWay[this.orderData.payWayDictId](this.orderData)
             }
         },
