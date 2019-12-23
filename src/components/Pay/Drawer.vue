@@ -61,6 +61,7 @@ export default {
         let alis = this.settings.dict.PayWay.dicts.filter(n => n.dictValue.includes('ali'))
         let wxs = this.settings.dict.PayWay.dicts.filter(n => n.dictValue.includes('wx'))
         let dicts = []
+        console.log(this.channels)
         if (this.account.accountType === 'ali') {
           dicts = alis
         } else if (this.account.accountType === 'wx') {
