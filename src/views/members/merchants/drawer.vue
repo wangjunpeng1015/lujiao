@@ -138,7 +138,7 @@ export default {
         });
     },
     //删除通道
-    delMerchantChannel() {
+    delMerchantChannel(data) {
       const name = this.dicFilter(data.proxyOpenPayConfigPayDictId);
       this.$confirm(`确定删除通道 ${name}?`, "提示", {
         confirmButtonText: "确定",
@@ -157,7 +157,7 @@ export default {
               this.getTableData();
             });
         })
-        .catch(() => {
+        .catch(err => {
           this.$message({
             type: "info",
             message: "已取消删除"

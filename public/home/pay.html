@@ -130,21 +130,18 @@
             <van-loading class="loading" size="8rem" type="spinner" color="#1989fa" />
         </van-overlay>
         <div>
-            <h3 v-if="orderData.state && orderData.state == '支付中'">￥{{orderData.payMoney ||0}}</h3>
+            <h3 v-if="orderData && orderData.state == '支付中'">￥{{orderData.payMoney ||0}}</h3>
             <div class="order">订单号：{{getUserParam('orderNo')}}</div>
             <div class="effective-tip red">【二维码仅本次有效】</div>
             <div class="effective-tip red">修改金额不到账,概不负责！！！</div>
-            <div v-if="orderData.state && orderData.state == '支付中'" class="effective-tip red">
+            <div v-if="orderData && orderData.state == '支付中'" class="effective-tip red">
                 请一定确认转账金额( {{orderData.payMoney ||0}} )！！！</div>
-            <!-- <div id="qrcode">
-            </div> -->
-            <div class="success" v-if="orderData.state && orderData.state == '支付成功'">
+            <div class="success" v-if="orderData && orderData.state == '支付成功'">
                 支付成功！
             </div>
             <div v-else>
                 <div v-if="diffTime!=0">
                     <img class="mini-img" :src="payWayImg" alt="">
-                    <!-- <img id="qrcode" :src='qrcode' /> -->
                     <div v-if="showcode">
                         <div id="qrcode"></div>
                     </div>
@@ -171,7 +168,6 @@
         <van-count-down ref="cdown" :time="time" v-show="showTip" :auto-start="false" @finish="finish">
             <template v-slot="timeData">
                 <span class="item">当前排队用户较多，请等待</span>
-                <!-- <span class="item">{{ timeData.minutes }}分</span> -->
                 <span class="item red">{{ timeData.seconds }}秒</span>
             </template>
         </van-count-down>
@@ -180,7 +176,7 @@
 
 </body>
 <script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
-<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
 <script src="./vant.js"></script>
 <script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script>

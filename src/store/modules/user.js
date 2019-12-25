@@ -68,7 +68,6 @@ const actions = {
         }
         // let hash = Math.random().toString(36).substr(2)
         // initWebSocket(getToken(), data.account, hash)
-        console.log(data)
         commit('SET_USER_INFO', data)
         resolve(data)
       }).catch(error => {

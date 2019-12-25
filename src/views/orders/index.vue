@@ -2,7 +2,7 @@
 .orders-container.layout-column
     .wjp-tools.layout-row__between
       div
-         el-button(type='primary' @click="addOrder") 新增订单
+         el-button(v-if="userinfo.roleId != 4" type='primary' @click="addOrder") 新增订单
       .layout-row.buttons.align-center
         el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')

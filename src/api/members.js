@@ -56,7 +56,7 @@ export function delMerchant(id) {
     })
 }
 //删除商户下通道
-export const delMerchantChannel = (data) => {
+export const delMerchantChannel = (id) => {
     return request({
         url: `/merchantCR/${id}`,
         method: 'delete',

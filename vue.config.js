@@ -29,6 +29,8 @@ module.exports = {
   assetsDir: 'static',
   lintOnSave: false,
   productionSourceMap: false,
+  // devtool: '#source-map',
+  // productionGzip: true,
   devServer: {
     port: port,
     open: true,
