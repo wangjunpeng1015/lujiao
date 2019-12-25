@@ -2,7 +2,7 @@
 .orders-container.layout-column
   .wjp-tools.layout-row__between
     div
-      el-button(type='primary' @click="merchantVisible = true") 添加商户
+      el-button(v-if="userinfo.roleId ==1 ||userinfo.roleId==3" type='primary' @click="merchantVisible = true") 添加商户
     .buttons.layout-row.align-center
       el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='商户账号' style="width:200px;")
       el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import { getMerchants, changeUrl } from "@/api/members";
 import { delUser } from "@/api/user";
 import drawer from "@/views/members/merchants/drawer";
@@ -53,7 +54,7 @@ export default {
   data() {
     return {
       drawerVisible: false,
-      merchantVisible: true,
+      merchantVisible: false,
       chooseMerchants: {},
       loading: false,
       account: "", //
@@ -66,7 +67,9 @@ export default {
     };
   },
   watch: {},
-  computed: {},
+  computed: {
+    ...mapGetters(["userinfo"])
+  },
   mounted() {
     this.getTableData();
   },

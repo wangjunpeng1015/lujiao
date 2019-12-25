@@ -23,14 +23,14 @@
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
                     //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
             el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
-            el-table-column(prop='orderUserAccount', label='商户账号', show-overflow-tooltip)
+            el-table-column(prop='orderUserAccount', label='商户账号',width="100" show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
             //- el-table-column(prop='orderName', label='名称', )
-            el-table-column(label='原始金额',show-overflow-tooltip)
+            el-table-column(label='原始金额',width="100",show-overflow-tooltip)
               template(slot-scope='scope')
                 span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.amount }}
                 span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.amount }}
-            el-table-column(label='实际金额',show-overflow-tooltip)
+            el-table-column(label='实际金额',width="100",show-overflow-tooltip)
               template(slot-scope='scope')
                 span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.actualAmount }}
                 span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.actualAmount }}
@@ -45,10 +45,10 @@
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
               template(slot-scope='scope')
                 el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
-            el-table-column(prop='payStatusDictValue', label='状态',)
+            el-table-column(prop='payStatusDictValue', label='状态',width="80")
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
-            el-table-column(prop='payStatusDictValue', label='操作',)
+            el-table-column(prop='payStatusDictValue', label='操作',width="160")
                 template(slot-scope='scope')
                     el-button(v-if="scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
                     el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单

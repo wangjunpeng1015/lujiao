@@ -15,6 +15,7 @@ el-dialog(title='添加订单', :close-on-click-modal="false",:visible.sync='vis
 </template>
 
 <script>
+import dayjs from "dayjs";
 import md5 from "js-md5";
 import { channelToPayWay } from "@/utils";
 import { getAllchannel } from "@/api/agent";

@@ -1,32 +1,24 @@
 <template lang="pug">
-el-dialog(title="添加通道", :visible.sync='visible' width="30%" :append-to-body="true")
-    el-form(ref="form" :model='form' :rules="rules")
-        .layout-row__between
-            el-form-item(label='账号', prop="account")
-                el-input(v-model='form.account')
-            el-form-item(label='密码', prop="userPassword")
-                el-input(v-model='form.userPassword')
-            el-form-item(label='手机号', prop="phone")
-                el-input(v-model='form.phone')
-            el-form-item(label='姓名', prop="userName")
-                el-input(v-model='form.userName')
+el-dialog(title="添加商户", :visible.sync='visible' width="30%"  :append-to-body="true")
+    el-form(ref="form" :model='form' :rules="rules" label-width="80px")
+        el-form-item(label='账号', prop="account")
+            el-input(v-model='form.account')
+        el-form-item(label='密码', prop="userPassword")
+            el-input(v-model='form.userPassword')
+        el-form-item(label='手机号', prop="phone")
+            el-input(v-model='form.phone')
+        el-form-item(label='姓名', prop="userName")
+            el-input(v-model='form.userName')
     .dialog-footer(slot='footer')
         el-button(@click='cancel') 取 消
-        el-button(type='primary', @click='add') 确 定
+        el-button(type='primary', :disaled='loading' @click='add') 确 定
 </template>
 
 <script>
-import { addMerchantChannel } from "@/api/members";
-import { getProxyChannel } from "@/api/agent";
-import { mapState, mapGetters } from "vuex";
+import { validPassword, validPhone } from "@/utils/validate";
+import { mapGetters } from "vuex";
 export default {
   props: {
-    id: {
-      default() {
-        return 0;
-      },
-      type: Number
-    },
     visible: {
       default() {
         return false;
@@ -35,56 +27,77 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["userinfo"]),
-    ...mapState(["settings"])
+    ...mapGetters(["userinfo"])
   },
   data() {
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        if (validPassword(this.form.userPassword)) {
+          callback();
+        } else {
+          callback(new Error("密码包含 数字,英文,字符中的两种以上，长度6-20"));
+        }
+      }
+    };
+    const validPhones = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入手机号"));
+      } else {
+        if (validPhone(this.form.phone)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的手机号"));
+        }
+      }
+    };
     return {
-      channel: [],
+      loading: false,
       form: {
-        proxyOpenPayConfigId: "",
-        interestRate: ""
+        account: "",
+        userName: "",
+        userPassword: "",
+        phone: ""
       },
       rules: {
-        proxyOpenPayConfigId: [
-          { required: true, message: "请选择通道", trigger: "blur" }
+        account: [{ required: true, trigger: "blur", message: "请输入账号" }],
+        userName: [{ required: true, trigger: "blur", message: "请输入姓名" }],
+        userPassword: [
+          { required: true, validator: validatePass, trigger: "blur" }
         ],
-        interestRate: [
-          { required: true, message: "请填写利率", trigger: "blur" }
-        ]
+        phone: [{ required: true, validator: validPhones, trigger: "blur" }]
       }
     };
   },
-  mounted() {
-    this.getProxyChannel();
-  },
+  mounted() {},
   methods: {
-    //获取代理开通通道
-    getProxyChannel() {
-      getProxyChannel()
-        .then(res => {
-          this.channel = res.data;
-        })
-        .catch(err => {
-          this.$message.error("获取代理通道失败");
-        })
-        .finally(_ => {});
-    },
-    //添加通道
-    addMerchantChannel() {
-      addMerchantChannel({
-        ...this.form,
-        merchantId: this.id
-      })
-        .then(res => {
-          this.$message.success("添加通道成功！");
-        })
-        .catch(err => {
-          this.$message.error("添加通道失败！");
-        })
-        .finally(_ => {
-          this.cancel();
-        });
+    add() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          let params = {
+            ...this.form,
+            roleIds: [2],
+            parentAccount: this.userinfo.id
+          };
+          this.$store
+            .dispatch("user/register", params)
+            .then(() => {
+              this.$message.success("注册成功！");
+              this.cancel();
+            })
+            .catch(() => {
+              this.$message.error("注册失败！");
+            })
+            .finally(_ => {
+              this.loading = false;
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     cancel() {
       this.$emit("finish");
