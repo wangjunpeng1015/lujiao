@@ -10,6 +10,9 @@
         el-table-column(prop='phone', label='手机号', )
         el-table-column(prop='ordersMoney', label='订单金额', )
         el-table-column(prop='createTime', label='创建时间',)
+        el-table-column(width="100" v-if="userinfo.roleId == 1 || userinfo.roleId == 3")
+          template(slot-scope='scope')
+            el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -26,6 +29,8 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import { delUser } from "@/api/user";
 import { getMerchants, changeRate } from "@/api/members";
 export default {
   components: {},
@@ -40,11 +45,37 @@ export default {
     };
   },
   watch: {},
-  computed: {},
+  computed: {
+    ...mapGetters(["userinfo"])
+  },
   mounted() {
     this.getTableData();
   },
   methods: {
+    del(id) {
+      this.$confirm("确定删除当前码商?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.loading = true;
+          delUser(id)
+            .then(res => {
+              this.getPays();
+            })
+            .catch(err => {})
+            .finally(e => {
+              this.loading = false;
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
     //修改利率
     changeRate(data) {
       changeRate({})

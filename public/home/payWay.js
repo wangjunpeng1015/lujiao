@@ -162,5 +162,10 @@ const ddPayWay = {
     18: (data) => {
         const { qrUrl } = JSON.parse(data.payContent)
         window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
-    }
+    },
+    //轻松
+    24: (data) => {
+        const { qrUrl } = JSON.parse(data.payContent)
+        window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
+    },
 }

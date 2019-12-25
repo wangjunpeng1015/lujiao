@@ -16,6 +16,15 @@
           el-input(v-model='form.contentObj.publicKey' placeholder="请填写公钥")
         el-form-item(label='阿里公钥', prop='alipayPublicKey')
           el-input(v-model='form.contentObj.alipayPublicKey' type="textarea" :rows="4" placeholder="RSA")
+      //ali-轻松经费
+      div(v-if="form.payWayDictId == 24")
+        el-form-item(label='收款二维码')
+          el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
+            el-button(size='small', type='primary') 点击上传
+        el-form-item(v-if="!isEmpty(form.contentObj)")
+        .layout-row__between.align-center
+          .layout-row.align-center
+            img.img(:src="form.contentObj.url")
       //个人转账（暂时屏蔽转账自动金额）
       div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
         el-form-item(label='收款二维码')
@@ -80,6 +89,8 @@
           .layout-row__between.align-center
             .layout-row.align-center
               img.img(:src="form.contentObj.url")
+      //- el-form-item(v-if="form.payWayDictId == 24" label='设置金额', prop='ceiling')
+      //-   el-input(v-model='form.singleCeilingMin' placeholder="设置金额" @change="n=>form.singleCeilingMax = n")
       el-form-item(label='单笔限额', prop='ceiling')
         el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
         |-
