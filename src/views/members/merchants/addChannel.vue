@@ -2,9 +2,9 @@
 el-dialog(title="添加通道", :visible.sync='visible' width="30%" :append-to-body="true")
     el-form(ref="form" :model='form' :rules="rules")
         .layout-row__between
-            el-form-item(label='通道', prop="proxyOpenPayConfigId")
+            el-form-item(label='通道', prop="proxyOpenPayConfigId" )
                 el-select(v-model='form.proxyOpenPayConfigId', placeholder='通道' clearable)
-                    el-option(v-for='(item,i) in channel' :key="i" :label='item.payWayValue', :value='item.payConfigId')
+                    el-option(v-for='(item,i) in channel' :key="i" :label="item.payConfigAccount+item.payWayValue", :value='item.payConfigId')
             el-form-item(label='利率', prop="interestRate")
                 el-input(v-model='form.interestRate')
     .dialog-footer(slot='footer')

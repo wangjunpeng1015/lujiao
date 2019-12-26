@@ -8,7 +8,7 @@ el-dialog(title='添加订单', :close-on-click-modal="false",:visible.sync='vis
       el-select(v-model='form.payWay', placeholder='请选择收款通道方式' style='width:200px' ,:disabled="loading")
         el-option(v-for='item in channels', :key='item.value', :label='item.label', :value='item.value')
     el-form-item(label='金额', prop="money")
-      el-input(v-model='form.money' style='width:200px')
+      el-input(type="number" v-model.number='form.money' style='width:200px')
   .dialog-footer(slot='footer')
     el-button(@click='cancel') 取 消
     el-button(type='primary', @click='submitForm') 确 定

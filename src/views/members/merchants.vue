@@ -18,7 +18,7 @@
               el-input(v-if="scope.row.show" v-model='scope.row.returnUrl',@blur="changeUrl(scope.row)" placeholder='支付回调' style="width:100px;")
               span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.returnUrl||'localhost:8080' }}
           el-table-column(prop='phone', label='手机号', )
-          el-table-column(prop='ordersMoney', label='订单金额', )
+          el-table-column(prop='balance', label='订单金额', )
           el-table-column(prop='createTime', label='创建时间',)
           el-table-column(label='操作',)
             template(slot-scope='scope')

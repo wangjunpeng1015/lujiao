@@ -57,7 +57,7 @@
           el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
       el-form-item(label='账号', prop='account' )
         el-input(v-model='news.account' placeholder="请填写新加账号")
-      el-form-item(label='每日收款上限', prop='dailyCeiling' placeholder="请填写每日收款上限")
+      el-form-item(label='每日收款上限', prop='dailyCeiling' placeholder="请填写该账号每日收款上限")
         el-input(v-model.number='news.dailyCeiling' type="number")
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消

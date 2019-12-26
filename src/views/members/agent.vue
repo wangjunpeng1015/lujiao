@@ -48,7 +48,7 @@
         div - 
         el-input(v-model='maxRate',@keyup.enter.native="getAllchannel" placeholder='最大利率' style="width:100px;")
         el-button(type='primary' @click="getAllchannel" :disabled="loading") 搜 索
-    el-table.wjp-table(v-loading="loading" ,:height="450", :data='drawerData', style='width: 100%', height='250')
+    el-table.wjp-table(v-loading="loading" , :data='drawerData', style='width: 100%', height='550')
       el-table-column(prop='proxyAccount', label='代理名称')
       el-table-column(label='通道名称')
         template(slot-scope='scope')

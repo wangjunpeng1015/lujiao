@@ -1,4 +1,4 @@
-var frontUrl = window.origin
+var frontUrl = location.protocol + '//' + location.host + ':8092'
 const ddPayWay = {
     //当面付款
     5: (data) => {

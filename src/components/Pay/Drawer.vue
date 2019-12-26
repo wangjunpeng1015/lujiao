@@ -12,7 +12,7 @@ div
             el-option(label='启用', :value='true')
             el-option(label='禁用', :value='false')
       .wjp-content
-        el-table.wjp-table(v-loading="loading" :data='table', style='width: 100%', height='250')
+        el-table.wjp-table(v-loading="loading" :data='table', style='width: 100%', height='550')
           el-table-column(fixed prop='id', label='id', width='50')
           el-table-column(prop='payWayDictId', label='支付名称')
             template(slot-scope='scope')
@@ -58,14 +58,18 @@ export default {
     ...mapState(["settings"]),
     payWay() {
       if (this.settings.dict && !!this.account) {
-        let alis = this.settings.dict.PayWay.dicts.filter(n => n.dictValue.includes('ali'))
-        let wxs = this.settings.dict.PayWay.dicts.filter(n => n.dictValue.includes('wx'))
-        let dicts = []
-        console.log(this.channels)
-        if (this.account.accountType === 'ali') {
-          dicts = alis
-        } else if (this.account.accountType === 'wx') {
-          dicts = wxs
+        let alis = this.settings.dict.PayWay.dicts.filter(n =>
+          n.dictValue.includes("ali")
+        );
+        let wxs = this.settings.dict.PayWay.dicts.filter(n =>
+          n.dictValue.includes("wx")
+        );
+        let dicts = [];
+        console.log(this.channels);
+        if (this.account.accountType === "ali") {
+          dicts = alis;
+        } else if (this.account.accountType === "wx") {
+          dicts = wxs;
         }
         return dicts.filter(item => {
           return this.channels.find(n => n.payWayDictId == item.id);
@@ -192,8 +196,10 @@ export default {
       this.drawerVisible = true;
     },
     dicFilter(id) {
-      let payWay = this.payWay.find(item => id == item.id)
-      return payWay ? this.payWay.find(item => id == item.id).dictValueDisplayName : ''
+      let payWay = this.payWay.find(item => id == item.id);
+      return payWay
+        ? this.payWay.find(item => id == item.id).dictValueDisplayName
+        : "";
     },
     save() {},
     sizeChange(num) {

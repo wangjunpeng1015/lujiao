@@ -2,17 +2,18 @@
 el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
     .wjp-tools.layout-row__between
       div
-        el-button(v-if="userinfo.roleId == 3" type='primary' @click="addVisible = true") 添加通道
+        //- el-button(v-if="userinfo.roleId == 3" type='primary' @click="addVisible = true") 添加通道
       .buttons.layout-row.align-center
         el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
         div - 
         el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
-    el-table.wjp-table(v-loading="loading" ,:height="450", :data='drawerData', style='width: 100%', height='250')
+    el-table.wjp-table(v-loading="loading" , :data='drawerData', style='width: 100%', height='550')
       el-table-column(prop='merchantAccount', label='商户账号')
       el-table-column(label='通道名称')                        
         template(slot-scope='scope')
           p {{ dicFilter(scope.row.proxyOpenPayConfigPayDictId) }}
+      el-table-column(prop="proxyOpenPayConfigRemark" label='备注')                        
       el-table-column(label='通道利率' width="80")
         template(slot-scope='scope')
           div(v-if="userinfo.roleId != 2")
