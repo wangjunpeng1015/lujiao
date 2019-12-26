@@ -6,7 +6,12 @@
             ul
               li.li 添加收款通道备注请一定按照 收款班级-收款原由 的格式填写，以方便查找订单进行手动回调
               li.li 每个班级每天只能生成5个收款码，但班级可以创建多个
-              img(:src="img3" width="50%")
+              img(:src="img3" width="30%")
+              li.li 如果确定用户是否收到款项：
+                p(style="margin-top:10px") 在经费小程序中查看对应班级
+                p(style="margin-top:10px") 点击收支明细
+                p(style="margin-top:10px") 选择对应的收款理由
+                p(style="margin-top:10px") 点击收款情况栏
       el-timeline-item(placement="top")
         el-card(header="一、开通轻松经费")
           ul
