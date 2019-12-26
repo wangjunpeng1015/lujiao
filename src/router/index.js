@@ -177,6 +177,12 @@ export const asyncRoutes = [
     },
     children: [
       {
+        path: 'fundsDoc',
+        name: 'fundsDoc',
+        component: () => import('@/views/doc/funds'),
+        meta: { title: '开通经费帮助', icon: 'el-icon-document', roles: [1, 3, 4] }
+      },
+      {
         path: 'proxyDoc',
         name: 'proxyDoc',
         component: () => import('@/views/doc/proxy'),
@@ -200,12 +206,12 @@ export const asyncRoutes = [
         component: () => import('@/views/doc/cardId'),
         meta: { title: '获取银行卡ID', icon: 'el-icon-document', roles: [1, 3, 4] }
       },
-      {
-        path: 'smdd',
-        name: 'smdd',
-        component: () => import('@/views/doc/smdd'),
-        meta: { title: '开通扫码点单', icon: 'el-icon-document', roles: [1, 3, 4] }
-      },
+      // {
+      //   path: 'smdd',
+      //   name: 'smdd',
+      //   component: () => import('@/views/doc/smdd'),
+      //   meta: { title: '开通扫码点单', icon: 'el-icon-document', roles: [1, 3, 4] }
+      // },
       {
         path: 'f2f',
         name: 'f2f',
