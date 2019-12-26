@@ -22,7 +22,7 @@
                   el-form-item(label='支付地址')
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
                     //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
-            el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
+            el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip width=100)
             el-table-column(prop='orderUserAccount', label='商户账号',width="100" show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
             //- el-table-column(prop='orderName', label='名称', )
@@ -36,7 +36,8 @@
                 span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.actualAmount }}
             el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
-            el-table-column(prop='remark', label='备注',show-overflow-tooltip)
+            el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
+            el-table-column(label='订单备注',show-overflow-tooltip)
               template(slot-scope='scope')
                 span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.remark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
