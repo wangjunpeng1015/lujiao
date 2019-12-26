@@ -4,9 +4,9 @@
     h1.line.layout-row
       span(style="margin-right: 10px;align-self:center") 1.
       el-tag(size="small" style="align-self:center") 创建订单
-    h1.line 地址: http://103.143.80.32:9909/backend/order/optimalPay
+    h1.line 地址: http://39.99.177.97:8092/backend/order/optimalPay
     p.line 用户在商户应用选择对应方式、金额后，应用跳转到网页进行支付
-    p.line 支付页面: http://103.143.80.32:9909/home/pay.html?orderNo={orderNo}
+    p.line 支付页面: http://39.99.177.97:8092/home/pay.html?orderNo={orderNo}
     p.line 方式：POST
     h1.line 参数说明:
     el-table(:data="createOrderParams" style="width: 100%" border stripe)
