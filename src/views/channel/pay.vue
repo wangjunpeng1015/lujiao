@@ -210,18 +210,25 @@ export default {
     },
     addAccount() {
       this.loading = true;
-      addAcount(this.news)
-        .then(res => {
-          this.getAllAcount();
-          this.$message.success("添加账号成功！");
-          this.cancel();
-        })
-        .catch(err => {
-          this.$message.error(err.message);
-        })
-        .finally(e => {
-          this.loading = false;
-        });
+      this.$refs.news.validate(valid => {
+        if (valid) {
+          addAcount(this.news)
+            .then(res => {
+              this.getAllAcount();
+              this.$message.success("添加账号成功！");
+              this.cancel();
+            })
+            .catch(err => {
+              this.$message.error(err.message);
+            })
+            .finally(e => {
+              this.loading = false;
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     del(id) {
       this.$confirm("确定删除这个账号?", "提示", {

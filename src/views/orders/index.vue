@@ -36,6 +36,9 @@
                 span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.actualAmount }}
             el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
+            el-table-column(prop='remark', label='备注',show-overflow-tooltip)
+              template(slot-scope='scope')
+                span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.remark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
             //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
@@ -132,11 +135,13 @@ export default {
     getPayUrl(row) {
       let url =
         window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
-      if (row.payWayDictValue.startsWith("alipay")) {
-        return "alipays://platformapi/startapp?appId=20000067&url=" + url;
-      } else {
-        return url;
+      if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        if (row.payWayDictValue.startsWith("alipay")) {
+          return "alipays://platformapi/startapp?appId=20000067&url=" + url;
+        }
       }
+      return url;
     },
     changeStatus(id) {
       this.$confirm("确定修改回调状态?", "提示", {

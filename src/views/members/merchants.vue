@@ -1,11 +1,14 @@
 <template lang="pug">
 .orders-container.layout-column
-  .wjp-tools.layout-row.align-center
-    el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='商户账号' style="width:200px;")
-    el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
-    div -
-    el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
-    el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+  .wjp-tools.layout-row__between
+    div
+      el-button(type='primary' @click="merchantVisible = true") 添加商户
+    .buttons.layout-row.align-center
+      el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='商户账号' style="width:200px;")
+      el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
+      div -
+      el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
+      el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
           el-table-column(prop='account', label='账号', )
@@ -34,19 +37,23 @@
           layout=" prev, pager, next,total"
           :total="totalPage")
   drawer(:visible.sync="drawerVisible" :data="chooseMerchants")
+  add-merchants(:visible.sync="merchantVisible" @finish="getTableData")
 </template>
 
 <script>
 import { getMerchants, changeUrl } from "@/api/members";
 import { delUser } from "@/api/user";
 import drawer from "@/views/members/merchants/drawer";
+import addMerchants from "@/views/members/merchants/addMerchants";
 export default {
   components: {
-    drawer
+    drawer,
+    addMerchants
   },
   data() {
     return {
       drawerVisible: false,
+      merchantVisible: true,
       chooseMerchants: {},
       loading: false,
       account: "", //

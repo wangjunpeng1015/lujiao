@@ -115,6 +115,12 @@
 
         }
 
+        #remark {
+            position: absolute;
+            z-index: -1;
+            opacity: 0;
+        }
+
         img {
 
             margin: 0.3125rem auto;
@@ -147,6 +153,12 @@
                     </div>
                     <div v-else class="button">
                         <button class="scan-tip" @click="goPay">点击支付</button>
+                    </div>
+                    <div v-show="orderData.payWayDictId ==24">
+                        请在姓名栏务必输入
+                        <span class="red">{{ orderData.remark }}</span>
+                        <input type="text" id="remark" v-model="orderData.remark">
+                        <button class="scan-tip" @click="copy">复制名称</button>
                     </div>
                     <div class="scan-tip red left" v-if="orderData && orderData.payWay !='支付宝'">
                         1.长按二维码保存</br>
@@ -233,6 +245,15 @@
             }, 3000);
         },
         methods: {
+            copy() {
+                document.getElementById('remark').select()
+                document.execCommand('copy');
+                vant.Dialog.alert({
+                    message: '姓名已复制, 请直接到付款页面粘贴付款即可'
+                }).then(res => {
+                    this.goPay()
+                })
+            },
             getUserParam(variable) {
                 let query = window.location.search.substring(1);
                 let vars = query.split("&");
@@ -304,6 +325,7 @@
             countDown(createTime) {
                 let endTime = dayjs(createTime)
                 endTime = endTime.add(6, 'm');
+                endTime = endTime.add(15, 's');
                 this.dSiv = setInterval(() => {
                     this.diffTime = dayjs(endTime).diff(dayjs(), 'second');
                     //分钟
@@ -324,6 +346,7 @@
                 return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
             },
             goPay() {
+                //飞行转卡
                 if (this.orderData.payWayDictId == 10) {
                     if (!this.showTip) {
                         this.showTip = true;
