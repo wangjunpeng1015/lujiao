@@ -1,9 +1,9 @@
 <template lang="pug">
  el-dialog(title='配置', :visible.sync='visible',  width='40%' :close-on-click-modal="false" :before-close="cancel")
     el-form(:model='form', ref='form', label-width='120px')
-      //- el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
-      //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
-      //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
+        el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
+          el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
       //当面付
       div(v-if="form.payWayDictId == 5")
         el-form-item(label='appid', prop='name')
@@ -116,7 +116,7 @@ export default {
     data: {
       handler(val) {
         this.form = val;
-        this.form.payWayDictId = this.payWayId
+        this.form.payWayDictId = this.payWayId;
       },
       deep: true
     }

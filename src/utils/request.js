@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import router from '@/router';
 
 // create an axios instance
 const service = axios.create({
@@ -46,6 +47,15 @@ service.interceptors.response.use(
     const res = response.data
     // if the custom code is not 20000, it is judged as an error.
     if (res.code != 200) {
+      if (res == '') {
+        Message({
+          message: 'token已失效，请重新登录',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        router.push('/login')
+        return
+      }
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -81,6 +91,7 @@ service.interceptors.response.use(
     }
   },
   error => {
+    console.log(111111111111)
     console.log('err' + error) // for debug
     Message({
       message: error.message,

@@ -21,7 +21,6 @@
          template(slot-scope='scope')
           .layout-row
             el-tag(
-              closable
               style="margin-left: 5px"
               v-for="(item,i) in scope.row.amountList"
               type="success"
@@ -58,8 +57,7 @@
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
       el-button(type='primary', @click='addAccount') 确 定
-  Add-channel(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount")
-  //- Drawer(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
+  Drawer(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
 </template>
 
 <script>
@@ -73,12 +71,11 @@ import {
 } from "@/api/pay";
 import { getAllchannel } from "@/api/agent";
 import { mapState } from "vuex";
-import AddChannel from "@/views/personalCode/AddChannel";
-import { channelToPayWay } from "@/utils";
+import Drawer from "@/views/personalCode/Drawer";
 export default {
   name: "pay",
   components: {
-    AddChannel
+    Drawer
   },
   computed: {
     ...mapState(["settings"])

@@ -12,7 +12,7 @@
         el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
         |-
         el-input(v-model='form.singleCeilingMax' placeholder="设置单次最大金额(以防风控)" style="width:45%")
-      el-form-item(label='备注', prop='remark')
+      el-form-item(label='备注1', prop='remark')
         el-input(v-model='form.remark' placeholder="备注(主要用于备注二维码用途)")
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
@@ -41,7 +41,6 @@ export default {
     return {
       loading: false,
       form: {
-        payWayDictId: 6,
         contentObj: {}
       },
       trules: {}
@@ -58,6 +57,7 @@ export default {
       this.loading = true;
       updateConfigPay({
         ...this.form,
+        payWayDictId: 6,
         payConfigAccountId: this.account.id
       })
         .then(res => {
