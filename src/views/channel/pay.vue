@@ -157,6 +157,7 @@ export default {
     edit(data) {
       this.chooseAccount = data;
       this.visible = true;
+      console.log(this.channels)
     },
 
     getAllAcount() {

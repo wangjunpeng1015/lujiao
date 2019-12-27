@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  el-drawer(title='账号通道',size="50%", :before-close='cancel', :visible.sync='visible', direction='rtl', custom-class='drawer', ref='drawer')
+  el-drawer(title='账号通道',size="50%", @close='cancel', :visible.sync='visible', direction='rtl', custom-class='drawer', ref='drawer')
     .container.layout-column
       .wjp-tools.layout-row__between
         div
@@ -40,7 +40,7 @@ div
           :page-size="pageSize"
           layout="sizes, prev, pager, next,total"
           :total="totalPage")
-  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWay='payWay' :account="account")
+  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWay='payWay' :payWayId="payWayId" :account="account")
 </template>
 
 <script>
@@ -50,12 +50,15 @@ import { mapState } from "vuex";
 import { decrypt } from "@/utils/index";
 import AddModal from "@/components/Pay/AddModal";
 export default {
-  props: ["visible", "account", "channels"],
+  props: ["visible", "account", "channels", "payWayId"],
   components: {
     AddModal
   },
   computed: {
     ...mapState(["settings"]),
+    // payWayDictId () {
+    //   return this.payWayId
+    // },
     payWay() {
       if (this.settings.dict && !!this.account) {
         let alis = this.settings.dict.PayWay.dicts.filter(n =>
@@ -65,7 +68,6 @@ export default {
           n.dictValue.includes("wx")
         );
         let dicts = [];
-        console.log(this.channels);
         if (this.account.accountType === "ali") {
           dicts = alis;
         } else if (this.account.accountType === "wx") {

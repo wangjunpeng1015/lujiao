@@ -119,7 +119,7 @@ export const asyncRoutes = [
     name: 'funds',
     meta: {
       title: '经费通道',
-      icon: 'example',
+      icon: 'el-icon-s-tools',
       roles: [1, 3, 4],
     },
     children: [

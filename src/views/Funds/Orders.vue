@@ -251,7 +251,7 @@ export default {
         param: {
           // userId: this.userinfo.id, //商户id
           orderNum: this.orderNo, //订单号
-          payWay: this.type, //支付方式
+          payWay: 24, //支付方式
           payStatus: this.state, //支付状态
           minMoney: "", //最小金额
           maxMoney: "" //最大金额
