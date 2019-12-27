@@ -144,6 +144,7 @@ export function channelToPayWay(data, dic, payWay) {
       array.push(way);
     }
   });
+  debugger
   return payWay.filter(n => {
     return array.some(m => m.dictValue.includes(n.value));
   });

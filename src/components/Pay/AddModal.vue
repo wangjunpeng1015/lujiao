@@ -6,7 +6,7 @@
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
       //当面付
       div(v-if="form.payWayDictId == 5")
-        el-form-item(label='appid', prop='name') 
+        el-form-item(label='appid', prop='name')
           el-input(v-model='form.contentObj.appId' placeholder="请填写appId")
         el-form-item(label='商户号(pid)', prop='pId')
           el-input(v-model='form.contentObj.pId' placeholder="请填写商户号（pid）")
@@ -25,7 +25,7 @@
         .layout-row__between.align-center
           .layout-row.align-center
             img.img(:src="form.contentObj.url")
-      //个人转账（暂时屏蔽转账自动金额）
+      //个码（暂时屏蔽转账自动金额）
       div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
         el-form-item(label='收款二维码')
           el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
@@ -40,7 +40,7 @@
                 //-   el-input(v-model='form.contentObj.remark' placeholder="备注" style="width:150px")
         //- el-form-item(label='二维码所在地', prop='qrCodeAdd')
         //-   el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
-      //个人付款
+      //转账
       div(v-if="form.payWayDictId == 8")
         el-form-item(label='支付宝pid', prop='pId')
           el-input(v-model='form.contentObj.pId' placeholder="请填写收款pId")
@@ -89,14 +89,14 @@
           .layout-row__between.align-center
             .layout-row.align-center
               img.img(:src="form.contentObj.url")
-      el-form-item(label='单笔限额', prop='ceiling')
-        el-input(v-if="form.payWayDictId == 24" v-model='form.singleCeilingMin' placeholder="单笔限额" @change="n=>form.singleCeilingMax = n")
+      el-form-item(:label="form.payWayDictId == 24 ? '金额' : '单笔限额'", prop='ceiling')
+        el-input(type="number" v-if="form.payWayDictId == 24" v-model='form.singleCeilingMin' :placeholder="form.payWayDictId == 24 ? '金额' : '单笔限额'" @change="n=>form.singleCeilingMax = n")
         div(v-else)
           el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
           |-
           el-input(v-model='form.singleCeilingMax' placeholder="设置单次最大金额(以防风控)" style="width:45%")
-      el-form-item(label='备注', prop='remark')
-        el-input(v-model='form.remark' :placeholder="form.payWayDictId == 24?'班级名称——收款原由':'备注(主要用于备注二维码用途)'")
+      el-form-item(:label="form.payWayDictId == 24 ? '班级-理由-金额' : '备注'", prop='remark')
+        el-input(v-model='form.remark' :placeholder="form.payWayDictId == 24 ? '请按照格式：班级-理由-金额 填写' : '备注'")
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
       el-button(type='primary',v-loading="loading" @click='submitForm') 确 定
@@ -107,7 +107,7 @@ import { updateConfigPay } from "@/api/pay";
 import { isEmpty } from "lodash";
 import { mapState } from "vuex";
 export default {
-  props: ["visible", "data", "isAdd", "payWay", "account"],
+  props: ["visible", "data", "isAdd", "payWay", "account", "payWayId"],
   components: {},
   computed: {
     ...mapState(["settings"])
@@ -116,6 +116,7 @@ export default {
     data: {
       handler(val) {
         this.form = val;
+        this.form.payWayDictId = this.payWayId;
       },
       deep: true
     }

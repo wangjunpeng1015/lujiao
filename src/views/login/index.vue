@@ -36,6 +36,7 @@
           type="text"
           tabindex="1"
           auto-complete="on"
+          @keyup.enter.native.native="handleLogin"
         />
       </el-form-item>
 
@@ -98,7 +99,7 @@ export default {
       immediate: true
     }
   },
-  mounted () {
+  mounted() {
     new Particle(document.getElementById("login"));
   },
   methods: {
@@ -151,7 +152,7 @@ $cursor: #fff;
 /* reset element-ui css */
 .login-container {
   position: relative;
-  #login{
+  #login {
     position: absolute;
     left: 0;
     top: 0;

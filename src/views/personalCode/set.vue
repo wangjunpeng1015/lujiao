@@ -6,36 +6,34 @@
     el-form(label-width='120px' :inline="true")
       el-form-item(label='账号',)
         el-input(v-model='account' placeholder="查询账号")
-      el-form-item(label='每日限额', )
-        .layout-row
-          el-input(v-model='min' style="width:90px")
-          |-
-          el-input(v-model='max' style="width:90px")
       el-form-item()
         el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
           el-option(label='启用', :value='true')
           el-option(label='禁用', :value='false')
-      el-form-item()
-        el-select(v-model='accountType', placeholder='请填写类型' style="width:100%" clearable  @change="getAllAcount")
-          el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
       el-form-item()
         el-button(type='primary', @click='getAllAcount') 查 询
   .wjp-content.layout-column.flex
     el-table.wjp-table(v-loading="loading" :data='dqyhpz', style='width: 100%', height='250')
       el-table-column(fixed prop='id', label='id', width='50')
       el-table-column(prop='account', label='账号')
-      el-table-column( label='账户类型')
-        template(slot-scope='scope')
-          p {{ dicFilter(scope.row.accountType) }}
       el-table-column(prop='dailyCeiling', label='今日限额')
-      el-table-column(label='编辑')
-        template(slot-scope='scope')
-          el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
+      el-table-column( label='已添收款码')
+         template(slot-scope='scope')
+          .layout-row
+            el-tag(
+              style="margin-left: 5px"
+              v-for="(item,i) in scope.row.amountList"
+              type="success"
+              size="small"
+              :key="i"
+            ) {{item}}
+      
       el-table-column(label='操作' width="200")
         template(slot-scope='scope')
           el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-      el-table-column(width="100")
+      el-table-column(width="200")
         template(slot-scope='scope')
+          el-button(type="primary" @click="edit(scope.row)" size='mini') 添加配置
           el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
   .page.layout-row.align-center.right
     span 每页显示
@@ -52,9 +50,6 @@
   //添加/修改
   el-dialog(title='添加账号', :visible.sync='acVisible',  width='40%' :close-on-click-modal="false")
     el-form(:model='news', :rules='rules', ref='news', label-width='120px')
-      el-form-item(label='类型', prop='accountType')
-        el-select(v-model='news.accountType', placeholder='请填写类型' style="width:100%")
-          el-option(v-for='item in payWay', :key='item.value', :label='item.label', :value='item.value')
       el-form-item(label='账号', prop='account' )
         el-input(v-model='news.account' placeholder="请填写新加账号")
       el-form-item(label='每日收款上限', prop='dailyCeiling' placeholder="请填写每日收款上限")
@@ -63,10 +58,10 @@
       el-button(@click='cancel') 取 消
       el-button(type='primary', @click='addAccount') 确 定
   Drawer(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
-
 </template>
 
 <script>
+import { cloneDeep } from "lodash";
 import {
   getAllAcount,
   delAcount,
@@ -76,45 +71,24 @@ import {
 } from "@/api/pay";
 import { getAllchannel } from "@/api/agent";
 import { mapState } from "vuex";
-import Drawer from "@/components/Pay/Drawer";
+import Drawer from "@/views/personalCode/Drawer";
 export default {
   name: "pay",
   components: {
     Drawer
   },
   computed: {
-    ...mapState(["settings"]),
-    payWay() {
-      let array = [];
-      this.channels.map(m => {
-        const way = this.settings.dict.PayWay.dicts.find(
-          n => n.id == m.payWayDictId
-        );
-        if (way) {
-          array.push(way);
-        }
-      });
-      return this.settings.payWay.filter(n => {
-        return array.some(m => m.dictValue.includes(n.value));
-      });
-    }
+    ...mapState(["settings"])
   },
   data() {
     return {
+      tail: "-ali-个码",
       news: {
         account: "",
-        accountType: "",
-        city: "default",
         dailyCeiling: ""
       },
       rules: {
         account: [{ required: true, message: "请输入账号", trigger: "change" }],
-        accountType: [
-          { required: true, message: "请选择类型", trigger: "change" }
-        ],
-        // city: [
-        //   { required: true, message: "请填写账号所在城市", trigger: "change" }
-        // ],
         dailyCeiling: [
           { required: true, message: "请输入当日上限", trigger: "change" }
         ]
@@ -125,9 +99,6 @@ export default {
       visible: false,
       used: "",
       account: "",
-      accountType: "",
-      min: "",
-      max: "",
       channels: [],
       dqyhpz: [],
       totalPage: 0, //总条数
@@ -157,7 +128,6 @@ export default {
     edit(data) {
       this.chooseAccount = data;
       this.visible = true;
-      console.log(this.channels)
     },
 
     getAllAcount() {
@@ -166,11 +136,8 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          account: this.account, //账号
-          used: this.used, //是否启用
-          accountType: this.accountType, //类型
-          min: this.min, //最小
-          max: this.max //最大
+          account: this.tail, //账号
+          used: this.used //是否启用
         }
       })
         .then(res => {
@@ -186,13 +153,21 @@ export default {
         });
     },
     addChannel() {
-      this.acVisible = true;
-      this.news = {
-        account: "",
-        accountType: "",
-        city: "default",
-        dailyCeiling: ""
-      };
+      if (this.channels.some(n => n.payWayDictId == 6)) {
+        this.acVisible = true;
+        this.news = {
+          account: "",
+          accountType: "ali",
+          city: "default",
+          dailyCeiling: ""
+        };
+      } else {
+        this.$confirm("请联系我们开通相应通道", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        });
+      }
     },
     //账号启用禁用转换
     useChange(id, used) {
@@ -213,7 +188,9 @@ export default {
       this.loading = true;
       this.$refs.news.validate(valid => {
         if (valid) {
-          addAcount(this.news)
+          let params = cloneDeep(this.news);
+          params.account = params.account + this.tail;
+          addAcount(params)
             .then(res => {
               this.getAllAcount();
               this.$message.success("添加账号成功！");

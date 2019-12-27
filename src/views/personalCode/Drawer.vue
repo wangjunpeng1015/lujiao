@@ -6,8 +6,6 @@ div
         div
           el-button(type='primary' @click="addChannel") 添加收款方式
         .layout-row.buttons
-          el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
-            el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
           el-select(v-model='used', placeholder='是否启用' clearable @change="getPays")
             el-option(label='启用', :value='true')
             el-option(label='禁用', :value='false')
@@ -40,7 +38,7 @@ div
           :page-size="pageSize"
           layout="sizes, prev, pager, next,total"
           :total="totalPage")
-  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWay='payWay' :payWayId="payWayId" :account="account")
+  AddChannel(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWay='payWay' :payWayId="payWayId" :account="account")
 </template>
 
 <script>
@@ -48,17 +46,14 @@ import { getPays, updatePayUse, delConfigPay } from "@/api/pay";
 import { cloneDeep } from "lodash";
 import { mapState } from "vuex";
 import { decrypt } from "@/utils/index";
-import AddModal from "@/components/Pay/AddModal";
+import AddChannel from "@/views/personalCode/AddChannel";
 export default {
   props: ["visible", "account", "channels", "payWayId"],
   components: {
-    AddModal
+    AddChannel
   },
   computed: {
     ...mapState(["settings"]),
-    // payWayDictId () {
-    //   return this.payWayId
-    // },
     payWay() {
       if (this.settings.dict && !!this.account) {
         let alis = this.settings.dict.PayWay.dicts.filter(n =>
@@ -95,7 +90,6 @@ export default {
       isAdd: false,
       loading: false,
       drawerVisible: false,
-      payWayDictId: "",
       used: "",
       table: [], //
       totalPage: 0, //总条数
