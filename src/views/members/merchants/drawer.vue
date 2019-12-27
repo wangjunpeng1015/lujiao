@@ -185,7 +185,9 @@ export default {
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;
-            content = content.filter(item => item.state);
+            if (this.userinfo.roleId != 1 && this.userinfo.roleId != 3) {
+              content = content.filter(item => item.state);
+            }
             content.map(item => {
               item.oldinterestRate = item.interestRate;
             });
