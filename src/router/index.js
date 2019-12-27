@@ -136,9 +136,42 @@ export const asyncRoutes = [
       {
         path: 'orders',
         name: 'orders',
-        component: () => import('@/views/Funds/Orders'),
+        component: () => import('@/views/Funds/orders'),
         meta: {
           title: '经费订单',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      }
+    ]
+  },
+  {
+    path: '/personalCode',
+    component: Layout,
+    redirect: '/personalCode/set',
+    name: 'personalCode',
+    meta: {
+      icon: 'el-icon-user-solid',
+      title: 'ali-个码',
+      roles: [1, 3, 4],
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/personalCode/set'),
+        meta: {
+          title: '个码通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/personalCode/Orders'),
+        meta: {
+          title: '个码订单',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }

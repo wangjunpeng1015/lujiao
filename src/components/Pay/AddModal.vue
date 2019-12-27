@@ -25,7 +25,7 @@
         .layout-row__between.align-center
           .layout-row.align-center
             img.img(:src="form.contentObj.url")
-      //个人转账（暂时屏蔽转账自动金额）
+      //个码（暂时屏蔽转账自动金额）
       div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
         el-form-item(label='收款二维码')
           el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
@@ -40,7 +40,7 @@
                 //-   el-input(v-model='form.contentObj.remark' placeholder="备注" style="width:150px")
         //- el-form-item(label='二维码所在地', prop='qrCodeAdd')
         //-   el-input(v-model='form.qrCodeAdd' placeholder="请填写二维码所在地(减小风控)")
-      //个人付款
+      //转账
       div(v-if="form.payWayDictId == 8")
         el-form-item(label='支付宝pid', prop='pId')
           el-input(v-model='form.contentObj.pId' placeholder="请填写收款pId")
