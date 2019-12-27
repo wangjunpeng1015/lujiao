@@ -112,6 +112,39 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/funds',
+    component: Layout,
+    redirect: '/funds/set',
+    name: 'funds',
+    meta: {
+      title: '经费通道',
+      icon: 'example',
+      roles: [1, 3, 4],
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/Funds/Set'),
+        meta: {
+          title: '经费通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/Funds/Orders'),
+        meta: {
+          title: '经费订单',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      }
+    ]
+  },
   //结算
   // {
   //   path: '/settlement',
