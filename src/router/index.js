@@ -136,7 +136,7 @@ export const asyncRoutes = [
       {
         path: 'orders',
         name: 'orders',
-        component: () => import('@/views/Funds/orders'),
+        component: () => import('@/views/Funds/Orders'),
         meta: {
           title: '经费订单',
           icon: 'el-icon-s-tools',
@@ -169,7 +169,7 @@ export const asyncRoutes = [
       {
         path: 'orders',
         name: 'orders',
-        component: () => import('@/views/personalCode/Orders'),
+        component: () => import('@/views/personalCode/orders'),
         meta: {
           title: '个码订单',
           icon: 'el-icon-s-tools',
