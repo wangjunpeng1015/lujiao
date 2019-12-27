@@ -181,10 +181,11 @@ export default {
       })
         .then(res => {
           if (res.success) {
-            const { totalRecords, pageNo, pageSize, content } = res.data;
+            let { totalRecords, pageNo, pageSize, content } = res.data;
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;
+            content = content.filter(item => item.state);
             content.map(item => {
               item.oldinterestRate = item.interestRate;
             });
