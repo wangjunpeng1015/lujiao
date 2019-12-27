@@ -187,8 +187,14 @@
                             </p>
                             <input type="text" id="remark" v-model="orderData.remark">
                             <button class="scan-tip" @click="copy">打开支付宝支付</button>
-                            <img style="width: 80%;height: auto; margin: 2rem auto 0; display: block" src="./qs.png"
-                                alt="">
+                            <div class="red center" style="background:#ffa500">支付成功后，请勿加入班级，否则可能无法到账！！</div>
+                            <div class="layout-row">
+                                <img style="height: auto;display: block" src="./qs.png" alt="">
+                                <img style="height: auto;display: block" src="./payed.jpg" alt="">
+                            </div>
+
+                            <img style="width: 80%;height: auto; margin: 1rem auto 0; display: block"
+                                src="./not-join.jpg" alt="">
                         </div>
                         <button v-else class="scan-tip" @click="goPay">点击支付</button>
                     </div>
@@ -306,7 +312,7 @@
                             if (this.first) {
                                 // this.rcode = `https://tool.oschina.net/action/qrcode/generate?data=${encodeURIComponent(qrUrl)}&output=image%2Fgif&error=L&type=0&margin=0&size=4&1574136205967`
                                 this.orderData = data
-                                this.countDown(data.createTime)
+                                this.countDown()
                                 this.first = false;
                                 if (data.payWayDictId == 8 || data.payWayDictId == 9 || data.payWayDictId == 10) {
                                     this.showcode = false
@@ -351,9 +357,9 @@
                     this.overlay = false;
                 })
             },
-            countDown(createTime) {
-                let endTime = dayjs(createTime)
-                endTime = endTime.add(6, 'm');
+            countDown() {
+                let endTime = dayjs(this.orderData.createTime)
+                endTime = endTime.add(this.orderData.orderTimeOut || 6, 'm');
                 this.dSiv = setInterval(() => {
                     this.diffTime = dayjs(endTime).diff(dayjs(), 'second');
                     //分钟
@@ -361,9 +367,9 @@
                     let seconds = this.diffTime % 60;
                     this.stateHtml = `${minutes}分 ${seconds}秒`
                     if (this.diffTime === 0) {
-                        this.orderState()
                         clearInterval(this.siv)
                         clearInterval(this.dSiv)
+                        this.orderState()
                     }
                 }, 1000);
             },

@@ -1,16 +1,39 @@
 <template lang="pug">
 .orders-container.layout-column
   .wjp-tools.layout-row
-      el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='' style="width:200px;")
-      el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+      el-button(type='primary' @click="addDic") 添加字典
+      el-button(type='primary' @click="getTableData") 刷 新
   .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:height="450", :data='dicMap', style='width: 100%', height='250')
-          el-table-column(prop='key', label='字典key', )
-          el-table-column(prop='count', label='字典总数', )
-          el-table-column(prop='displayName', label='字典名称', )
+      el-table.wjp-table(v-loading="loading" ,:data='dicTable', style='width: 100%', height='550')
+          el-table-column(label='字典key', )
+            template(slot-scope='scope')
+              el-input(v-model='scope.row.dictKey' :disabled="!scope.row.disabled")
+          el-table-column(label='字典key名称', )
+            template(slot-scope='scope')
+              el-input(v-model='scope.row.dictKeyDisplayName' :disabled="!scope.row.disabled")
+          el-table-column(label='字典value', )
+            template(slot-scope='scope')
+              el-input(v-model='scope.row.dictValue' :disabled="!scope.row.disabled")
+          el-table-column( label='字典value描述', )
+            template(slot-scope='scope')
+              el-input(v-model='scope.row.dictValueDisplayName' :disabled="!scope.row.disabled")
+          el-table-column( label='扩展值1', )
+            template(slot-scope='scope')
+              el-input(v-model='scope.row.optional_1' :disabled="!scope.row.disabled")
+          el-table-column( label='扩展值2(支付时支付类型)', )
+            template(slot-scope='scope')
+              el-input(v-model='scope.row.optional_2' :disabled="!scope.row.disabled")
+          el-table-column( label='扩展值3(配置通道时是否为--不变的二维码)', )
+            template(slot-scope='scope')
+              el-input(v-model='scope.row.optional_3' :disabled="!scope.row.disabled")
           el-table-column(label='操作',)
             template(slot-scope='scope')
-              el-button(type='primary' size="mini" @click="edit(scope.row)") 编辑字典数据
+              div(v-show="!scope.row.disabled")
+                el-button(type='primary' size="mini" @click="edit(scope.row)") 编 辑
+                el-button(type='danger' size="mini" @click="del(scope.row.id)") 删 除
+              div(v-show="scope.row.disabled")
+                el-button(type='primary' size="mini" @click="save(scope.row)") 保 存
+
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -23,43 +46,18 @@
           :page-size="pageSize"
           layout=" prev, pager, next,total"
           :total="totalPage")
-  el-drawer(size="50%" title='编辑字典', :visible.sync='drawerVisible',:wrapperClosable="false", direction='rtl', :before-close='drawerClose')
-    el-table.wjp-table(:height="700", :data='chooseDic', style='width: 100%')
-      el-table-column(label='字典key', )
-        template(slot-scope='scope')
-          el-input(v-model='scope.row.dictKey', placeholder='字典key')
-      el-table-column(label='字典key名称', )
-        template(slot-scope='scope')
-            el-input(v-model='scope.row.dictKeyDisplayName', placeholder='字典key名称')
-      el-table-column(label='字典value', )
-        template(slot-scope='scope')
-            el-input(v-model='scope.row.dictValue', placeholder='字典value')
-      el-table-column(label='字典value名称', )
-        template(slot-scope='scope')
-            el-input(v-model='scope.row.dictValueDisplayName', placeholder='字典value名称')
-      el-table-column( label='扩展1', )
-        template(slot-scope='scope')
-            el-input(v-model='scope.row.optional_1', placeholder='扩展1')
-      el-table-column(label='扩展2', )
-        template(slot-scope='scope')
-            el-input(v-model='scope.row.optional_2', placeholder='扩展2')
-      el-table-column(label='扩展3', )
-        template(slot-scope='scope')
-            el-input(v-model='scope.row.optional_3', placeholder='扩展3')
-    .buttons.right
-      el-button(type='primary' @click="save") 保存字典
-      el-button(@click="drawerVisible=false") 取消
 
 </template>
 
 <script>
+import { getDicList, updateDic, delDic } from "@/api/dic";
 import { mapState } from "vuex";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 export default {
   components: {},
   data() {
     return {
-      drawerVisible: false,
+      dicTable: [],
       loading: false,
       account: "", //
       totalPage: 0, //总条数
@@ -70,58 +68,82 @@ export default {
   },
   watch: {},
   computed: {
-    ...mapState(["settings"]),
-    dicMap() {
-      if (this.settings.dict) {
-        let array = [];
-        const tempData = this.settings.dict;
-        for (const key in tempData) {
-          if (tempData.hasOwnProperty(key)) {
-            const item = tempData[key];
-            array.push({
-              key,
-              count: item.count,
-              displayName: item.displayName,
-              dicts: item.dicts
-            });
-          }
-        }
-        return array;
-      } else {
-        return [];
-      }
-    }
+    ...mapState(["settings"])
   },
   mounted() {
     this.getTableData();
   },
   methods: {
-    //保存字典
-    save() {
-      qqq(this.chooseDic)
-        .then(res => {
-          this.$message.success("修改字典成功！");
-        })
-        .catch(err => {
-          this.$message.error("修改字典失败！");
-        })
-        .finally(_ => {
-          this.drawerVisible = false;
-          this.getTableData();
+    addDic() {
+      if (this.dicTable[0].id) {
+        this.dicTable.unshift({
+          dictKey: "",
+          dictKeyDisplayName: "",
+          dictValue: "",
+          dictValueDisplayName: "",
+          optional_1: "",
+          optional_2: "",
+          optional_3: "",
+          disabled: true
         });
+      } else {
+        this.$message.warning("请先填写上一个字典！");
+      }
+    },
+    //保存字典
+    save(data) {
+      let temp = cloneDeep(data);
+      delete temp.disabled;
+      if (isEqual(temp, this.chooseDic)) {
+        this.$set(data, "disabled", false);
+        return;
+      } else {
+        updateDic(temp)
+          .then(res => {
+            this.$message.success(`${temp.id ? "修改" : "添加"}字典成功！`);
+          })
+          .catch(err => {
+            this.$message.error("修改字典失败！");
+          })
+          .finally(_ => {
+            this.getTableData();
+          });
+      }
     },
     //编辑字典
     edit(data) {
-      this.drawerVisible = true;
-      this.chooseDic = cloneDeep(data.dicts);
+      this.chooseDic = cloneDeep(data);
+      this.$set(data, "disabled", true);
     },
-    drawerClose() {},
+    del(id) {
+      this.$confirm("是否确认删除该字典?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        delDic(id)
+          .then(res => {
+            this.$message.success("删除成功！");
+          })
+          .finally(_ => {
+            this.getTableData();
+          });
+      });
+    },
     //获取字典
     getTableData() {
       this.loading = true;
-      this.$store
-        .dispatch("settings/getdic")
+      getDicList({
+        pageNo: this.currentPage,
+        pageSize: this.pageSize,
+        param: {}
+      })
         .then(res => {
+          const { totalRecords, pageNo, pageSize, content } = res.data;
+          this.totalPage = totalRecords;
+          this.pageSize = pageSize;
+          this.currentPage = pageNo;
+          this.dicTable = content;
           this.loading = false;
         })
         .catch(err => {
