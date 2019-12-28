@@ -6,7 +6,8 @@
         //-   el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select(size="mini" v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-input(size="mini" v-model='orderNo',@keyup.enter.native="getTableData" placeholder='订单号' style="width:200px;")
+        el-input(size="mini" v-model='orderNo',@keyup.enter.native="getTableData" placeholder='系统订单号' style="width:200px;")
+        el-input(size="mini" v-model='merchantOrderNo',@keyup.enter.native="getTableData" placeholder='商家订单号' style="width:200px;")
         el-date-picker(size="mini" v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期')
         el-button(size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
         el-button(size="mini" type='primary' @click="getTableData" :disabled="loading") 刷 新
@@ -20,7 +21,8 @@
                   el-form-item(label='支付地址')
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
                     //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
-            el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
+            el-table-column(prop='orderNum', label='系统订单号', show-overflow-tooltip)
+            el-table-column(prop='merchantOrderNo', label='商户订单号', show-overflow-tooltip)
             el-table-column(prop='orderUserAccount', label='商户账号', show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
             //- el-table-column(prop='orderName', label='名称', )
@@ -90,6 +92,7 @@ export default {
       state: "",
       time: "",
       orderNo: "", //搜索订单号
+      merchantOrderNo: "", //搜索订单号
       tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
@@ -251,6 +254,7 @@ export default {
         param: {
           // userId: this.userinfo.id, //商户id
           orderNum: this.orderNo, //订单号
+          merchantOrderNo: this.merchantOrderNo, //订单号
           payWay: this.type, //支付方式
           payStatus: this.state, //支付状态
           minMoney: "", //最小金额
