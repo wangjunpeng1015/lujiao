@@ -121,8 +121,10 @@ export default {
   watch: {
     data: {
       handler(val) {
-        this.form = val;
-        this.form.payWayDictId = this.payWayId;
+        this.$set(this, "form", val);
+        if (this.payWayId) {
+          this.form.payWayDictId = this.payWayId;
+        }
       },
       deep: true
     },
