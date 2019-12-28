@@ -151,7 +151,7 @@ export const asyncRoutes = [
     redirect: '/personalCode/set',
     name: 'personalCode',
     meta: {
-      icon: 'el-icon-user-solid',
+      icon: 'el-icon-s-tools',
       title: 'ali-个码',
       roles: [1, 3, 4],
     },
@@ -223,12 +223,12 @@ export const asyncRoutes = [
         component: () => import('@/views/members/merchants'),
         meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 2, 3] }
       },
-      // {
-      //   path: 'code',
-      //   name: 'code',
-      //   component: () => import('@/views/members/code'),
-      //   meta: { title: '码商管理', icon: 'el-icon-coordinate', roles: [1, 3, 4] }
-      // }
+      {
+        path: 'code',
+        name: 'code',
+        component: () => import('@/views/members/code'),
+        meta: { title: '码商管理', icon: 'el-icon-coordinate', roles: [1] }
+      }
     ]
   },
   {

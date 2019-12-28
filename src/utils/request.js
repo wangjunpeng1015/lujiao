@@ -53,7 +53,9 @@ service.interceptors.response.use(
           type: 'error',
           duration: 5 * 1000
         })
-        router.push('/login')
+        router.push({
+          path: '/login'
+        })
         return
       }
       Message({

@@ -9,17 +9,28 @@
     <breadcrumb class="breadcrumb-container"/>
 
     <div class="right-menu">
-      <span @click="sk === '点击查看/隐藏' ? sk = userinfo.secretKey : sk = '点击查看/隐藏'" v-if="userinfo.roleId === 2">密钥: <span style="font-weight: bold">{{sk}}</span></span>
+      <span
+        @click="sk === '点击查看/隐藏' ? sk = userinfo.secretKey : sk = '点击查看/隐藏'"
+        v-if="userinfo.roleId === 2"
+      >
+        密钥:
+        <span style="font-weight: bold">{{sk}}</span>
+      </span>
       <el-divider direction="vertical" v-if="userinfo.roleId === 2"></el-divider>
-      <span v-if="userinfo.roleId === 2">商户UID: <span style="font-weight: bold">{{userinfo.uid || '空'}}</span></span>
+      <span v-if="userinfo.roleId === 2">
+        商户UID:
+        <span style="font-weight: bold">{{userinfo.uid || '空'}}</span>
+      </span>
       <el-divider direction="vertical" v-if="userinfo.roleId === 2"></el-divider>
-      <span v-if="userinfo.roleId === 3">商户注册邀请码: <span style="font-weight: bold">{{userinfo.id}}</span></span>
+      <span v-if="userinfo.roleId === 3">
+        商户、码商注册邀请码:
+        <span style="font-weight: bold">{{userinfo.id}}</span>
+      </span>
       <el-divider v-if="userinfo.roleId === 3" direction="vertical"></el-divider>
       <span>{{ userinfo.roles[0] && userinfo.roles[0].roleName }}</span>
       <el-divider direction="vertical"></el-divider>
 
       <el-dropdown class="avatar-container" trigger="click">
-
         <span>{{ userinfo.account }}</span>
         <!-- <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -92,7 +103,7 @@ export default {
         newPassword: "",
         oldPassword: ""
       },
-      sk: '点击查看/隐藏', // 密钥
+      sk: "点击查看/隐藏", // 密钥
       rules: {
         oldPassword: [
           { required: true, message: "请输入旧密码", trigger: "blur" }

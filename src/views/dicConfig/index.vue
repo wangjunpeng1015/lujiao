@@ -5,6 +5,7 @@
       el-button(type='primary' @click="getTableData") 刷 新
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:data='dicTable', style='width: 100%', height='550')
+          el-table-column(prop="id" label='id' width="50")
           el-table-column(label='字典key', )
             template(slot-scope='scope')
               el-input(v-model='scope.row.dictKey' :disabled="!scope.row.disabled")
