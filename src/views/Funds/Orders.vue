@@ -20,7 +20,8 @@
                   el-form-item(label='支付地址')
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
                     //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
-            el-table-column(prop='orderNum', label='商户订单号', show-overflow-tooltip)
+            el-table-column(prop='orderNum', label='系统订单号', show-overflow-tooltip  width="100")
+            el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip width="100")
             el-table-column(prop='orderUserAccount', label='商户账号', show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
             //- el-table-column(prop='orderName', label='名称', )
