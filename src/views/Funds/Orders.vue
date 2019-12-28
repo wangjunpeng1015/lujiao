@@ -6,7 +6,8 @@
         //-   el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select(size="mini" v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-input(size="mini" v-model='orderNo',@keyup.enter.native="getTableData" placeholder='订单号' style="width:200px;")
+        el-input(size="mini" v-model='orderNum',@keyup.enter.native="getTableData" placeholder='系统订单号' style="width:200px;")
+        el-input(size="mini" v-model='merchantOrderNo',@keyup.enter.native="getTableData" placeholder='商家订单号' style="width:200px;")
         el-date-picker(size="mini" v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期')
         el-button(size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
         el-button(size="mini" type='primary' @click="getTableData" :disabled="loading") 刷 新
@@ -90,7 +91,8 @@ export default {
       type: "",
       state: "",
       time: "",
-      orderNo: "", //搜索订单号
+      merchantOrderNo: "", //商家订单号
+      orderNum: "", //搜索订单号
       tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
@@ -251,7 +253,8 @@ export default {
         pageSize: this.pageSize,
         param: {
           // userId: this.userinfo.id, //商户id
-          orderNum: this.orderNo, //订单号
+          merchantOrderNo: this.merchantOrderNo, //商家订单号
+          orderNum: this.orderNum, //系统订单号
           payWay: 24, //支付方式
           payStatus: this.state, //支付状态
           minMoney: "", //最小金额
