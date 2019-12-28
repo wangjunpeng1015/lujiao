@@ -15,7 +15,6 @@
       el-table-column(prop="isRequired" label="是否必填")
       el-table-column(prop="type" label="类型")
       el-table-column(prop="desc" label="说明")
-
     h1.line.layout-row(style="margin-top: 20px;margin-bttom: 10px")
       span(style="margin-right: 10px;align-self:center") 1.
       el-tag(size="small" style="align-self:center") 异步通知
@@ -91,6 +90,12 @@ export default {
           exp: "支付订单号",
           type: "String",
           desc: "支付订单号"
+        },
+        {
+          paramName: "merchantOrderNo",
+          exp: "商户订单号",
+          type: "String",
+          desc: "商户订单号"
         },
         {
           paramName: "status",
