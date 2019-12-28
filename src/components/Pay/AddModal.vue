@@ -22,9 +22,9 @@
           el-upload.upload-demo(action="" :http-request="uploadUrl" :show-file-list="false")
             el-button(size='small', type='primary') 点击上传
         el-form-item(v-if="!isEmpty(form.contentObj)")
-        .layout-row__between.align-center
-          .layout-row.align-center
-            img.img(:src="form.contentObj.url")
+          .layout-row__between.align-center
+            .layout-row.align-center
+              img.img(:src="form.contentObj.url")
       //个码（暂时屏蔽转账自动金额）
       div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
         el-form-item(label='收款二维码')
@@ -95,6 +95,11 @@
           el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
           |-
           el-input(v-model='form.singleCeilingMax' placeholder="设置单次最大金额(以防风控)" style="width:45%")
+      el-form-item(label="开通通道商户", prop='merchantIds')
+        el-checkbox-group(v-model='form.merchantIds')
+          el-checkbox(v-for="(item,i) in merchants" :key="i" :label='item.id') {{ item.account }}
+      el-form-item(label="商户利率", prop='merchantInterestRate' v-if="isAdd")
+        el-input(v-model='form.merchantInterestRate' placeholder="请填写通道利率(不填默认0.03)")
       el-form-item(:label="form.payWayDictId == 24 ? '班级-理由-金额' : '备注'", prop='remark')
         el-input(v-model='form.remark' :placeholder="form.payWayDictId == 24 ? '请按照格式：班级-理由-金额 填写' : '备注'")
     span.dialog-footer(slot='footer')
@@ -104,6 +109,7 @@
 
 <script>
 import { updateConfigPay } from "@/api/pay";
+import { getMerchant } from "@/api/user";
 import { isEmpty } from "lodash";
 import { mapState } from "vuex";
 export default {
@@ -119,20 +125,39 @@ export default {
         this.form.payWayDictId = this.payWayId;
       },
       deep: true
+    },
+    visible: {
+      handler(val) {
+        if (!val) return;
+        this.getMerchant();
+      },
+      deep: true
     }
   },
   data() {
     return {
       loading: false,
       form: {
+        merchantIds: [],
         contentObj: {}
       },
-      trules: {}
+      trules: {},
+      merchants: []
     };
   },
   created() {},
   mounted() {},
+
   methods: {
+    getMerchant() {
+      getMerchant()
+        .then(res => {
+          this.merchants = res.data;
+        })
+        .catch(err => {
+          this.$message.error("获取商户失败！");
+        });
+    },
     submitForm() {
       if (isEmpty(this.form.contentObj)) {
         this.$message.error("请填写支付配置内容！");

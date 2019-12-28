@@ -12,7 +12,12 @@
         el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
         |-
         el-input(v-model='form.singleCeilingMax' placeholder="设置单次最大金额(以防风控)" style="width:45%")
-      el-form-item(label='备注1', prop='remark')
+      el-form-item(label="开通通道商户", prop='merchantIds')
+        el-checkbox-group(v-model='form.merchantIds')
+          el-checkbox(v-for="(item,i) in merchants" :key="i" :label='item.id') {{ item.account }}
+      el-form-item(label="商户利率", prop='merchantInterestRate' v-if="isAdd")
+        el-input(v-model='form.merchantInterestRate' placeholder="请填写通道利率(不填默认0.03)")
+      el-form-item(label='备注', prop='remark')
         el-input(v-model='form.remark' placeholder="备注(主要用于备注二维码用途)")
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
@@ -20,9 +25,12 @@
 </template>
 
 <script>
+import { getMerchant } from "@/api/user";
 import { updateConfigPay } from "@/api/pay";
 import { isEmpty } from "lodash";
 import { mapState } from "vuex";
+import { debuggerStatement } from "babel-types";
+import { debuglog } from "util";
 export default {
   props: ["visible", "data", "isAdd", "payWay", "account"],
   components: {},
@@ -35,20 +43,38 @@ export default {
         this.form = val;
       },
       deep: true
+    },
+    visible: {
+      handler(val) {
+        if (!val) return;
+        this.getMerchant();
+      },
+      deep: true
     }
   },
   data() {
     return {
       loading: false,
       form: {
+        merchantIds: [],
         contentObj: {}
       },
-      trules: {}
+      trules: {},
+      merchants: []
     };
   },
   created() {},
   mounted() {},
   methods: {
+    getMerchant() {
+      getMerchant()
+        .then(res => {
+          this.merchants = res.data;
+        })
+        .catch(err => {
+          this.$message.error("获取商户失败！");
+        });
+    },
     submitForm() {
       if (isEmpty(this.form.contentObj)) {
         this.$message.error("请填写支付配置内容！");

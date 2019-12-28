@@ -47,6 +47,7 @@ import { cloneDeep } from "lodash";
 import { mapState } from "vuex";
 import { decrypt } from "@/utils/index";
 import AddChannel from "@/views/personalCode/AddChannel";
+import { debuglog } from "util";
 export default {
   props: ["visible", "account", "channels", "payWayId"],
   components: {
@@ -109,6 +110,7 @@ export default {
       this.form = {
         id: form.id,
         payWayDictId: form.payWayDictId,
+        merchantIds: form.merchants,
         used: form.used,
         remark: form.remark,
         singleCeilingMin: form.singleCeilingMin,
@@ -186,7 +188,8 @@ export default {
     },
     addChannel() {
       this.form = {
-        contentObj: {}
+        contentObj: {},
+        merchantIds: []
       };
       this.isAdd = true;
       this.drawerVisible = true;
@@ -197,7 +200,6 @@ export default {
         ? this.payWay.find(item => id == item.id).dictValueDisplayName
         : "";
     },
-    save() {},
     sizeChange(num) {
       this.pageSize = num;
       this.getPays();

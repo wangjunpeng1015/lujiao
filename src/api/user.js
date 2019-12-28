@@ -68,3 +68,10 @@ export function logout() {
     method: 'post'
   })
 }
+//获取用户下所有商户
+export function getMerchant() {
+  return request({
+    url: '/base/user/getMerchant',
+    method: 'get'
+  })
+}

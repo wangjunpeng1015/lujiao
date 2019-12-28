@@ -115,6 +115,7 @@ export default {
       this.form = {
         id: form.id,
         payWayDictId: form.payWayDictId,
+        merchantIds: form.merchants,
         used: form.used,
         remark: form.remark,
         singleCeilingMin: form.singleCeilingMin,
@@ -192,7 +193,8 @@ export default {
     },
     addChannel() {
       this.form = {
-        contentObj: {}
+        contentObj: {},
+        merchantIds: []
       };
       this.isAdd = true;
       this.drawerVisible = true;
