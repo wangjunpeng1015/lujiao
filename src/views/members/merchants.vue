@@ -37,7 +37,7 @@
           layout=" prev, pager, next,total"
           :total="totalPage")
   drawer(:visible.sync="drawerVisible" :data="chooseMerchants")
-  add-merchants(:visible.sync="merchantVisible" @finish="getTableData")
+  add-merchants(:visible.sync="merchantVisible" @finish="getTableData" :id="2")
 </template>
 
 <script>

@@ -2,7 +2,7 @@
 el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
     .wjp-tools.layout-row__between
       div
-        //- el-button(v-if="userinfo.roleId == 3" type='primary' @click="addVisible = true") 添加通道
+        el-button(v-if="userinfo.roleId == 3" type='primary' @click="addVisible = true") 添加通道
       .buttons.layout-row.align-center
         el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
         div - 

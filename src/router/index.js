@@ -89,29 +89,29 @@ export const constantRoutes = [
   },
 ]
 export const asyncRoutes = [
-  {
-    path: '/channel',
-    component: Layout,
-    redirect: '/channel/pay',
-    name: 'channel',
-    meta: {
-      title: '支付通道',
-      icon: 'example',
-      roles: [1, 3, 4],
-    },
-    children: [
-      {
-        path: 'pay',
-        name: 'pay',
-        component: () => import('@/views/channel/pay'),
-        meta: {
-          title: '支付通道配置',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/channel',
+  //   component: Layout,
+  //   redirect: '/channel/pay',
+  //   name: 'channel',
+  //   meta: {
+  //     title: '支付通道',
+  //     icon: 'example',
+  //     roles: [1, 3, 4],
+  //   },
+  //   children: [
+  //     {
+  //       path: 'pay',
+  //       name: 'pay',
+  //       component: () => import('@/views/channel/pay'),
+  //       meta: {
+  //         title: '支付通道配置',
+  //         icon: 'el-icon-s-tools',
+  //         roles: [1, 3, 4],
+  //       }
+  //     }
+  //   ]
+  // },
   {
     path: '/funds',
     component: Layout,
@@ -133,51 +133,51 @@ export const asyncRoutes = [
           roles: [1, 3, 4],
         }
       },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/Funds/Orders'),
-        meta: {
-          title: '经费订单',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      }
+      // {
+      //   path: 'orders',
+      //   name: 'orders',
+      //   component: () => import('@/views/Funds/Orders'),
+      //   meta: {
+      //     title: '经费订单',
+      //     icon: 'el-icon-s-tools',
+      //     roles: [1, 3, 4],
+      //   }
+      // }
     ]
   },
-  {
-    path: '/personalCode',
-    component: Layout,
-    redirect: '/personalCode/set',
-    name: 'personalCode',
-    meta: {
-      icon: 'el-icon-s-tools',
-      title: 'ali-个码',
-      roles: [1, 3, 4],
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/personalCode/set'),
-        meta: {
-          title: '个码通道配置',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/personalCode/orders'),
-        meta: {
-          title: '个码订单',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/personalCode',
+  //   component: Layout,
+  //   redirect: '/personalCode/set',
+  //   name: 'personalCode',
+  //   meta: {
+  //     icon: 'el-icon-s-tools',
+  //     title: 'ali-个码',
+  //     roles: [1, 3, 4],
+  //   },
+  //   children: [
+  //     {
+  //       path: 'set',
+  //       name: 'set',
+  //       component: () => import('@/views/personalCode/set'),
+  //       meta: {
+  //         title: '个码通道配置',
+  //         icon: 'el-icon-s-tools',
+  //         roles: [1, 3, 4],
+  //       }
+  //     },
+  //     {
+  //       path: 'orders',
+  //       name: 'orders',
+  //       component: () => import('@/views/personalCode/orders'),
+  //       meta: {
+  //         title: '个码订单',
+  //         icon: 'el-icon-s-tools',
+  //         roles: [1, 3, 4],
+  //       }
+  //     }
+  //   ]
+  // },
   //结算
   // {
   //   path: '/settlement',
@@ -227,7 +227,7 @@ export const asyncRoutes = [
         path: 'code',
         name: 'code',
         component: () => import('@/views/members/code'),
-        meta: { title: '码商管理', icon: 'el-icon-coordinate', roles: [1] }
+        meta: { title: '码商管理', icon: 'el-icon-coordinate', roles: [1, 3, 4] }
       }
     ]
   },

@@ -1,18 +1,21 @@
 <template lang="pug">
 .orders-container.layout-column
-  .wjp-tools.layout-row
+  .wjp-tools.layout-row__between
+    div
+      el-button(v-if="userinfo.roleId ==1 || userinfo.roleId==3 ||(userinfo.roleId == 4 &&userinfo.level ==1)" type='primary' @click="merchantVisible = true") 添加码商
+    .buttons.layout-row.align-center
       el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='码商账号' style="width:200px;")
       el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
         el-table-column(prop='account', label='账号', )
-        el-table-column(prop='account', label='所属代理', )
+        //- el-table-column(prop='account', label='所属代理', )
         el-table-column(prop='phone', label='手机号', )
-        el-table-column(prop='ordersMoney', label='订单金额', )
+        el-table-column(prop='balance', label='当日收款', )
         el-table-column(prop='createTime', label='创建时间',)
-        el-table-column(width="100" v-if="userinfo.roleId == 1 || userinfo.roleId == 3")
-          template(slot-scope='scope')
-            el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
+        //- el-table-column(width="100" v-if="userinfo.roleId == 1 || userinfo.roleId == 3")
+        //-   template(slot-scope='scope')
+        //-     el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -25,17 +28,21 @@
           :page-size="pageSize"
           layout=" prev, pager, next,total"
           :total="totalPage")
-
+  add-merchants(:visible.sync="merchantVisible" @finish="getTableData" :id="4")
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import { delUser } from "@/api/user";
+import addMerchants from "@/views/members/merchants/addMerchants";
 import { getMerchants, changeRate } from "@/api/members";
 export default {
-  components: {},
+  components: {
+    addMerchants
+  },
   data() {
     return {
+      merchantVisible: false,
       loading: false,
       account: "", //
       tableData: [],

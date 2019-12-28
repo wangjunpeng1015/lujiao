@@ -4,7 +4,7 @@ div
     .container.layout-column
       .wjp-tools.layout-row__between
         div
-          el-button(type='primary' @click="addChannel") 添加收款方式
+          el-button(v-if="userinfo.roleId ==4" type='primary' @click="addChannel") 添加收款方式
         .layout-row.buttons
           el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
             el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
@@ -18,8 +18,11 @@ div
             template(slot-scope='scope')
               span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
+          el-table-column(label='金额')
+            template(slot-scope='scope')
+              span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
           el-table-column(prop='remark', label='备注')
-          el-table-column(label='编辑')
+          el-table-column(label='编辑' v-if="userinfo.roleId == 4")
             template(slot-scope='scope')
               el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
           el-table-column(label='操作')
@@ -46,7 +49,7 @@ div
 <script>
 import { getPays, updatePayUse, delConfigPay } from "@/api/pay";
 import { cloneDeep } from "lodash";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { decrypt } from "@/utils/index";
 import AddModal from "@/components/Pay/AddModal";
 export default {
@@ -56,9 +59,7 @@ export default {
   },
   computed: {
     ...mapState(["settings"]),
-    // payWayDictId () {
-    //   return this.payWayId
-    // },
+    ...mapGetters(["userinfo"]),
     payWay() {
       if (this.settings.dict && !!this.account) {
         let alis = this.settings.dict.PayWay.dicts.filter(n =>
@@ -115,7 +116,7 @@ export default {
       this.form = {
         id: form.id,
         payWayDictId: form.payWayDictId,
-        merchantIds: form.merchants,
+        // merchantIds: form.merchants,
         used: form.used,
         remark: form.remark,
         singleCeilingMin: form.singleCeilingMin,
@@ -193,8 +194,8 @@ export default {
     },
     addChannel() {
       this.form = {
-        contentObj: {},
-        merchantIds: []
+        contentObj: {}
+        // merchantIds: []
       };
       this.isAdd = true;
       this.drawerVisible = true;

@@ -2,7 +2,7 @@
 .orders-container.layout-column
     .wjp-tools.layout-row__between
       div
-         el-button(v-if="userinfo.roleId != 4" type='primary' @click="addOrder") 新增订单
+         el-button(v-if="userinfo.roleId == 1" type='primary' @click="addOrder") 新增订单
       .layout-row.buttons.align-center
         el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
@@ -12,7 +12,6 @@
         el-input(v-model='merchantOrderNo',@keyup.enter.native="getTableData" placeholder='商户订单号' style="width:200px;")
         el-date-picker(v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期')
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
-        el-button(type='primary' @click="getTableData" :disabled="loading") 刷 新
     .wjp-content.flex.layout-column
         el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
             //- el-table-column(fixed prop='id', label='id', width='50')
@@ -39,9 +38,12 @@
             el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
-            el-table-column(label='订单备注',show-overflow-tooltip)
+            el-table-column(label='系统备注',show-overflow-tooltip)
               template(slot-scope='scope')
                 span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.remark }}
+            el-table-column(label='商家备注',show-overflow-tooltip)
+              template(slot-scope='scope')
+                span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
             //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
@@ -228,31 +230,37 @@ export default {
     },
     //补单
     supplement(data) {
-      this.$prompt(
-        "请输入补单备注：",
+      this.$confirm(
         `单号：${data.orderNum}  金额：${data.actualAmount}`,
+        "确认",
         {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          inputPlaceholder: "补单备注"
+          type: "warning"
         }
-      ).then(({ value }) => {
-        this.loading = true;
-        supplement({
-          id: data.id,
-          remark: value
+      )
+        .then(() => {
+          this.loading = true;
+          supplement({
+            id: data.id
+          })
+            .then(res => {
+              this.$message.success("补单成功！");
+            })
+            .catch(err => {
+              this.$message.error("补单失败！");
+            })
+            .finally(_ => {
+              this.loading = false;
+              this.getTableData();
+            });
         })
-          .then(res => {
-            this.$message.success("补单成功！");
-          })
-          .catch(err => {
-            this.$message.error("补单失败！");
-          })
-          .finally(_ => {
-            this.loading = false;
-            this.getTableData();
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
           });
-      });
+        });
     },
     getTableData() {
       this.loading = true;

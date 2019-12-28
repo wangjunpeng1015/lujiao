@@ -1,9 +1,9 @@
 <template lang="pug">
  el-dialog(title='配置', :visible.sync='visible',  width='40%' :close-on-click-modal="false" :before-close="cancel")
     el-form(:model='form', ref='form', label-width='120px')
-      el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
-        el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
-          el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //- el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
+      //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
+      //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
       //当面付
       div(v-if="form.payWayDictId == 5")
         el-form-item(label='appid', prop='name')
@@ -95,11 +95,11 @@
           el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
           |-
           el-input(v-model='form.singleCeilingMax' placeholder="设置单次最大金额(以防风控)" style="width:45%")
-      el-form-item(label="开通通道商户", prop='merchantIds')
-        el-checkbox-group(v-model='form.merchantIds')
-          el-checkbox(v-for="(item,i) in merchants" :key="i" :label='item.id') {{ item.account }}
-      el-form-item(label="商户利率", prop='merchantInterestRate' v-if="isAdd")
-        el-input(v-model='form.merchantInterestRate' placeholder="请填写通道利率(不填默认0.03)")
+      //- el-form-item(label="开通通道商户", prop='merchantIds')
+      //-   el-checkbox-group(v-model='form.merchantIds')
+      //-     el-checkbox(v-for="(item,i) in merchants" :key="i" :label='item.id') {{ item.account }}
+      //- el-form-item(label="商户利率", prop='merchantInterestRate' v-if="isAdd")
+      //-   el-input(v-model='form.merchantInterestRate' placeholder="请填写通道利率(不填默认0.03)")
       el-form-item(:label="form.payWayDictId == 24 ? '班级-理由-金额' : '备注'", prop='remark')
         el-input(v-model='form.remark' :placeholder="form.payWayDictId == 24 ? '请按照格式：班级-理由-金额 填写' : '备注'")
     span.dialog-footer(slot='footer')
@@ -140,7 +140,7 @@ export default {
     return {
       loading: false,
       form: {
-        merchantIds: [],
+        // merchantIds: [],
         contentObj: {}
       },
       trules: {},

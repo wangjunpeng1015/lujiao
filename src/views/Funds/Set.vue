@@ -24,7 +24,7 @@
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
   .funds-header.layout-row__between
-    el-button(type="primary" size="mini" @click="dialogShow = true") 添加支付宝账号
+    el-button(v-if="userinfo.roleId == 4" type="primary" size="mini" @click="dialogShow = true") 添加支付宝账号
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item(label='金额', )
         .layout-row
@@ -75,6 +75,7 @@
 
 <script>
 import Drawer from "@/components/Pay/Drawer";
+import { mapGetters } from "vuex";
 import {
   getAllAcount,
   delAcount,
@@ -87,7 +88,10 @@ export default {
   components: {
     Drawer
   },
-  data () {
+  computed: {
+    ...mapGetters(["userinfo"])
+  },
+  data() {
     return {
       channels: [],
       visible: false,
@@ -101,26 +105,26 @@ export default {
       min: "",
       max: "",
       news: {
-        account: '',
-        city: 'defualt',
-        dailyCeiling: '',
-        accountType: 'ali'
+        account: "",
+        city: "defualt",
+        dailyCeiling: "",
+        accountType: "ali"
       },
       newMoney: {
-        money: "",
+        money: ""
       },
       currentRow: {
-        className: ''
+        className: ""
       },
       list: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
       pageSize: 10 //当前页显示数量
-    }
+    };
   },
-  mounted () {
-    this.getAllAcount()
-    this.getAllchannel()
+  mounted() {
+    this.getAllAcount();
+    this.getAllchannel();
   },
   methods: {
     del(id) {
@@ -185,9 +189,9 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          account: '经费', //账号
+          account: "经费", //账号
           used: this.used, //是否启用
-          accountType: 'ali', //类型
+          accountType: "ali", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -204,34 +208,38 @@ export default {
           this.loading = false;
         });
     },
-    saveAccount () {
-      this.saveAccountLoading = true
-      let account = this.news.account + '-经费'
-      let param = Object.assign({}, this.news, {account: this.news.account + '-经费'})
-      addAcount(param).then(res => {
-        this.getAllAcount();
-        this.$message.success("添加账号成功！");
-        this.closeDialog()
-      }).catch(err => {
-        this.$message.error(err.message);
-      })
-      .finally(e => {
-        this.loading = false;
+    saveAccount() {
+      this.saveAccountLoading = true;
+      let account = this.news.account + "-经费";
+      let param = Object.assign({}, this.news, {
+        account: this.news.account + "-经费"
       });
+      addAcount(param)
+        .then(res => {
+          this.getAllAcount();
+          this.$message.success("添加账号成功！");
+          this.closeDialog();
+        })
+        .catch(err => {
+          this.$message.error(err.message);
+        })
+        .finally(e => {
+          this.loading = false;
+        });
     },
-    closeDialog () {
+    closeDialog() {
       this.news = {
-        account: '',
-        city: 'defualt',
-        dailyCeiling: '',
-        accountType: 'ali'
-      }
-      this.dialogShow = false
-      this.visible = false
+        account: "",
+        city: "defualt",
+        dailyCeiling: "",
+        accountType: "ali"
+      };
+      this.dialogShow = false;
+      this.visible = false;
     },
     openSet(row) {
-      this.visible = true
-      this.currentRow = JSON.parse(JSON.stringify(row))
+      this.visible = true;
+      this.currentRow = JSON.parse(JSON.stringify(row));
     },
     //图片上传
     uploadUrl(raw) {
@@ -253,13 +261,13 @@ export default {
           }
         };
       };
-    },
+    }
   }
-}
+};
 </script>
 
 <style scoped>
-.funds-header .el-form-item{
+.funds-header .el-form-item {
   margin-bottom: 0;
 }
 </style>

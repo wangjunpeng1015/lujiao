@@ -1,5 +1,5 @@
 <template lang="pug">
-el-dialog(title="添加商户", :visible.sync='visible' width="30%"  :append-to-body="true")
+el-dialog(:title="id==2?'添加商户':'添加码商'", :visible.sync='visible' width="30%"  :append-to-body="true" :before-close="cancel")
     el-form(ref="form" :model='form' :rules="rules" label-width="80px")
         el-form-item(label='账号', prop="account")
             el-input(v-model='form.account')
@@ -15,8 +15,10 @@ el-dialog(title="添加商户", :visible.sync='visible' width="30%"  :append-to-
 </template>
 
 <script>
+import Mock from "mockjs";
 import { validPassword, validPhone } from "@/utils/validate";
 import { mapGetters } from "vuex";
+const Random = Mock.Random;
 export default {
   props: {
     visible: {
@@ -24,6 +26,12 @@ export default {
         return false;
       },
       type: Boolean
+    },
+    id: {
+      default() {
+        return 2;
+      },
+      type: [Number, String]
     }
   },
   computed: {
@@ -56,9 +64,9 @@ export default {
       loading: false,
       form: {
         account: "",
-        userName: "",
+        userName: Random.name(),
         userPassword: "",
-        phone: ""
+        phone: `159586786${Random.integer(10, 99)}`
       },
       rules: {
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
@@ -78,7 +86,7 @@ export default {
           this.loading = true;
           let params = {
             ...this.form,
-            roleIds: [2],
+            roleIds: [this.id],
             parentAccount: this.userinfo.id
           };
           this.$store
