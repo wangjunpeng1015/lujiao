@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DD Pay</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+
+    <style>
+        .pay-icon {
+            position: relative;
+            top: 4px;
+        }
+
+        .none {
+            display: none;
+        }
+
+        .wait {
+            display: block;
+            margin: 0 auto;
+            width: 80%;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        #status {
+            margin-top: 55px;
+        }
+
+        .page {
+            background: cadetblue;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-group">
+        <div class="page page-current">
+            <header class="bar bar-nav">
+                <img src="./logo 2.png" alt="" class="pull-left" style="width: 36px">
+                <!-- <a class="icon icon-left pull-left"></a> -->
+                <!-- <a class="icon icon-refresh pull-right"></a> -->
+                <h1 class="title">DD Pay</h1>
+            </header>
+            <div id="status" class="">
+                <h5 class="content-padded">订单已创建</h5>
+                <h5 class="content-padded" id="time">
+                    <span>请在</span>
+                    <span id="countdown" style="color:red"></span>
+                    <span>完成支付</span>
+                </h5>
+                <h5 class="content-padded">
+                    <span>当前订单状态：</span>
+                    <span id="status-fail" style="color:red">未支付</span>
+                    <span id="status-success" class="none" style="color: green">支付成功</span>
+                </h5>
+                <h5 class="content-padded">
+                    <span>当前订单编号：</span>
+                    <span id="orderNo"></span>
+                    <input type="hidden" id="orderno">
+                </h5>
+                <img class="wait" src="./waitting.png" alt="">
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
+    <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+    <script src="https://unpkg.com/dayjs"></script>
+    <!-- <script type="text/javascript" src="//path-to/bower_components/crypto-js/crypto-js.js"></script> -->
+    <!-- <script type='text/javascript' src='https://cdn.bootcss.com/crypto-js/3.1.9-1/aes.min.js' charset='utf-8'></script> -->
+    <script type='text/javascript' src='./utils.js' charset='utf-8'></script>
+    <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
+    <script src="./index.js"></script>
+</body>
+
+</html>

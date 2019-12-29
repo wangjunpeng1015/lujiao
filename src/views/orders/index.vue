@@ -49,14 +49,14 @@
             //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
               template(slot-scope='scope')
-                el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
+                el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus || scope.row.payStatusDictValue=='支付超时'" :active-text="scope.row.callBackStatus?'成功':'失败'")
             el-table-column(prop='payStatusDictValue', label='状态',width="80")
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
             el-table-column(prop='payStatusDictValue', label='操作',width="160")
                 template(slot-scope='scope')
-                    el-button(v-if="scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
-                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
+                    el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
+                    el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(
