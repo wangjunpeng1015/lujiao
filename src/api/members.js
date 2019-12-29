@@ -62,3 +62,10 @@ export const delMerchantChannel = (id) => {
         method: 'delete',
     })
 }
+//修改码商账号状态
+export const changeCoderStatus = id => {
+  return request({
+    url: `/pcAccount/codeMerchant/${id}`,
+    method: 'get'
+  })
+}

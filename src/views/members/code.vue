@@ -9,6 +9,9 @@
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
         el-table-column(prop='account', label='账号', )
+        el-table-column(label="是否启用账号以及其收款码")
+          template(slot-scope='scope')
+            el-switch(v-model='scope.row.status',@change="changeStatus(scope.row.id)" :active-text="scope.row.status?'启用':'停用'")
         //- el-table-column(prop='account', label='所属代理', )
         el-table-column(prop='phone', label='手机号', )
         el-table-column(prop='balance', label='当日收款', )
@@ -34,6 +37,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { delUser } from "@/api/user";
+import { changeCoderStatus } from "@/api/members";
 import addMerchants from "@/views/members/merchants/addMerchants";
 import { getMerchants, changeRate } from "@/api/members";
 export default {
@@ -59,6 +63,15 @@ export default {
     this.getTableData();
   },
   methods: {
+    changeStatus (id) {
+      changeCoderStatus(id).then(res => {
+        if (res.success) {
+          this.$message.success('状态修改成功')
+        } else {
+          this.$message.erroe('状态修改失败')
+        }
+      })
+    },
     del(id) {
       this.$confirm("确定删除当前码商?", "提示", {
         confirmButtonText: "确定",
