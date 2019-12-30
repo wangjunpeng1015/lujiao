@@ -110,6 +110,12 @@ export default {
           desc: "支付金额"
         },
         {
+          paramName: "sign",
+          exp: "签名",
+          type: "String",
+          desc: "md5(orderNo+merchantOrderNo+actualAmount+商户秘钥)"
+        },
+        {
           paramName: "remark",
           exp: "商户创建订单时候传得备注",
           type: "String",

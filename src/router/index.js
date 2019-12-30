@@ -145,6 +145,29 @@ export const asyncRoutes = [
       // }
     ]
   },
+  {
+    path: '/facePay',
+    component: Layout,
+    redirect: '/facePay/set',
+    name: 'funds',
+    meta: {
+      title: '当面付通道',
+      icon: 'el-icon-s-tools',
+      roles: [1, 3, 4],
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/facePay/set'),
+        meta: {
+          title: '当面付通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+    ]
+  },
   // {
   //   path: '/personalCode',
   //   component: Layout,
@@ -208,7 +231,7 @@ export const asyncRoutes = [
     meta: {
       title: '客户管理',
       icon: 'el-icon-user-solid',
-      roles: [1, 3, 4]
+      roles: [1, 2, 3, 4]
     },
     children: [
       {
@@ -221,7 +244,7 @@ export const asyncRoutes = [
         path: 'merchants',
         name: 'merchants',
         component: () => import('@/views/members/merchants'),
-        meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 3] }
+        meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 2, 3] }
       },
       {
         path: 'code',

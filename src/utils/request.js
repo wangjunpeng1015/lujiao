@@ -93,8 +93,6 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log(111111111111)
-    console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',

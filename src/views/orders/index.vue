@@ -49,7 +49,7 @@
             //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
               template(slot-scope='scope')
-                el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus || scope.row.payStatusDictValue=='支付超时'" :active-text="scope.row.callBackStatus?'成功':'失败'")
+                el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
             el-table-column(prop='payStatusDictValue', label='状态',width="80")
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
