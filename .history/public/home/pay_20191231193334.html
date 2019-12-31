@@ -461,7 +461,6 @@
     if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
         if (window.AlipayJSBridge) {
             if (!JSON.parse(getUserParam('autho'))) {
-                // window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_base&redirect_uri=http%3A%2F%2Fgewf.free.idcfengye.com%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
                 window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_base&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
             } else {
                 if (JSON.parse(getUserParam('isOk'))) {

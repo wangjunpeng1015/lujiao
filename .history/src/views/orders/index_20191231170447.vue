@@ -150,7 +150,16 @@ export default {
   },
   methods: {
     getPayUrl(row) {
-      return window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
+      // return window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
+      let url =
+        window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
+      if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        if (row.payWayDictValue.startsWith("alipay")) {
+          return "alipays://platformapi/startapp?appId=20000067&url=" + url;
+        }
+      }
+      return url;
     },
     changeStatus(id) {
       this.$confirm("确定修改回调状态?", "提示", {
