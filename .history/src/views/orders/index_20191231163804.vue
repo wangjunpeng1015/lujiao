@@ -6,13 +6,11 @@
       .layout-row.buttons.align-center
         el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData" style="width:120px")
+        el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-input(v-model='orderNo',@keyup.enter.native="getTableData" placeholder='系统订单号' style="width:200px;")
         el-input(v-model='merchantOrderNo',@keyup.enter.native="getTableData" placeholder='商户订单号' style="width:200px;")
-        el-input(v-model='remark',@keyup.enter.native="getTableData" placeholder='系统备注' style="width:150px;")
-        el-input(v-model='merchantRemark',@keyup.enter.native="getTableData" placeholder='商家备注' style="width:150px;")
-        el-date-picker(v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期'  value-format="yyyy-MM-dd" style="width:250px;")
+        el-date-picker(v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期')
         el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content.flex.layout-column
         el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
@@ -87,7 +85,6 @@ import {
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
 import { debuglog } from "util";
-import { clearInterval } from "timers";
 export default {
   name: "orders",
   components: {
@@ -95,14 +92,11 @@ export default {
   },
   data() {
     return {
-      siv: null, //定时器
       addVisible: false,
       suppLoading: false,
       channel: [],
       loading: false,
       type: "",
-      remark: "",
-      merchantRemark: "",
       state: "",
       time: "",
       orderNo: "", //搜索订单号
@@ -133,8 +127,6 @@ export default {
       this.getAllchannel();
     }
     this.getTableData();
-    window.clearInterval(this.siv);
-    this.cycle();
     this.$eventBus.$on("", data => {
       this.tableData.concat(data);
       if (data.payWayDictValue === "") {
@@ -145,13 +137,17 @@ export default {
       }
     });
   },
-  destroyed() {
-    window.clearInterval(this.siv);
-  },
   methods: {
     getPayUrl(row) {
-      return (url =
-        window.location.origin + "/home/pay.html?orderNo=" + row.orderNum);
+      let url =
+        window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
+      if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+        //移动端
+        if (row.payWayDictValue.startsWith("alipay")) {
+          return "alipays://platformapi/startapp?appId=20000067&url=" + url;
+        }
+      }
+      return url;
     },
     changeStatus(id) {
       this.$confirm("确定修改回调状态?", "提示", {
@@ -272,10 +268,7 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          merchantRemark: this.merchantRemark,
-          remark: this.remark,
-          minTime: this.time[0] || "",
-          maxTime: this.time[1] || "",
+          // userId: this.userinfo.id, //商户id
           orderNum: this.orderNo, //订单号
           merchantOrderNo: this.merchantOrderNo, //订单号
           payWay: this.type, //支付方式
@@ -301,12 +294,6 @@ export default {
         .finally(_ => {
           this.loading = false;
         });
-    },
-    //轮训查询订单
-    cycle() {
-      this.siv = setInterval(() => {
-        this.getTableData();
-      }, 1000 * 60);
     },
     sizeChange(num) {
       this.pageSize = num;

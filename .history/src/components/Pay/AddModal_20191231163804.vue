@@ -25,16 +25,6 @@
           .layout-row__between.align-center
             .layout-row.align-center
               img.img(:src="form.contentObj.url")
-        el-form-item(v-if="!isEmpty(form.contentObj)" required)
-          el-popover(placement='right', trigger='hover')
-            img.pop-img(src="@/assets/img/level1.jpg")
-            img.pop-img(src="@/assets/img/level2.jpg")
-            img.pop-img(src="@/assets/img/level3.jpg")
-            i.el-icon-question.red(slot='reference') 查看步骤
-          el-input(v-model='form.contentObj.bizNo' placeholder="请填写支付宝账单号")
-          p.red 请再三确认输入的订单号正确，否则不能自动补单！！！
-          p.red 请再三确认输入的订单号正确，否则不能自动补单！！！
-          p.red 请再三确认输入的订单号正确，否则不能自动补单！！！
       //个码（暂时屏蔽转账自动金额）
       div(v-if="form.payWayDictId == 6 || form.payWayDictId == 7")
         el-form-item(label='收款二维码')
@@ -247,10 +237,5 @@ export default {
   & + div {
     margin-left: 10px;
   }
-}
-.pop-img {
-  border: 1px solid black;
-  margin-right: 10px;
-  width: 200px;
 }
 </style>

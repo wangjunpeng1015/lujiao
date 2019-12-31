@@ -7,7 +7,7 @@
       el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='码商账号' style="width:200px;")
       el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:data='tableData', style='width: 100%', height='550')
+      el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
         el-table-column(prop='account', label='账号', )
         el-table-column(label="是否启用账号以及其收款码")
           template(slot-scope='scope')
@@ -63,14 +63,14 @@ export default {
     this.getTableData();
   },
   methods: {
-    changeStatus(id) {
+    changeStatus (id) {
       changeCoderStatus(id).then(res => {
         if (res.success) {
-          this.$message.success("状态修改成功");
+          this.$message.success('状态修改成功')
         } else {
-          this.$message.erroe("状态修改失败");
+          this.$message.erroe('状态修改失败')
         }
-      });
+      })
     },
     del(id) {
       this.$confirm("确定删除当前码商?", "提示", {

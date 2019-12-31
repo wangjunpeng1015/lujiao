@@ -224,8 +224,8 @@ export default {
     },
     getAllchannel() {
       getAllchannel({
-        pageNo: this.dcurrentPage,
-        pageSize: this.dpageSize,
+        pageNo: this.currentPage,
+        pageSize: this.pageSize,
         param: {
           proxyAccount: this.chooseProxy.account,
           minRate: this.minRate,

@@ -19,7 +19,6 @@
       span(style="margin-right: 10px;align-self:center") 1.
       el-tag(size="small" style="align-self:center") 异步通知
     p.line 用户支付成功后，由支付系统向商户应用发送post请求通知
-      span.red ( 请返回success字符串，否则无法通知 )
     p.line 方式: POST
     h1.line 参数说明:
     el-table(:data="notifyParams" style="width: 100%" border stripe)
