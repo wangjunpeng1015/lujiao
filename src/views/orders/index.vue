@@ -40,9 +40,7 @@
             el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
-            el-table-column(label='系统备注',show-overflow-tooltip)
-              template(slot-scope='scope')
-                span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.remark }}
+            el-table-column(prop='remark', label='系统备注',show-overflow-tooltip)
             el-table-column(label='商家备注',show-overflow-tooltip)
               template(slot-scope='scope')
                 span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
