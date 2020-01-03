@@ -71,6 +71,13 @@ export default {
           isRequired: "是"
         },
         {
+          paramName: "return_url",
+          exp: "商户回调",
+          type: "String",
+          desc: "如填写，优先匹配这个回调；如未填写，调用商户配置回调",
+          isRequired: "否"
+        },
+        {
           paramName: "ip",
           exp: "用户IP",
           type: "String",

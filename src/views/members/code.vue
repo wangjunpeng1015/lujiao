@@ -75,7 +75,7 @@ export default {
       });
     },
     del(id) {
-      this.$confirm("确定删除当前码商?", "提示", {
+      this.$confirm("删除后订单和确定删除当前码商?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -89,6 +89,7 @@ export default {
             .catch(err => {})
             .finally(e => {
               this.loading = false;
+              this.getTableData();
             });
         })
         .catch(() => {
