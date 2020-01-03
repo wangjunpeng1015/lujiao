@@ -185,7 +185,6 @@ export default {
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;
-            content = content.filter(item => item.state);
             content.map(item => {
               item.oldinterestRate = item.interestRate;
             });

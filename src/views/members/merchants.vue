@@ -12,6 +12,7 @@
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
           el-table-column(prop='account', label='账号', )
+          el-table-column(prop='rootAccount', label='代理', )
           el-table-column(prop='userName', label='商户姓名', )
           el-table-column(label='支付回调', )
             template(slot-scope='scope')

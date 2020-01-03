@@ -249,6 +249,11 @@
             <img src="./zfb.png" alt="">
             <h3 class="scan-tip">请使用给支付宝进行付款</h3>
             <van-button type="info" @click="goPay">使用支付宝APP付款</van-button>
+            <p class="scan-tip red">如遇无法跳转</p>
+            <p class="left" style="width:12rem">1.长按二维码保存</p>
+            <p class="left" style="width:12rem;margin-bottom: 1rem">2.打开支付宝扫一扫,选择二维码</p>
+            <div id="qrcode"></div>
+
         </div>
         <!-- 倒计时 -->
         <van-count-down ref="cdown" :time="time" v-show="showTip" :auto-start="false" @finish="finish">
@@ -267,11 +272,10 @@
 <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
 <script src="./vant.js"></script>
 <script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script>
-<!-- <script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script> -->
+<script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='./utils.js' charset='utf-8'></script>
 <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
 <script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
-<!-- <script src="./index.js"></script> -->
 <script>
 
     const getUserParam = (variable) => {
@@ -282,6 +286,21 @@
             if (pair[0] == variable) { return pair[1]; }
         }
         return (false);
+    }
+    const orderState = () => {
+        return new Promise((resolve, reject) => {
+            axios({
+                method: "POST",
+                url: frontUrl + '/backend/order/findOrderNum',
+                data: {
+                    orderNum: getUserParam("orderNo"),
+                },
+            }).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        })
     }
     const url =
         window.location.origin + "/home/pay.html?orderNo=" + getUserParam('orderNo');
@@ -295,8 +314,6 @@
             el: '#app',
             data() {
                 return {
-                    // authoVisible: false,
-                    baseUrl: frontUrl + '/backend',
                     orderNo: '',
                     diffTime: 0,
                     orderData: {
@@ -364,13 +381,7 @@
                     return getUserParam(key)
                 },
                 orderState() {
-                    axios({
-                        method: "POST",
-                        url: this.baseUrl + '/order/findOrderNum',
-                        data: {
-                            orderNum: getUserParam("orderNo"),
-                        },
-                    }).then(res => {
+                    orderState().then(res => {
                         if (res.data.code == 200) {
                             if (res.data.data) {
                                 let data = res.data.data;
@@ -382,8 +393,17 @@
                                         this.showcode = false
                                     } else {
                                         this.showcode = true
+                                        const { qrUrl } = JSON.parse(data.payContent)
+                                        setTimeout(() => {
+                                            new QRCode(document.getElementById("qrcode"), {
+                                                text: qrUrl,
+                                                width: 200,
+                                                height: 200,
+                                                colorDark: "#000000",
+                                                colorLight: "#ffffff",
+                                            });
+                                        }, 1000)
                                     }
-
                                 }
                             } else {
                                 if (res.data.message === "订单支付成功") {
@@ -459,27 +479,43 @@
             },
         })
     }
-    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
-        if (window.AlipayJSBridge) {
-            if (!JSON.parse(getUserParam('autho'))) {
-                window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
-            } else {
-                if (JSON.parse(getUserParam('isOk'))) {
+    orderState().then(res => {
+        if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            if (res.data.data) {
+                if (res.data.data.payWayDictId == 5) {
                     init()
                 } else {
-                    vant.Dialog.alert({
-                        message: decodeURIComponent(getUserParam('status'))
-                    }).then(res => {
-                        // window.location.href = window.location.origin + window.location.pathname + '?orderNo=' + getUserParam('orderNo')
-                    })
+                    if (window.AlipayJSBridge) {
+                        //当面付
+                        if (!JSON.parse(getUserParam('autho'))) {
+                            window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
+                        } else {
+                            if (JSON.parse(getUserParam('isOk'))) {
+                                init()
+                            } else {
+                                vant.Dialog.alert({
+                                    message: decodeURIComponent(getUserParam('status'))
+                                }).then(res => {
+                                    // window.location.href = window.location.origin + window.location.pathname + '?orderNo=' + getUserParam('orderNo')
+                                })
+                            }
+                        }
+
+                    } else {
+                        window.location.href = "alipays://platformapi/startapp?appId=20000067&url=" + url;
+                    }
                 }
+            } else {
+                vant.Dialog.alert({
+                    message: res.data.message
+                })
             }
         } else {
-            window.location.href = "alipays://platformapi/startapp?appId=20000067&url=" + url;
+            init()
         }
-    } else {
-        init()
-    }
+    }).catch(err => {
+
+    })
 
 </script>
 

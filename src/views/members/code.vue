@@ -9,16 +9,18 @@
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:data='tableData', style='width: 100%', height='550')
         el-table-column(prop='account', label='账号', )
+        el-table-column(prop='rootAccount', label='代理')
+        el-table-column(prop='pcodeAccount', label='上级码商', v-if="userinfo.level==2")
+        el-table-column(prop='level', label='等级')
         el-table-column(label="是否启用账号以及其收款码")
           template(slot-scope='scope')
             el-switch(v-model='scope.row.status',@change="changeStatus(scope.row.id)" :active-text="scope.row.status?'启用':'停用'")
-        //- el-table-column(prop='account', label='所属代理', )
         el-table-column(prop='phone', label='手机号', )
         el-table-column(prop='balance', label='当日收款', )
         el-table-column(prop='createTime', label='创建时间',)
-        //- el-table-column(width="100" v-if="userinfo.roleId == 1 || userinfo.roleId == 3")
-        //-   template(slot-scope='scope')
-        //-     el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
+        el-table-column(width="100" v-if="userinfo.roleId == 1 || userinfo.roleId == 3")
+          template(slot-scope='scope')
+            el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(

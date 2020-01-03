@@ -29,10 +29,10 @@
             el-table-column(prop='orderUserAccount', label='商户账号',width="100" show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
             //- el-table-column(prop='orderName', label='名称', )
-            el-table-column(label='原始金额',width="100",show-overflow-tooltip)
-              template(slot-scope='scope')
-                span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.amount }}
-                span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.amount }}
+            //- el-table-column(label='原始金额',width="100",show-overflow-tooltip)
+            //-   template(slot-scope='scope')
+            //-     span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.amount }}
+            //-     span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.amount }}
             el-table-column(label='实际金额',width="100",show-overflow-tooltip)
               template(slot-scope='scope')
                 span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.actualAmount }}
@@ -303,7 +303,7 @@ export default {
     cycle() {
       this.siv = setInterval(() => {
         this.getTableData();
-      }, 1000 * 60);
+      }, 1000 * 30);
     },
     sizeChange(num) {
       this.pageSize = num;
