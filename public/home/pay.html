@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.2/lib/index.css">
+    <link rel="stylesheet" href="./vant.index.css">
     <style>
         [v-cloak] {
             display: none;
@@ -177,7 +177,9 @@
 </head>
 
 <body>
+    <img style="width:100%;height:auto;margin:0 auto;display:none" id="yd" src="./yd1.jpg" alt="" />
     <div id="app" v-cloak>
+
         <!-- 授权弹窗 -->
         <!-- <van-popup :round="true" :close-on-click-overlay="false" position="bottom" v-model="authoVisible">
             <div class="layout-row" style="justify-content: left;">
@@ -221,7 +223,9 @@
                             </div>
                             <button class="scan-tip copy-link" data-clipboard-target="#remark">打开支付宝支付</button>
                             <div class="red center" style="background:#ffa500">支付成功后，请勿加入班级，否则可能无法到账！！</div>
+
                             <div class="layout-row">
+                                <img />
                                 <img style="height: auto;display: block" src="./qs.png" alt="">
                                 <img style="height: auto;display: block" src="./payed.jpg" alt="">
                             </div>
@@ -245,14 +249,18 @@
             <!-- <div class="help">任何问题请联系客服</div> -->
         </div>
         <!-- 原生 -->
-        <div v-show="isNative" class="not-native">
-            <img src="./zfb.png" alt="">
-            <h3 class="scan-tip">请使用给支付宝进行付款</h3>
-            <van-button type="info" @click="goPay">使用支付宝APP付款</van-button>
-            <p class="scan-tip red">如遇无法跳转</p>
-            <p class="left" style="width:12rem">1.长按二维码保存</p>
-            <p class="left" style="width:12rem;margin-bottom: 1rem">2.打开支付宝扫一扫,选择二维码</p>
+        <div v-show="isNative" class="not-native" style="padding-top:0">
             <div id="qrcode"></div>
+            <p class="center">1.截屏保存当前页面/或者长按识别二维码</p>
+            <p class="center" style="margin-bottom: 1rem">2.打开支付宝扫一扫,选择二维码</p>
+            <!-- <p style="margin-top:5px">如果截图 提示 </p> -->
+            <p style="margin-top:10px"><span class="scan-tip red" style="font-weight:bold">如果截图 提示 请在支付宝里面打开的 关闭支付宝后
+                    重新打开截图扫一扫</span></p>
+            <!-- <p class="red" style="font-weight:bold">请关闭支付宝后重新打开截图扫一扫</p> -->
+            <!-- <img src="./zfb.png" alt=""> -->
+            <!--            <h3 class="scan-tip" style="margin-top:5px">请使用给支付宝进行付款</h3>-->
+            <!--            <van-button type="info" @click="goPay">使用支付宝APP付款</van-button>-->
+            <van-button type="info" @click="goPay">点击付款</van-button>
 
         </div>
         <!-- 倒计时 -->
@@ -266,12 +274,12 @@
     </div>
 
 </body>
-<script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="https://cdn.bootcss.com/clipboard.js/2.0.4/clipboard.min.js"></script>
-<script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
+<script src="./polyfill.min.js"></script>
+<script src="./vue.min.js"></script>
+<script src="./clipboard.min.js"></script>
+<script src="./axios.min.js"></script>
 <script src="./vant.js"></script>
-<script src="https://unpkg.com/dayjs@1.8.18/dayjs.min.js"></script>
+<script src="./dayjs.min.js"></script>
 <script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='./utils.js' charset='utf-8'></script>
 <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
@@ -314,6 +322,7 @@
             el: '#app',
             data() {
                 return {
+                    showYD: false,
                     orderNo: '',
                     diffTime: 0,
                     orderData: {
@@ -484,6 +493,11 @@
             if (res.data.data) {
                 if (res.data.data.payWayDictId == 5) {
                     init()
+                    //                    if (window.AlipayJSBridge) {
+                    //                      init()
+                    //                    } else {
+                    //                      window.location.href = "alipays://platformapi/startapp?appId=20000067&url=" + url;
+                    //                    }
                 } else {
                     if (window.AlipayJSBridge) {
                         //当面付
@@ -502,7 +516,10 @@
                         }
 
                     } else {
-                        window.location.href = "alipays://platformapi/startapp?appId=20000067&url=" + url;
+                        document.getElementById('yd').style.display = 'block'
+                        setTimeout(function () {
+                            window.location.href = "alipays://platformapi/startapp?appId=20000067&url=" + url;
+                        }, 1000)
                     }
                 }
             } else {
