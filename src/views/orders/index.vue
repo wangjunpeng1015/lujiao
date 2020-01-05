@@ -148,7 +148,9 @@ export default {
   },
   methods: {
     getPayUrl(row) {
-      return window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
+      return (
+        window.location.origin + "/home/transit.html?orderNo=" + row.orderNum
+      );
     },
     changeStatus(id) {
       this.$confirm("确定修改回调状态?", "提示", {

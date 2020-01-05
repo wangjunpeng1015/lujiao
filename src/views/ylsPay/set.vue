@@ -24,7 +24,6 @@
         el-button(size="mini" @click="closeDialog") 取消
   .funds-header.layout-row__between
     el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加yls账号
-    el-button(v-if="userinfo.roleId == 1" type="primary" size="mini" @click="createOrderVisible = true") 创建yls订单
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item(label='金额', )
         .layout-row
@@ -70,7 +69,6 @@
     :page-size="pageSize"
     layout="sizes, prev, pager, next,total"
     :total="totalPage")
-  add-order(:visible.sync="createOrderVisible"  )
 </template>
 
 <script>
@@ -97,7 +95,6 @@ export default {
     return {
       channels: [],
       visible: false,
-      createOrderVisible: false,
       loading: false,
       saveAccountLoading: false,
       setShow: false,
