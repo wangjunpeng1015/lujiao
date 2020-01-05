@@ -38,11 +38,11 @@ export const constantRoutes = [
     hidden: true
   },
   //注册
-  {
-    path: '/register',
-    component: () => import('@/views/register/index'),
-    hidden: true
-  },
+  // {
+  //   path: '/register',
+  //   component: () => import('@/views/register/index'),
+  //   hidden: true
+  // },
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -166,6 +166,39 @@ export const asyncRoutes = [
           roles: [1, 3, 4],
         }
       },
+    ]
+  },
+  {
+    path: '/ylsPay',
+    component: Layout,
+    redirect: '/ylsPay/set',
+    name: 'funds',
+    meta: {
+      title: 'yls通道',
+      icon: 'el-icon-s-tools',
+      roles: [1, 3, 4],
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/ylsPay/set'),
+        meta: {
+          title: 'yls通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      // {
+      //   path: 'orders',
+      //   name: 'orders',
+      //   component: () => import('@/views/ylsPay/orders'),
+      //   meta: {
+      //     title: 'yls订单',
+      //     icon: 'el-icon-s-tools',
+      //     roles: [1, 3, 4],
+      //   }
+      // }
     ]
   },
   // {

@@ -59,9 +59,9 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
         </span>
       </el-form-item>
-      <div class="right tips">
+      <!-- <div class="right tips">
         <router-link to="/register">注册</router-link>
-      </div>
+      </div>-->
       <el-button
         :loading="loading"
         type="primary"

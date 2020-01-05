@@ -11,13 +11,12 @@ el-dialog(title='添加订单', :close-on-click-modal="false",:visible.sync='vis
       el-input(type="number", v-model='form.money' style='width:200px')
   .dialog-footer(slot='footer')
     el-button(@click='cancel') 取 消
-    el-button(type='primary',:loading="creatLoading" @click='submitForm') 确 定
+    el-button(type='primary', @click='submitForm') 确 定
 </template>
 
 <script>
-import dayjs from "dayjs";
-import md5 from "js-md5";
 import { channelToPayWay } from "@/utils";
+import { uuid2, createSign, createQrpayParam } from "@/utils/yls";
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
 import { createOrder, getMerchants } from "@/api/order";
@@ -57,7 +56,6 @@ export default {
   data() {
     return {
       loading: false,
-      creatLoading: false,
       channel: [],
       merchants: [],
       form: {
@@ -128,7 +126,6 @@ export default {
     submitForm() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.creatLoading = true;
           let merchant = this.merchants.find(
             item => item.merchantNumber == this.form.merchantNum
           );
@@ -140,7 +137,7 @@ export default {
             ...this.form,
             merchantOrderNo: "default",
             sign,
-            ip: returnCitySN.cip || "0.0.0.0"
+            ip: returnCitySN.cip
           })
             .then(res => {
               this.$message.success("订单创建成功！");
@@ -149,9 +146,7 @@ export default {
             .catch(err => {
               this.$message.error("订单创建失败！");
             })
-            .finally(_ => {
-              this.creatLoading = false;
-            });
+            .finally(_ => {});
         } else {
           console.log("error submit!!");
           return false;
