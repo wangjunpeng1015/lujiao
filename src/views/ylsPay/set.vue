@@ -37,25 +37,24 @@
       el-form-item()
         el-button(type='primary', @click='getAllAcount' size="mini") 查 询
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%', height='550')
-    el-table-column(label="yls账号" width="250" prop="account")
-    el-table-column(label="今日额度" width="250" prop="dailyCeiling")
+    el-table-column(label="账号" width="250" prop="account")
+    el-table-column(label="今日剩余收款额度" width="250" prop="dailyCeiling")
     el-table-column(label='启用状态' width="200")
       template(slot-scope='scope')
         el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="已添加收款码")
+    el-table-column(label="单笔收款限额")
       template(slot-scope='scope')
         .layout-row
-          el-tag(
+          el-link(
             style="margin-left: 5px"
             v-for="(item, index) in scope.row.amountList"
             type="success"
-            size="small"
             :key="index"
           ) {{item}}
     el-table-column(label="操作" width="250")
       template(slot-scope='scope')
         .layout-row
-          el-button(type="primary" size="mini" @click="openSet(scope.row)") 添加账号
+          el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
           el-button(type="danger" size="mini" @click="del(scope.row.id)") 删除
   .page.layout-row.align-center.right(style="margin-top:20px")
     span 每页显示

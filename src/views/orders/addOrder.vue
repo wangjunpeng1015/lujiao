@@ -1,5 +1,5 @@
 <template lang="pug">
-el-dialog(title='添加订单', :close-on-click-modal="false",:visible.sync='visible' )
+el-dialog(title='添加订单',:visible.sync='visible' @close="cancel")
   el-form(:model='form' :rules="rules" ref="form" label-width="100px")
     el-form-item(label='商户账号', prop="merchantNum")
       el-select(v-model='form.merchantNum', placeholder='请选择收款通道方式'  @change="getAllchannel" style='width:200px')

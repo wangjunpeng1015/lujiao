@@ -62,31 +62,19 @@ export const constantRoutes = [
   },
 
   //订单
-  {
-    path: '/orders',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'orders',
-        component: () => import('@/views/orders/index'),
-        meta: { title: '订单管理', icon: 'el-icon-s-order', }
-      }
-    ]
-  },
-  //登录
-  {
-    path: '/record',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'record',
-        component: () => import('@/views/record/index'),
-        meta: { title: '登录记录', icon: 'el-icon-tickets' }
-      }
-    ]
-  },
+  // {
+  //   path: '/orders',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'orders',
+  //       component: () => import('@/views/orders/index'),
+  //       meta: { title: '订单管理', icon: 'el-icon-s-order', }
+  //     }
+  //   ]
+  // },
+
 ]
 export const asyncRoutes = [
   // {
@@ -118,8 +106,8 @@ export const asyncRoutes = [
     redirect: '/funds/set',
     name: 'funds',
     meta: {
-      title: '经费通道',
-      icon: 'el-icon-s-tools',
+      title: '轻松经费',
+      icon: 'el-icon-wallet',
       roles: [1, 3, 4],
     },
     children: [
@@ -128,21 +116,21 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/Funds/Set'),
         meta: {
-          title: '经费通道配置',
+          title: '经费配置',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }
       },
-      // {
-      //   path: 'orders',
-      //   name: 'orders',
-      //   component: () => import('@/views/Funds/Orders'),
-      //   meta: {
-      //     title: '经费订单',
-      //     icon: 'el-icon-s-tools',
-      //     roles: [1, 3, 4],
-      //   }
-      // }
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/Funds/Orders'),
+        meta: {
+          title: '经费订单',
+          icon: 'el-icon-s-order',
+          roles: [1, 3, 4],
+        }
+      }
     ]
   },
   {
@@ -151,8 +139,8 @@ export const asyncRoutes = [
     redirect: '/facePay/set',
     name: 'funds',
     meta: {
-      title: '当面付通道',
-      icon: 'el-icon-s-tools',
+      title: '当面付',
+      icon: 'el-icon-wallet',
       roles: [1, 3, 4],
     },
     children: [
@@ -161,11 +149,21 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/facePay/set'),
         meta: {
-          title: '当面付通道配置',
+          title: '当面付配置',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }
       },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/facePay/Orders'),
+        meta: {
+          title: '当面付订单',
+          icon: 'el-icon-s-order',
+          roles: [1, 3, 4],
+        }
+      }
     ]
   },
   {
@@ -174,8 +172,8 @@ export const asyncRoutes = [
     redirect: '/ylsPay/set',
     name: 'funds',
     meta: {
-      title: 'yls通道',
-      icon: 'el-icon-s-tools',
+      title: 'YLS',
+      icon: 'el-icon-wallet',
       roles: [1, 3, 4],
     },
     children: [
@@ -184,21 +182,21 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/ylsPay/set'),
         meta: {
-          title: 'yls通道配置',
+          title: 'YLS配置',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }
       },
-      // {
-      //   path: 'orders',
-      //   name: 'orders',
-      //   component: () => import('@/views/ylsPay/orders'),
-      //   meta: {
-      //     title: 'yls订单',
-      //     icon: 'el-icon-s-tools',
-      //     roles: [1, 3, 4],
-      //   }
-      // }
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/ylsPay/Orders'),
+        meta: {
+          title: 'YLS订单',
+          icon: 'el-icon-s-order',
+          roles: [1, 3, 4],
+        }
+      }
     ]
   },
   // {
@@ -287,6 +285,7 @@ export const asyncRoutes = [
       }
     ]
   },
+
   {
     path: '/doc',
     component: Layout,
@@ -294,7 +293,7 @@ export const asyncRoutes = [
     name: 'doc',
     meta: {
       title: '帮助文档',
-      icon: 'el-icon-document',
+      icon: 'el-icon-question',
       roles: [1, 2, 3, 4]
     },
     children: [
@@ -348,6 +347,19 @@ export const asyncRoutes = [
       },
     ]
   },
+  //登录
+  {
+    path: '/record',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'record',
+        component: () => import('@/views/record/index'),
+        meta: { title: '登录记录', icon: 'el-icon-date' }
+      }
+    ]
+  },
   //字典配置
   {
     path: '/dicConfig',
@@ -361,24 +373,6 @@ export const asyncRoutes = [
       }
     ]
   },
-  // 应用
-  // {
-  //   path: '/app',
-  //   component: Layout,
-  //   meta: { title: '应用管理', icon: 'el-icon-document', roles: [1, 2] },
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'app',
-  //       component: () => import('@/views/app/index'),
-  //       meta: {
-  //         title: '应用管理',
-  //         icon: 'el-icon-s-platform',
-  //         roles: [1, 2]
-  //       }
-  //     }
-  //   ]
-  // },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

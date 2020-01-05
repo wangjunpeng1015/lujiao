@@ -1,10 +1,10 @@
 <template lang="pug">
 .orders-container.layout-column
     .wjp-tools.layout-row__between
-      div
+      .layout-row__between
          el-button(v-if="userinfo.roleId == 1" type='primary' @click="addOrder" size="mini") 新增订单
       .layout-row.buttons.align-center
-        el-select.flex( size="mini" v-model='type', placeholder='支付方式' clearable @change="getTableData")
+        el-select.flex( size="mini" v-model='type', :disabled="true" placeholder='支付方式' clearable @change="getTableData")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select.flex( size="mini" v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
@@ -54,7 +54,7 @@
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
             el-table-column(prop='payStatusDictValue', label='操作',width="160")
-                template(slot-scope='scope')                 
+                template(slot-scope='scope')
                     el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
                     el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
         .page.layout-row.align-center.right
@@ -91,6 +91,7 @@ export default {
   components: {
     addOrder
   },
+  props: ['payWayName', "payWayId"],
   data() {
     return {
       siv: null, //定时器
@@ -111,7 +112,14 @@ export default {
       pageSize: 10 //当前页显示数量
     };
   },
-  watch: {},
+  watch: {
+    payWayId: {
+      handler: function (val) {
+        this.type = val
+      },
+      immediate: true
+    }
+  },
   computed: {
     ...mapState(["settings"]),
     ...mapGetters(["userinfo"]),
