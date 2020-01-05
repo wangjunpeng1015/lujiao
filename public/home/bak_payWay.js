@@ -10,6 +10,11 @@ const ddPayWay = {
         const { qrUrl } = JSON.parse(data.payContent)
         window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
     },
+    //云靓刷
+    25: (data) => {
+        const { qrUrl } = JSON.parse(data.payContent)
+        window.location.href = 'alipayqr://platformapi/startapp?saId=10000007&qrcode=' + qrUrl
+    },
     //(跳转)个人付款-用户手输金额
     6: (data) => {
         // const amount = data.payMoney

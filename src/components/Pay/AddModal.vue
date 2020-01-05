@@ -4,6 +4,12 @@
       //- el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
       //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //云靓刷
+      div(v-if="form.payWayDictId == 25")
+        el-form-item(label='APPID', prop='appid')
+          el-input(v-model='form.contentObj.appid' placeholder="请填写appid")
+        el-form-item(label='appsecret', prop='name')
+          el-input(v-model='form.contentObj.appsecret' placeholder="请填写appsecret")
       //当面付
       div(v-if="form.payWayDictId == 5")
         el-form-item(label='appid', prop='name')
@@ -176,6 +182,10 @@ export default {
         return;
       }
       this.loading = true;
+      //如果是云靓付添加版本
+      if (this.form.payWayDictId == 25) {
+        this.form.contentObj.version = "V1.0";
+      }
       updateConfigPay({
         ...this.form,
         payConfigAccountId: this.account.id

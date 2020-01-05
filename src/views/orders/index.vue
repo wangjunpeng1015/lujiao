@@ -54,7 +54,7 @@
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
             el-table-column(prop='payStatusDictValue', label='操作',width="160")
-                template(slot-scope='scope')
+                template(slot-scope='scope')                 
                     el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
                     el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
         .page.layout-row.align-center.right
@@ -148,7 +148,9 @@ export default {
   },
   methods: {
     getPayUrl(row) {
-      return window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
+      return (
+        window.location.origin + "/home/transit.html?orderNo=" + row.orderNum
+      );
     },
     changeStatus(id) {
       this.$confirm("确定修改回调状态?", "提示", {

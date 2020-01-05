@@ -8,7 +8,11 @@ function uuid2() {
   var s = [];
   var hexDigits = "0123456789abcdef";
   for (var i = 0; i < 32; i++) {
+<<<<<<< HEAD
   s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+=======
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+>>>>>>> 1b58a64b6df8d2c6f39e9ad765fe50d60403b853
   }
   s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
@@ -20,26 +24,19 @@ function uuid2() {
 /*
  * 生成签名，用于yls产码
  */
-export function createSign ({appid, money, body, appsecret, out_trade_no, version, nonce_str, return_url}) {
-  let pars = [
-    `appid=${appid}`,
-    `total_amount=${money}`,
-    `body=${body}`,
-    `out_trade_no=${out_trade_no}`,
-    `version=${version}`,
-    `return_url=${return_url}`,
-    `nonce_str=${nonce_str}`
-  ]
+
+export function createSign({ appid, money, body, appsecret }) {
+  let pars = [`appid=${appid}`, `total_amount=${money}`, `body=${body}`]
   let p = pars.sort().join("&")
   let signTemp = p + `&appsecret=${appsecret}`
   let sign = md5(signTemp).toUpperCase()
-  return signTemp
+  return sign
 }
 
 /*
  * yls产参数
  */
-export function createQrpayParam ({appid, appsecret, money, body="消费", out_trade_no, version="V1.0", return_url=""}) {
+export function createQrpayParam({ appid, appsecret, money, body = "消费", out_trade_no, version = "V1.0", return_url = "" }) {
   return {
     appid,
     sign: createSign({
@@ -50,7 +47,7 @@ export function createQrpayParam ({appid, appsecret, money, body="消费", out_t
     }),
     total_amount: money,
     body,
-    nonce_str: uuid2()
+    nonce_str: uuid2(),
     out_trade_no: '',
     version,
     return_url
