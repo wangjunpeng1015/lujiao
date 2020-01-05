@@ -2,18 +2,18 @@
 .orders-container.layout-column
     .wjp-tools.layout-row__between
       div
-         el-button(v-if="userinfo.roleId == 1" type='primary' @click="addOrder") 新增订单
+         el-button(v-if="userinfo.roleId == 1" type='primary' @click="addOrder" size="mini") 新增订单
       .layout-row.buttons.align-center
-        el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
+        el-select.flex( size="mini" v-model='type', placeholder='支付方式' clearable @change="getTableData")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-select(v-model='state', placeholder='支付状态' clearable @change="getTableData" style="width:120px")
+        el-select.flex( size="mini" v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-input(v-model='orderNo',@keyup.enter.native="getTableData" placeholder='系统订单号' style="width:200px;")
-        el-input(v-model='merchantOrderNo',@keyup.enter.native="getTableData" placeholder='商户订单号' style="width:200px;")
-        el-input(v-model='remark',@keyup.enter.native="getTableData" placeholder='系统备注' style="width:150px;")
-        el-input(v-model='merchantRemark',@keyup.enter.native="getTableData" placeholder='商家备注' style="width:150px;")
-        el-date-picker(v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期'  value-format="yyyy-MM-dd" style="width:250px;")
-        el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+        el-input( size="mini" v-model='orderNo',@keyup.enter.native="getTableData" placeholder='系统订单号' style="width:120px")
+        el-input( size="mini" v-model='merchantOrderNo',@keyup.enter.native="getTableData" placeholder='商户订单号' style="width:120px")
+        el-input( size="mini" v-model='remark',@keyup.enter.native="getTableData" placeholder='系统备注' style="width:120px")
+        el-input( size="mini" v-model='merchantRemark',@keyup.enter.native="getTableData" placeholder='商家备注' style="width:120px")
+        el-date-picker( size="mini" v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期'  value-format="yyyy-MM-dd" style="width:250px;")
+        el-button( size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content.flex.layout-column
         el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
             //- el-table-column(fixed prop='id', label='id', width='50')
@@ -24,7 +24,7 @@
                   el-form-item(label='支付地址')
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
                     //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
-            el-table-column(prop='orderNum', label='系统订单号', show-overflow-tooltip width="100")
+            //- el-table-column(prop='orderNum', label='系统订单号', show-overflow-tooltip width="100")
             el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip width="100")
             el-table-column(prop='orderUserAccount', label='商户账号',width="100" show-overflow-tooltip)
             //- el-table-column(prop='webSite', label='网站', )
@@ -41,9 +41,9 @@
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
             el-table-column(prop='remark', label='系统备注',show-overflow-tooltip)
-            el-table-column(label='商家备注',show-overflow-tooltip)
-              template(slot-scope='scope')
-                span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
+            //- el-table-column(label='商家备注',show-overflow-tooltip)
+            //-   template(slot-scope='scope')
+            //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
             //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
@@ -149,7 +149,7 @@ export default {
   methods: {
     getPayUrl(row) {
       return (
-        window.location.origin + "/home/transit.html?orderNo=" + row.orderNum
+        window.location.origin + "/home/pay.html?orderNo=" + row.orderNum
       );
     },
     changeStatus(id) {

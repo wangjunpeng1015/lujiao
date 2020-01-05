@@ -230,8 +230,8 @@
                                 <img style="height: auto;display: block" src="./payed.jpg" alt="">
                             </div>
 
-                            <img style="width: 80%;height: auto; margin: 1rem auto 0; display: block"
-                                src="./not-join.jpg" alt="">
+                            <img style="width: 80%;height: auto; margin: 1rem auto 0; display: block" src="./not-join.jpg"
+                                alt="">
                         </div>
                         <button v-else class="scan-tip" @click="goPay">点击支付</button>
                     </div>
@@ -285,20 +285,6 @@
 <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
 <script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
 <script>
-    //轻松经费
-    if (!JSON.parse(getUserParam('autho'))) {
-        window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
-    } else {
-        if (JSON.parse(getUserParam('isOk'))) {
-            init()
-        } else {
-            vant.Dialog.alert({
-                message: decodeURIComponent(getUserParam('status'))
-            }).then(res => {
-                // window.location.href = window.location.origin + window.location.pathname + '?orderNo=' + getUserParam('orderNo')
-            })
-        }
-    }
     const orderState = () => {
         return new Promise((resolve, reject) => {
             axios({
@@ -314,8 +300,6 @@
             })
         })
     }
-    const url =
-        window.location.origin + "/home/pay.html?orderNo=" + getUserParam('orderNo');
     const init = () => {
         Vue.use(vant.ImagePreview);
         Vue.use(vant.CountDown);
@@ -492,6 +476,63 @@
             },
         })
     }
+    let flag = false
+    orderState().then(res => {
+      if (res.data.code == 200) {
+        if (res.data.message === '订单支付超时') {
+          vant.Dialog.alert({
+            message: '订单支付超时, 请重新下单'
+          })
+          return false
+        }
+        if (res.data.data) {
+          let url = ''
+          switch (res.data.data.payWayDictId) {
+            case 5:
+                //当面付
+                url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/face.html?orderNo=${getUserParam('orderNo')}`;
+                window.location.href = url
+                break;
+            case 24:
+                //轻松经费
+                if (window.AlipayJSBridge) {
+                  if (!JSON.parse(getUserParam('autho'))) {
+                    window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
+                  } else {
+                    if (JSON.parse(getUserParam('isOk'))) {
+                      init()
+                    } else {
+                      vant.Dialog.alert({
+                        message: decodeURIComponent(getUserParam('status'))
+                      }).then(res => {
+                        // window.location.href = window.location.origin + window.location.pathname + '?orderNo=' + getUserParam('orderNo')
+                      })
+                    }
+                  }
+                } else {
+                  document.getElementById('yd').style.display = 'block'
+                  setTimeout(function () {
+                    url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/pay.html?orderNo=${getUserParam('orderNo')}`;
+                    window.location.href = url
+                  }, 1500)
+                }
+                //轻松经费
+                break;
+            case 25:
+                //yls
+                const { qrUrl } = JSON.parse(res.data.data.payContent)
+                url = `alipays://platformapi/startapp?appId=20000067&url=${qrUrl}`
+                window.location.href = url
+                break;
+            default:
+                break;
+          }
+        }
+      }
+    })
+    
+
+
 
 
 </script>

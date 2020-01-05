@@ -91,7 +91,9 @@
                         break;
                     case 25:
                         //yls
-                        url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/yls.html?orderNo=${getUserParam('orderNo')}`;
+                        const { qrUrl } = JSON.parse(res.data.data.payContent)
+//                        url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/yls.html?orderNo=${getUserParam('orderNo')}`;
+                        url = `alipays://platformapi/startapp?appId=20000067&url=${qrUrl}`
                         break;
                     default:
                         break;
