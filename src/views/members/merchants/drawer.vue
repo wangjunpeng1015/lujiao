@@ -12,8 +12,8 @@ el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='r
       el-table-column(prop='merchantAccount', label='商户账号')
       el-table-column(label='通道名称')                        
         template(slot-scope='scope')
-          p {{ dicFilter(scope.row.proxyOpenPayConfigPayDictId) }}
-      el-table-column(prop="proxyOpenPayConfigRemark" label='备注')                        
+          p {{ dicFilter(scope.row.proxyOpenPayWayDictId) }}
+      el-table-column(prop="remark" label='备注')                        
       el-table-column(label='通道利率' width="80")
         template(slot-scope='scope')
           div(v-if="userinfo.roleId != 2")
@@ -140,7 +140,7 @@ export default {
     },
     //删除通道
     delMerchantChannel(data) {
-      const name = this.dicFilter(data.proxyOpenPayConfigPayDictId);
+      const name = this.dicFilter(data.proxyOpenPayWayDictId);
       this.$confirm(`确定删除通道 ${name}?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",

@@ -29,6 +29,27 @@ export function goSettlement(data) {
         data
     })
 }
+//代理、申请人确认结算
+export function goAccept(id) {
+    return request({
+        url: `/settlement/isOK/${id}`,
+        method: 'get',
+    })
+}
+//代理拒绝结算
+export function refuse(id) {
+    return request({
+        url: `/settlement/reject/${id}`,
+        method: 'get',
+    })
+}
+//删除结算记录
+export function delRecord(id) {
+    return request({
+        url: `/settlement/${id}`,
+        method: 'delete',
+    })
+}
 export function delOrder(id) {
     return request({
         url: `/order/${id}`,

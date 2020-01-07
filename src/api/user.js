@@ -32,6 +32,13 @@ export function getUsers(data) {
     data
   })
 }
+//结算记录获取被结算人
+export function getSettlementUser() {
+  return request({
+    url: '/base/user',
+    method: 'get',
+  })
+}
 //删除用户
 export function delUser(id) {
   return request({

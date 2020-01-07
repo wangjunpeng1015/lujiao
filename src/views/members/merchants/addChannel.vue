@@ -1,20 +1,23 @@
 <template lang="pug">
-el-dialog(title="添加通道", :visible.sync='visible' width="30%" :append-to-body="true")
+el-dialog(title="添加通道", :visible.sync='visible' width="30%" ,:close-on-click-modal='false',:append-to-body="true",:before-close='cancel')
     el-form(ref="form" :model='form' :rules="rules")
         .layout-row__between
-            el-form-item(label='通道', prop="proxyOpenPayConfigId" )
-                el-select(v-model='form.proxyOpenPayConfigId', placeholder='通道' clearable)
-                    el-option(v-for='(item,i) in channel' :key="i" :label="item.payConfigAccount+item.payWayValue", :value='item.payConfigId')
+            el-form-item(label='通道', prop="proxyOpenPayWayDictId" )
+                el-select(v-model='form.proxyOpenPayWayDictId', placeholder='通道' clearable)
+                    el-option(v-for='(item,i) in channel' :key="i" :label="item.value", :value='item.id')
             el-form-item(label='利率', prop="interestRate")
                 el-input(v-model='form.interestRate')
+        .layout-row__between
+            el-form-item(label='备注', prop="remark")
+                el-input(v-model='form.remark')
     .dialog-footer(slot='footer')
         el-button(@click='cancel') 取 消
-        el-button(type='primary', @click='addMerchantChannel') 确 定
+        el-button(type='primary',:loading="loading", @click='addMerchantChannel') 确 定
 </template>
 
 <script>
 import { addMerchantChannel } from "@/api/members";
-import { getProxyChannel } from "@/api/agent";
+import { getMerchantChannel } from "@/api/agent";
 import { mapState, mapGetters } from "vuex";
 export default {
   props: {
@@ -37,13 +40,15 @@ export default {
   },
   data() {
     return {
+      loading: false,
       channel: [],
       form: {
-        proxyOpenPayConfigId: "",
-        interestRate: ""
+        proxyOpenPayWayDictId: "",
+        interestRate: "",
+        remark: ""
       },
       rules: {
-        proxyOpenPayConfigId: [
+        proxyOpenPayWayDictId: [
           { required: true, message: "请选择通道", trigger: "blur" }
         ],
         interestRate: [
@@ -52,13 +57,17 @@ export default {
       }
     };
   },
-  mounted() {
-    this.getProxyChannel();
+  watch: {
+    visible(val) {
+      if (val) {
+        this.getMerchantChannel();
+      }
+    }
   },
   methods: {
-    //获取代理开通通道
-    getProxyChannel() {
-      getProxyChannel()
+    //获取开通通道
+    getMerchantChannel() {
+      getMerchantChannel(this.id)
         .then(res => {
           this.channel = res.data;
         })
@@ -69,6 +78,7 @@ export default {
     },
     //添加通道
     addMerchantChannel() {
+      this.loading = true;
       addMerchantChannel({
         ...this.form,
         merchantId: this.id
@@ -80,6 +90,7 @@ export default {
           this.$message.error("添加通道失败！");
         })
         .finally(_ => {
+          this.loading = false;
           this.cancel();
         });
     },

@@ -21,6 +21,13 @@ export function getProxyChannel() {
         method: 'get',
     })
 }
+//
+export function getMerchantChannel(id) {
+    return request({
+        url: `/merchantCR/findUsedProxyPayWay/${id}`,
+        method: 'get',
+    })
+}
 
 export function delChannel(id) {
     return request({

@@ -8,10 +8,10 @@
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select.flex( size="mini" v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-        el-input( size="mini" v-model='orderNo',@keyup.enter.native="getTableData" placeholder='系统订单号' style="width:120px")
+        //- el-input( size="mini" v-model='orderNo',@keyup.enter.native="getTableData" placeholder='系统订单号' style="width:120px")
         el-input( size="mini" v-model='merchantOrderNo',@keyup.enter.native="getTableData" placeholder='商户订单号' style="width:120px")
         el-input( size="mini" v-model='remark',@keyup.enter.native="getTableData" placeholder='系统备注' style="width:120px")
-        el-input( size="mini" v-model='merchantRemark',@keyup.enter.native="getTableData" placeholder='商家备注' style="width:120px")
+        //- el-input( size="mini" v-model='merchantRemark',@keyup.enter.native="getTableData" placeholder='商家备注' style="width:120px")
         el-date-picker( size="mini" v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期'  value-format="yyyy-MM-dd" style="width:250px;")
         el-button( size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content.flex.layout-column

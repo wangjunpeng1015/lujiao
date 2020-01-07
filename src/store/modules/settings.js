@@ -5,6 +5,9 @@ const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 const state = {
   channel: null,
   payWay: [{
+    label: '其它',
+    value: 'other'
+  }, {
     label: '支付宝',
     value: 'ali'
   }, {

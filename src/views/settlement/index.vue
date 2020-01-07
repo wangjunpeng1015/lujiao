@@ -1,6 +1,7 @@
 <template lang="pug">
 .orders-container.layout-column
   .wjp-tools.layout-row__between
+    div
     .buttons
       //- el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
       //-   el-option(v-for='(item,i) in payWay', :key='i', :label='item.label', :value='item.value')
@@ -9,20 +10,18 @@
   .wjp-content.flex.layout-column
       el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
           el-table-column(prop='account', label='账号', )
-          el-table-column(prop='payWay',label='通道名称', )
-          el-table-column(prop='successTotalAmount', label='已收金额',)
+          el-table-column(prop='balance', label='已收金额',)
             template(slot-scope='scope')
-              p.red {{ scope.row.successTotalAmount }} 元
-          el-table-column(prop='poundage', label='手续费',)
+              p.red {{ scope.row.balance }} 元
+          el-table-column(prop='settlementBalance', label='待结算金额',)
             template(slot-scope='scope')
-              p.red {{ (scope.row.successTotalAmount) *scope.row.rate }} 元
-          el-table-column(prop='rate', label='利率',)
-          el-table-column(prop='state',  label='状态',)
-            template(slot-scope='scope')
-              p {{ scope.row.state?'开启':'关闭' }}
-          //- el-table-column(label='操作',)
-          //-     template(slot-scope='scope')
-          //-       el-button(type='primary' @click="settlement(scope.row)") 申请结算
+              p.red {{ scope.row.settlementBalance }} 元
+          //- el-table-column(label='状态')
+          //-   template(slot-scope='scope')
+          //-     p(:style="{color:scope.row.state?'green':''}") {{ scope.row.state?'开启':'关闭' }}
+          el-table-column(label='操作')
+              template(slot-scope='scope')
+                el-button(type='primary',size='mini' @click="settlement(scope.row)") 申请结算
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -35,7 +34,7 @@
           :page-size="pageSize"
           layout=" prev, pager, next,total"
           :total="totalPage")
-  SettleModal(:visible.sync="visible")
+  SettleModal(@finish="getTableData" :visible.sync="visible" :data='settlementData')
     
 </template>
 
@@ -52,6 +51,7 @@ export default {
     return {
       visible: false,
       loading: false,
+      settlementData: {},
       type: "",
       // userName: "",
       account: "", //
@@ -66,7 +66,7 @@ export default {
     ...mapState(["settings"]),
     ...mapGetters(["userinfo"]),
     payWay() {
-      return this.settings.payWay;
+      return this.settings.dict.SettlementType.dicts;
     }
   },
   mounted() {
@@ -76,9 +76,10 @@ export default {
     //同意收款、付款
     accept(data) {},
     // filterDic(val) {
-    //   return this.payWay.find(n => n.value == val).label;
+    //   return this.payWay.find(n => n.id == val).dictValueDisplayName;
     // },
-    settlement() {
+    settlement(data) {
+      this.settlementData = data;
       this.visible = true;
     },
     getTableData() {
