@@ -4,7 +4,7 @@ div
     .container.layout-column
       .wjp-tools.layout-row__between
         div
-          el-button(v-if="userinfo.roleId ==4 || userinfo.roleId ==1" type='primary' @click="addChannel") 添加收款方式
+          el-button(v-if="(userinfo.roleId ==4 || userinfo.roleId ==1)&&!(single&&table.length<2)" type='primary' @click="addChannel") 添加收款方式
         .layout-row.buttons
           el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
             el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
@@ -52,8 +52,37 @@ import { cloneDeep } from "lodash";
 import { mapState, mapGetters } from "vuex";
 import { decrypt } from "@/utils/index";
 import AddModal from "@/components/Pay/AddModal";
+import { setTimeout } from "timers";
 export default {
-  props: ["visible", "account", "channels", "payWayId"],
+  props: {
+    visible: {
+      default() {
+        return false;
+      },
+      type: Boolean
+    },
+    account: {
+      default() {
+        return {};
+      }
+    },
+    channels: {
+      default() {
+        return [];
+      }
+    },
+    payWayId: {
+      default() {
+        return 0;
+      }
+    },
+    single: {
+      default() {
+        return false;
+      },
+      type: Boolean
+    }
+  },
   components: {
     AddModal
   },
@@ -144,6 +173,14 @@ export default {
           this.pageSize = pageSize;
           this.currentPage = pageNo;
           this.table = content;
+          if (this.single) {
+            this.$emit("update:visible", false);
+            if (!this.table.length) {
+              this.addChannel();
+            } else {
+              this.edit(this.table[0]);
+            }
+          }
         })
         .catch(err => {})
         .finally(_ => {
@@ -206,7 +243,6 @@ export default {
         ? this.payWay.find(item => id == item.id).dictValueDisplayName
         : "";
     },
-    save() {},
     sizeChange(num) {
       this.pageSize = num;
       this.getPays();

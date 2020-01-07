@@ -171,16 +171,15 @@
     <img style="width:100%;height:auto;margin:0 auto;display:none" id="yd" src="./yd1.jpg" alt="" />
     <div id="app" v-cloak>
         <div class="not-native" style="padding-top:0">
+            <img class="scan-tip" src="./zfb.png" alt="">
             <div id="qrcode"></div>
-            <p class="center">1.截屏保存当前页面/或者长按识别二维码</p>
+            <p class="center scan-tip">1.截屏保存当前页面</p>
             <p class="center" style="margin-bottom: 1rem">2.打开支付宝扫一扫,选择二维码</p>
             <p style="margin-top:10px"><span class="scan-tip red" style="font-weight:bold">如果截图 提示 请在支付宝里面打开的 关闭支付宝后
                     重新打开截图扫一扫</span></p>
             <!-- <p class="red" style="font-weight:bold">请关闭支付宝后重新打开截图扫一扫</p> -->
-            <img src="./zfb.png" alt="">
             <!--            <h3 class="scan-tip" style="margin-top:5px">请使用给支付宝进行付款</h3>-->
             <!--            <van-button type="info" @click="goPay">使用支付宝APP付款</van-button>-->
-            <van-button type="info" @click="goPay">点击付款</van-button>
 
         </div>
     </div>
@@ -194,6 +193,7 @@
 <script type='text/javascript' src='./utils.js' charset='utf-8'></script>
 <script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
 <script>
+
     const orderState = () => {
         return new Promise((resolve, reject) => {
             axios({
@@ -235,6 +235,8 @@
                                 this.orderData = data
                                 this.first = false;
                                 const { qrUrl } = JSON.parse(data.payContent)
+                                url = `alipays://platformapi/startapp?appId=20000067&url=${qrUrl}`
+                                window.location.href = url
                                 setTimeout(() => {
                                     new QRCode(document.getElementById("qrcode"), {
                                         text: qrUrl,

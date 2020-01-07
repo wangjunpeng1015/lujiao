@@ -147,7 +147,7 @@ export default {
     visible: {
       handler(val) {
         if (!val) return;
-        this.getMerchant();
+        // this.getMerchant();
       },
       deep: true
     }
@@ -167,15 +167,15 @@ export default {
   mounted() {},
 
   methods: {
-    getMerchant() {
-      getMerchant()
-        .then(res => {
-          this.merchants = res.data;
-        })
-        .catch(err => {
-          this.$message.error("获取商户失败！");
-        });
-    },
+    // getMerchant() {
+    //   getMerchant()
+    //     .then(res => {
+    //       this.merchants = res.data;
+    //     })
+    //     .catch(err => {
+    //       this.$message.error("获取商户失败！");
+    //     });
+    // },
     submitForm() {
       if (isEmpty(this.form.contentObj)) {
         this.$message.error("请填写支付配置内容！");

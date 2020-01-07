@@ -84,14 +84,12 @@ import {
 } from "@/api/order";
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
-import { debuglog } from "util";
-import { clearInterval } from "timers";
 export default {
   name: "orders",
   components: {
     addOrder
   },
-  props: ['payWayName', "payWayId"],
+  props: ["payWayName", "payWayId"],
   data() {
     return {
       siv: null, //定时器
@@ -114,8 +112,8 @@ export default {
   },
   watch: {
     payWayId: {
-      handler: function (val) {
-        this.type = val
+      handler: function(val) {
+        this.type = val;
       },
       immediate: true
     }
@@ -127,11 +125,11 @@ export default {
       return this.settings.dict && this.settings.dict.PayStatus.dicts;
     },
     payWay() {
-      if (this.userinfo.id != 1) {
-        return toDicChannel(this.channel, this.settings.dict.PayWay.dicts);
-      } else {
-        return this.settings.dict.PayWay.dicts;
-      }
+      // if (this.userinfo.id != 1) {
+      //   return toDicChannel(this.channel, this.settings.dict.PayWay.dicts);
+      // } else {
+      return this.settings.dict.PayWay.dicts;
+      // }
     }
   },
   mounted() {
@@ -156,9 +154,7 @@ export default {
   },
   methods: {
     getPayUrl(row) {
-      return (
-        window.location.origin + "/home/pay.html?orderNo=" + row.orderNum
-      );
+      return window.location.origin + "/home/pay.html?orderNo=" + row.orderNum;
     },
     changeStatus(id) {
       this.$confirm("确定修改回调状态?", "提示", {

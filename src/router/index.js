@@ -108,7 +108,6 @@ export const asyncRoutes = [
     meta: {
       title: '轻松经费',
       icon: 'el-icon-wallet',
-      roles: [1, 3, 4],
     },
     children: [
       {
@@ -128,7 +127,6 @@ export const asyncRoutes = [
         meta: {
           title: '经费订单',
           icon: 'el-icon-s-order',
-          roles: [1, 3, 4],
         }
       }
     ]
@@ -141,7 +139,6 @@ export const asyncRoutes = [
     meta: {
       title: '当面付',
       icon: 'el-icon-wallet',
-      roles: [1, 3, 4],
     },
     children: [
       {
@@ -161,7 +158,6 @@ export const asyncRoutes = [
         meta: {
           title: '当面付订单',
           icon: 'el-icon-s-order',
-          roles: [1, 3, 4],
         }
       }
     ]
@@ -174,7 +170,6 @@ export const asyncRoutes = [
     meta: {
       title: 'YLS',
       icon: 'el-icon-wallet',
-      roles: [1, 3, 4],
     },
     children: [
       {
@@ -194,7 +189,6 @@ export const asyncRoutes = [
         meta: {
           title: 'YLS订单',
           icon: 'el-icon-s-order',
-          roles: [1, 3, 4],
         }
       }
     ]

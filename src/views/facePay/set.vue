@@ -57,7 +57,7 @@
     span.dialog-footer(slot='footer')
       el-button(@click='cancel') 取 消
       el-button(type='primary', @click='addAccount') 确 定
-  Drawer(:payWayId="5" :visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
+  Drawer(:payWayId="5",:single='true', :visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
 </template>
 
 <script>

@@ -13,7 +13,7 @@
           div.num {{amountData.all.orders}}笔
         .layout-column
           div 成功率
-          div.num {{amountData.all.successRate * 100}}%
+          div.num {{(amountData.all.successRate * 100).toFixed(2)}}%
     el-card(shadow="hover")
       div(slot="header")
         .layout-row__between
@@ -25,7 +25,7 @@
           div.num {{amountData.thisMonth.orders}}笔
         .layout-column
           div 成功率
-          div.num {{amountData.thisMonth.successRate * 100}}%
+          div.num {{(amountData.thisMonth.successRate * 100).toFixed(2)}}%
     el-card(shadow="hover")
       div(slot="header")
         .layout-row__between
@@ -37,7 +37,7 @@
           div.num {{amountData.yesterday.orders}}笔
         .layout-column
           div 成功率
-          div.num {{amountData.yesterday.successRate * 100}}%
+          div.num {{(amountData.yesterday.successRate * 100).toFixed(2)}}%
     el-card(shadow="hover")
       div(slot="header")
         .layout-row__between
@@ -49,7 +49,7 @@
           div.num {{amountData.today.orders}}笔
         .layout-column
           div 成功率
-          div.num {{amountData.today.successRate * 100}}%
+          div.num {{(amountData.today.successRate * 100).toFixed(2)}}%
     //- el-card(shadow="hover")
     //-   div(slot="header")
     //-     .layout-row__between
@@ -76,20 +76,33 @@
   //-       .layout-column
   //-         div 成功率
   //-         div.num {{item.rate}}%
-  .layout-column__between(v-if="userinfo.roleId===1")
-    el-divider(content-position="left") 昨日代理数据
-    el-table(:data="proxyList" :stripe="true" border)
-      el-table-column(label="代理名称" prop="name")
-      el-table-column(label="金额" prop="amount")
-      el-table-column(label="订单数量" prop="orders")
-      el-table-column(label="成功率" prop="successRate")
-  .layout-column__between(v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
-    el-divider(content-position="left") 昨日商户数据
-    el-table(:data="merchantList" :stripe="true" border)
-      el-table-column(label="商户名称" prop="name")
-      el-table-column(label="金额" prop="amount")
-      el-table-column(label="订单数量" prop="orders")
-      el-table-column(label="成功率" prop="successRate")
+  el-collapse(v-model="activeNames")
+    el-collapse-item(title='昨日代理数据', name='1' v-if="userinfo.roleId===1")
+      el-table(:data="proxyList" :stripe="true" border)
+        el-table-column(label="代理名称" prop="name")
+        el-table-column(label="金额" prop="amount")
+        el-table-column(label="订单数量" prop="orders")
+        el-table-column(label="成功率" prop="successRate")
+    el-collapse-item(title='昨日商户数据', name='2' v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
+      el-table(:data="merchantList" :stripe="true" border)
+        el-table-column(label="商户名称" prop="name")
+        el-table-column(label="金额" prop="amount")
+        el-table-column(label="订单数量" prop="orders")
+        el-table-column(label="成功率" prop="successRate")
+  //- .layout-column__between(v-if="userinfo.roleId===1")
+  //-   el-divider(content-position="left") 今日代理数据
+  //-   el-table(:data="proxyList" :stripe="true" border)
+  //-     el-table-column(label="代理名称" prop="name")
+  //-     el-table-column(label="金额" prop="amount")
+  //-     el-table-column(label="订单数量" prop="orders")
+  //-     el-table-column(label="成功率" prop="successRate")
+  //- .layout-column__between(v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
+  //-   el-divider(content-position="left") 今日商户数据
+  //-   el-table(:data="merchantList" :stripe="true" border)
+  //-     el-table-column(label="商户名称" prop="name")
+  //-     el-table-column(label="金额" prop="amount")
+  //-     el-table-column(label="订单数量" prop="orders")
+  //-     el-table-column(label="成功率" prop="successRate")
   SettleModal(:visible.sync="visible")
 </template>
 
@@ -111,13 +124,14 @@ export default {
   },
   data() {
     return {
+      activeNames: ["1", "2"],
       amountData: {
         payWay: {
-          'alipay-当面付原生': {},
-          'alipay-个码': {},
-          'wx-个码': {amount: 0},
-          '云闪付': {},
-          'alipay-个人红包': {}
+          "alipay-当面付原生": {},
+          "alipay-个码": {},
+          "wx-个码": { amount: 0 },
+          云闪付: {},
+          "alipay-个人红包": {}
         },
         all: {
           amount: 0,
@@ -172,39 +186,39 @@ export default {
   computed: {
     ...mapState(["settings"]),
     ...mapGetters(["userinfo"]),
-    payList () {
+    payList() {
       return [
         {
-          name: '微信个码',
-          amount: this.amountData.payWay['wx-个码'].amount || 0,
-          num: this.amountData.payWay['wx-个码'].orders,
-          rate: this.amountData.payWay['wx-个码'].successRate * 100
+          name: "微信个码",
+          amount: this.amountData.payWay["wx-个码"].amount || 0,
+          num: this.amountData.payWay["wx-个码"].orders,
+          rate: this.amountData.payWay["wx-个码"].successRate * 100
         },
         {
-          name: '支付宝个码',
-          amount: this.amountData.payWay['alipay-个码'].amount || 0,
-          num: this.amountData.payWay['alipay-个码'].orders,
-          rate: this.amountData.payWay['alipay-个码'].successRate * 100
+          name: "支付宝个码",
+          amount: this.amountData.payWay["alipay-个码"].amount || 0,
+          num: this.amountData.payWay["alipay-个码"].orders,
+          rate: this.amountData.payWay["alipay-个码"].successRate * 100
         },
         {
-          name: '当面付',
-          amount: this.amountData.payWay['alipay-当面付原生'].amount || 0,
-          num: this.amountData.payWay['alipay-当面付原生'].orders,
-          rate: this.amountData.payWay['alipay-当面付原生'].successRate * 100
+          name: "当面付",
+          amount: this.amountData.payWay["alipay-当面付原生"].amount || 0,
+          num: this.amountData.payWay["alipay-当面付原生"].orders,
+          rate: this.amountData.payWay["alipay-当面付原生"].successRate * 100
         },
         {
-          name: '云闪付',
-          amount: this.amountData.payWay['云闪付'].amount || 0,
-          num: this.amountData.payWay['云闪付'].orders,
-          rate: this.amountData.payWay['云闪付'].successRate * 100
+          name: "云闪付",
+          amount: this.amountData.payWay["云闪付"].amount || 0,
+          num: this.amountData.payWay["云闪付"].orders,
+          rate: this.amountData.payWay["云闪付"].successRate * 100
         },
         {
-          name: '个人红包',
-          amount: this.amountData.payWay['alipay-个人红包'].amount || 0,
-          num: this.amountData.payWay['alipay-个人红包'].orders,
-          rate: this.amountData.payWay['alipay-个人红包'].successRate
-        },
-      ]
+          name: "个人红包",
+          amount: this.amountData.payWay["alipay-个人红包"].amount || 0,
+          num: this.amountData.payWay["alipay-个人红包"].orders,
+          rate: this.amountData.payWay["alipay-个人红包"].successRate
+        }
+      ];
     },
     hasPermission() {
       return !!this.userinfo.roles.filter(n => n.id == 1 || n.id == 2).length;
@@ -218,35 +232,35 @@ export default {
     getHead() {
       getHead()
         .then(res => {
-          console.log(res)
-          this.amountData = res.data
+          console.log(res);
+          this.amountData = res.data;
         })
         .catch(err => {});
     },
     getBody() {
       // 昨日
-      getBody({dayNum: 1}).then(res => {
-        let proxy = res.data.proxy
-        let merchant = res.data.merchant
+      getBody({ dayNum: 1 }).then(res => {
+        let proxy = res.data.proxy;
+        let merchant = res.data.merchant;
         for (let key in proxy) {
-          let name = key
+          let name = key;
           this.proxyList.push({
             name: key,
             amount: proxy[key].amount || 0,
-            successRate: proxy[key].successRate * 100 + '%',
+            successRate: proxy[key].successRate * 100 + "%",
             orders: proxy[key].orders
-          })
+          });
         }
         for (let item in merchant) {
-          let name = item
+          let name = item;
           this.merchantList.push({
             name: item,
             amount: merchant[item].amount || 0,
-            successRate: merchant[item].successRate * 100 + '%',
+            successRate: merchant[item].successRate * 100 + "%",
             orders: merchant[item].orders
-          })
+          });
         }
-      })
+      });
 
       // getBody({
       //   dayNum: dayjs(this.time[1]).diff(this.time[0], "day")
@@ -262,20 +276,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .dashboard-container {
   >>> .iconfont {
     width: 70px;
   }
-  >>> .el-card{
+  >>> .el-card {
     background: repeating-linear-gradient(to right, #4d83be, #334e9b);
     color: #fff;
-    .el-card__header{
+    .el-card__header {
       border-bottom: none;
     }
   }
-  .card-table{
-    .el-card__body{
+  .card-table {
+    .el-card__body {
       padding: 5px;
     }
   }
@@ -290,7 +303,7 @@ export default {
     text-overflow: ellipsis;
     word-break: break-all;
     white-space: nowrap;
-    color: #67C23A;
+    color: #67c23a;
     margin-top: 4px;
     margin-bottom: 0;
     font-size: 18px;
@@ -326,7 +339,7 @@ export default {
   .money {
     margin-left: 15px;
     font-size: 18px;
-    color: #E6A23C;
+    color: #e6a23c;
     font-weight: 500;
   }
 }
