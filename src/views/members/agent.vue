@@ -89,7 +89,6 @@ import { mapGetters, mapState } from "vuex";
 import { validPassword, validPhone } from "@/utils/validate";
 import { changeRate, delChannel, getAllchannel } from "@/api/agent";
 import { register, delUser, getUsers } from "@/api/user";
-import { debuglog } from "util";
 export default {
   components: {
     addChannel

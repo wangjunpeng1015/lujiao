@@ -1,5 +1,5 @@
 <template lang="pug">
-el-dialog(:title="form.id?'修改通道':'添加通道'", :visible.sync='visible' width="30%")
+el-dialog(:title="form.id?'修改通道':'添加通道'", :visible.sync='visible' width="30%" ,:close-on-click-modal="false",:before-close='cancel')
     el-form(ref="form" :model='form' :rules="rules")
         .layout-row__between
             el-form-item(label='通道', prop="payWayDictId")
@@ -48,6 +48,10 @@ export default {
   },
   data() {
     return {
+      form: {
+        payWayDictId: "",
+        channelRate: ""
+      },
       rules: {
         payWayDictId: [
           { required: true, message: "请选择通道", trigger: "blur" }
@@ -62,19 +66,26 @@ export default {
   methods: {
     //添加通道
     addChannel() {
-      addChannel({
-        ...this.form,
-        proxyId: this.id
-      })
-        .then(res => {
-          this.$message.success("添加通道成功！");
-        })
-        .catch(err => {
-          this.$message.error("添加通道失败！");
-        })
-        .finally(_ => {
-          this.cancel();
-        });
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          addChannel({
+            ...this.form,
+            proxyId: this.id
+          })
+            .then(res => {
+              this.$message.success("添加通道成功！");
+            })
+            .catch(err => {
+              this.$message.error("添加通道失败！");
+            })
+            .finally(_ => {
+              this.cancel();
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     cancel() {
       this.$emit("finish");

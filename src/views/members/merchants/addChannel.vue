@@ -78,21 +78,27 @@ export default {
     },
     //添加通道
     addMerchantChannel() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          addMerchantChannel({
+            ...this.form,
+            merchantId: this.id
+          })
+            .then(res => {
+              this.$message.success("添加通道成功！");
+            })
+            .catch(err => {
+              this.$message.error("添加通道失败！");
+            })
+            .finally(_ => {
+              this.cancel();
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
       this.loading = true;
-      addMerchantChannel({
-        ...this.form,
-        merchantId: this.id
-      })
-        .then(res => {
-          this.$message.success("添加通道成功！");
-        })
-        .catch(err => {
-          this.$message.error("添加通道失败！");
-        })
-        .finally(_ => {
-          this.loading = false;
-          this.cancel();
-        });
     },
     cancel() {
       this.$emit("finish");
