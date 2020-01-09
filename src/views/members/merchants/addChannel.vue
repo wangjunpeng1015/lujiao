@@ -60,6 +60,11 @@ export default {
   watch: {
     visible(val) {
       if (val) {
+        this.form = {
+          proxyOpenPayWayDictId: "",
+          interestRate: "",
+          remark: ""
+        };
         this.getMerchantChannel();
       }
     }
@@ -80,6 +85,7 @@ export default {
     addMerchantChannel() {
       this.$refs.form.validate(valid => {
         if (valid) {
+          this.loading = true;
           addMerchantChannel({
             ...this.form,
             merchantId: this.id
@@ -91,6 +97,7 @@ export default {
               this.$message.error("添加通道失败！");
             })
             .finally(_ => {
+              this.loading = false;
               this.cancel();
             });
         } else {
@@ -98,7 +105,6 @@ export default {
           return false;
         }
       });
-      this.loading = true;
     },
     cancel() {
       this.$emit("finish");

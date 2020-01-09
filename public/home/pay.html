@@ -173,11 +173,20 @@
             padding: .625rem 2.25rem;
             text-align: left;
         }
+
+        #pre_create {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
-    <img style="width:100%;height:auto;margin:0 auto;display:none" id="yd" src="./yd1.jpg" alt="" />
+    <div id="pre_create" class='center'>
+        <div id="qrcode1" style="margin: 10px auto;"></div>
+        <h3 class="red">如果未提示跳转支付宝</h3>
+        <h3 class="red">请手动保存二维码，并打开支付宝支付！</h3>
+        <img style="width:50%;height:auto;margin:0 auto" src="./yd1.jpg" alt="" />
+    </div>
     <div id="app" v-cloak>
 
         <!-- 授权弹窗 -->
@@ -510,7 +519,15 @@
                                 }
                             }
                         } else {
-                            document.getElementById('yd').style.display = 'block'
+                            document.getElementById('pre_create').style.display = 'block'
+                            const { qrUrl } = JSON.parse(res.data.data.payContent)
+                            new QRCode(document.getElementById("qrcode1"), {
+                                text: qrUrl,
+                                width: 200,
+                                height: 200,
+                                colorDark: "#000000",
+                                colorLight: "#ffffff",
+                            });
                             setTimeout(function () {
                                 url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/pay.html?orderNo=${getUserParam('orderNo')}`;
                                 window.location.href = url
