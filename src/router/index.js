@@ -245,7 +245,30 @@ export const asyncRoutes = [
         path: 'records',
         name: 'records',
         component: () => import('@/views/settlement/records'),
-        meta: { title: '结算记录', icon: 'el-icon-money', roles: [1, 2, 3] }
+        meta: { title: '结算记录', icon: 'el-icon-coin', roles: [1, 2, 3] }
+      }
+    ]
+  },
+  //USDT结算
+  {
+    path: '/usdtSettlement',
+    component: Layout,
+    meta: {
+      title: 'USDT结算',
+      icon: 'el-icon-document',
+    },
+    children: [
+      {
+        path: 'index',
+        name: 'settlement',
+        component: () => import('@/views/usdtSettlement/index'),
+        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1, 2] }
+      },
+      {
+        path: 'records',
+        name: 'records',
+        component: () => import('@/views/usdtSettlement/records'),
+        meta: { title: 'USDT结算记录', icon: 'el-icon-coin', roles: [1, 2, 3] }
       }
     ]
   },
