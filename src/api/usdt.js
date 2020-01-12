@@ -48,3 +48,27 @@ export function getUsdtAddress(data) {
         data
     })
 }
+//获取充提记录
+export function getRecord(data) {
+    return request({
+        url: '/hb/getRecord',
+        method: 'post',
+        data
+    })
+}
+//获取充提记录
+export function getCurrencies(data) {
+    return request({
+        url: '/hb/currencies',
+        method: 'post',
+        data
+    })
+}
+//删除usdt配置
+export function deleteUsdt (data) {
+    return request({
+        url: '/hb/delUsdt',
+        method: 'post',
+        data
+    })
+}

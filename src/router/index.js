@@ -254,7 +254,7 @@ export const asyncRoutes = [
     path: '/usdtSettlement',
     component: Layout,
     meta: {
-      title: 'USDT结算',
+      title: 'USDT实时结算',
       icon: 'el-icon-document',
     },
     children: [
