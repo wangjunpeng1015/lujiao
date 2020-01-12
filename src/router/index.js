@@ -193,6 +193,37 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/transfer',
+    component: Layout,
+    redirect: '/transfer/set',
+    name: 'transfer',
+    meta: {
+      title: '转码',
+      icon: 'el-icon-wallet',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/transfer/set'),
+        meta: {
+          title: '转码配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/transfer/Orders'),
+        meta: {
+          title: '转码订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
   // {
   //   path: '/personalCode',
   //   component: Layout,
@@ -336,7 +367,7 @@ export const asyncRoutes = [
         path: 'aliPid',
         name: 'aliPid',
         component: () => import('@/views/doc/aliPid'),
-        meta: { title: '获取支付宝PID', icon: 'el-icon-document', roles: [1, , 43] }
+        meta: { title: '获取支付宝PID', icon: 'el-icon-document', roles: [1, 2, 3, 4] }
       },
       {
         path: 'cardId',

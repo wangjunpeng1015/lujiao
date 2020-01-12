@@ -502,6 +502,18 @@
                         url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/face.html?orderNo=${getUserParam('orderNo')}`;
                         window.location.href = url
                         break;
+                    case 8:
+                        //转账码
+                        const { orderNum, payMoney } = res.data.data
+                        const { pId } = JSON.parse(res.data.data.payContent)
+                        const params = JSON.stringify({
+                            amount: payMoney,
+                            remark: orderNum,
+                            pId
+                        })
+                        url = `${window.location.origin}/home/zhuanzhang.html?` + escape(params)
+                        window.location.href = url
+                        break;
                     case 24:
                         //轻松经费
                         if (window.AlipayJSBridge) {

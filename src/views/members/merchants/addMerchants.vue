@@ -66,7 +66,7 @@ export default {
         account: "",
         userName: Random.name(),
         userPassword: "",
-        phone: `159${Random.integer(100000, 999999)}`
+        phone: `159${Random.integer(10000000, 99999999)}`
       },
       rules: {
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
