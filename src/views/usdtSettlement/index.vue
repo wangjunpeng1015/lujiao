@@ -144,38 +144,38 @@
       el-form-item
         el-card
           el-row.layout-row
-            el-col(span="8")
+            el-col(:span="8")
               .layout-row__between(style="border-right: 1px solid #ccc;padding-right: 20px")
                 span 单次最小转出金额
                 span {{withdrawCreateActiveInfo.minWithdrawAmt}}
-            el-col(span="8" style="margin:0 20px;")
+            el-col(:span="8" style="margin:0 20px;")
               .layout-row__between(style="border-right: 1px solid #ccc;padding-right: 20px")
                 span 单次最小转入数量
                 span {{withdrawCreateActiveInfo.minDepositAmt}}
-            el-col(span="8")
+            el-col(:span="8")
               .layout-row__between
                 span 单次最大转入数量
                 span {{Number(withdrawCreateActiveInfo.maxWithdrawAmt)}}
           el-row.layout-row
-            el-col(span="8")
+            el-col(:span="8")
               .layout-row__between(style="border-right: 1px solid #ccc;padding-right: 20px")
                 span 转账精度
                 span {{withdrawCreateActiveInfo.withdrawPrecision}}
-            el-col(span="8" style="margin:0 20px;")
+            el-col(:span="8" style="margin:0 20px;")
               .layout-row__between(style="border-right: 1px solid #ccc;padding-right: 20px")
                 span 矿工费类型(火币转账费类型)
                 span(v-if="withdrawCreateActiveInfo.withdrawFeeType === 'fixed'") 固定
                 span(v-if="withdrawCreateActiveInfo.withdrawFeeType === 'circulated'") 浮动
                 span(v-if="withdrawCreateActiveInfo.withdrawFeeType === 'ratio'") 比例
-            el-col(span="8" v-if="withdrawCreateActiveInfo.withdrawFeeType === 'fixed'")
+            el-col(:span="8" v-if="withdrawCreateActiveInfo.withdrawFeeType === 'fixed'")
               .layout-row__between
                 span 单笔固定矿工费
                 span {{Number(withdrawCreateActiveInfo.transactFeeWithdraw)}}
-            el-col(span="8" v-if="withdrawCreateActiveInfo.withdrawFeeType === 'circulated'")
+            el-col(:span="8" v-if="withdrawCreateActiveInfo.withdrawFeeType === 'circulated'")
               .layout-row__between
                 span 单笔浮动矿工费
                 span {{Number(withdrawCreateActiveInfo.minTransactFeeWithdraw)}} ~ {{Number(withdrawCreateActiveInfo.maxTransactFeeWithdraw)}}
-            el-col(span="8" v-if="withdrawCreateActiveInfo.withdrawFeeType === 'ratio'")
+            el-col(:span="8" v-if="withdrawCreateActiveInfo.withdrawFeeType === 'ratio'")
               .layout-row__between
                 span 单笔比例矿工费
                 span {{Number(withdrawCreateActiveInfo.transactFeeRateWithdraw)}}(最大{{Number(withdrawCreateActiveInfo.maxTransactFeeWithdraw)}})
@@ -198,10 +198,14 @@
           template(slot="append") USDT
     .dialog-footer(slot='footer')
       el-button(@click='withdrawCreateVisible = false') 取 消
-      el-button(type='primary', @click='submit' v-loading="submitLoading") 确 定
+      el-button(type='primary', @click='transfer' :loading="transferLoading") 确 定
   .wjp-tools.layout-row__between
     .buttons
       el-button(type='primary' @click="addVisible = true" size="mini") 添加火币账号
+    .layout-row
+      span(style="align-self: center") 最新USDT法币交易报价：
+      span(style="margin: 0 5px;align-self: center") 1 USDT ≈≈ {{price.buy}} 元
+      el-link.el-icon-refresh(style="align-self: center;font-size: 22px" @click="getPrice")
   .wjp-content.flex.layout-column
       el-table.wjp-table(
         header-align='center'
@@ -215,16 +219,22 @@
       )
           el-table-column(prop='name', label='账号名称', width=200 show-overflow-tooltip align="center")
           el-table-column(label='现货账户' show-overflow-tooltip align="center")
-            el-table-column(prop="spot_trade" label="可用数量" width="120" show-overflow-tooltip align="center")
-            el-table-column(prop="spot_frozen" label="冻结数量" width="120" show-overflow-tooltip align="center")
-          el-table-column(label='OTC账户' show-overflow-tooltip align="center")
-            el-table-column(prop="otc_trade" label="可用数量" width="120" show-overflow-tooltip align="center")
-            el-table-column(prop="otc_frozen" label="冻结数量" width="120" show-overflow-tooltip align="center")
+            el-table-column(prop="spot_trade" label="可用数量" width="300" show-overflow-tooltip align="center")
+              template(slot-scope="scope")
+                span(v-show="scope.row.spot_trade === '**********'") **********
+                span(v-show="scope.row.spot_trade !== '**********'") {{scope.row.spot_trade}}个 ≈≈ {{(Number(scope.row.spot_trade) * price.buy).toFixed(2)}} 人民币
+            el-table-column(prop="spot_frozen" label="冻结数量" width="300" show-overflow-tooltip align="center")
+              template(slot-scope="scope")
+                span(v-show="scope.row.spot_frozen === '**********'") **********
+                span(v-show="scope.row.spot_frozen !== '**********'") {{scope.row.spot_frozen}}个 ≈≈ {{(Number(scope.row.spot_frozen) * price.buy).toFixed(2)}} 人民币
+          //- el-table-column(label='OTC账户' show-overflow-tooltip align="center")
+          //-   el-table-column(prop="otc_trade" label="可用数量" width="120" show-overflow-tooltip align="center")
+          //-   el-table-column(prop="otc_frozen" label="冻结数量" width="120" show-overflow-tooltip align="center")
           el-table-column(label='操作')
             template(slot-scope='scope')
               el-button(type='primary',size='mini' :loading="withdrwaCreateLoading" @click="withdrwaCreate(scope.row)") 手动转账
-              el-button(type='primary',size='mini' :loading="balanceSpotLoading" @click="getUsdtBalance('spot',scope.row)") 现货余额查询
-              el-button(type='primary',size='mini' :loading="balanceOtcLoading" @click="getUsdtBalance('otc',scope.row)") OTC余额查询
+              el-button(type='primary',size='mini' :loading="balanceSpotLoading" @click="getUsdtBalance('spot',scope.row)") 余额查询
+              //- el-button(type='primary',size='mini' :loading="balanceOtcLoading" @click="getUsdtBalance('otc',scope.row)") OTC余额查询
               el-button(type='primary',size='mini' :loading="quotaLoading" @click="getUsdtQuota(scope.row)") 转账额度查询
               el-button(type='primary',size='mini' :loading="addressLoading" @click="getUsdtAddress(scope.row)") 收款地址查询
               el-button(type='primary',size='mini' :loading="depositLoading" @click="getUsdtRecord('deposit', scope.row)") 收款记录
@@ -275,7 +285,9 @@ import {
   getUsdtQuota,
   getRecord,
   getCurrencies,
-  deleteUsdt
+  deleteUsdt,
+  getUsdtPrice,
+  withdrawCreate
 } from "@/api/usdt";
 import { parseTime } from '@/utils/index'
 import { mapGetters, mapState } from "vuex";
@@ -284,6 +296,10 @@ export default {
   components: {},
   data() {
     return {
+      activeRow: {},
+      price: {
+        buy: 0
+      },
       CHAINMAP: { // 链名称对应
         trc20usdt: 'TRC20',
         usdterc20: 'ERC20',
@@ -295,13 +311,15 @@ export default {
         withdrawCreateActive: 'trc20usdt',
         address: '',
         amount: '',
+        currency: 'usdt',
         fee: 0,
-        chain: ''
+        chain: 'trc20usdt'
       },
       withdrawCreateFormRules: { // 提现表单规则
         address: [{ required: true, message: "请输入转出地址", trigger: "blur" }],
         amount: [{ required: true, message: "请输入转出数量", trigger: "blur" }]
       },
+      transferLoading: false,
       deleteLoading: false,
       withdrwaCreateLoading: false,
       withdrawCreateVisible: false,
@@ -355,8 +373,45 @@ export default {
   },
   mounted() {
     this.getTableData();
+    this.getPrice()
   },
   methods: {
+    // 手动转账
+    transfer () {
+      this.$refs['withdrawCreateForm'].validate(valid => {
+        if (valid) {
+          this.transferLoading = true
+          withdrawCreate({
+            usdt_config_id: this.activeRow.usdt_config_id,
+            ...this.withdrawCreateForm
+          }).then(res => {
+            if (res.code === 200) {
+              this.$message.success('转账成功')
+              this.$refs['withdrawCreateForm'].resetFields();
+              this.withdrawCreateVisible = false
+            }
+          }).catch(e => {
+            console.log(e)
+          }).finally(_ => {
+            this.transferLoading = false;
+          });
+        }
+      })
+    },
+    // 获取报价
+    getPrice () {
+      getUsdtPrice().then(res => {
+        if (res.code === 200) {
+          this.price = res.data
+          this.$notify({
+            title: '已获取最新USDT报价',
+            message: `1USDT当前购买价格约等于${this.price.buy}元, 当前出售价格约等于${this.price.sell}元`,
+            type: 'success'
+          });
+        }
+      })
+    },
+    // 删除usdt配置
     deleteUSDT (data) {
       this.deleteLoading = true
       deleteUsdt({
@@ -396,6 +451,7 @@ export default {
         this.currencies = res.data
         this.withdrawCreateActiveInfo = this.currencies.find(n => n.chain === 'trc20usdt')
         this.withdrawCreateVisible = true
+        this.activeRow = data
       }).catch(err => {})
       .finally(_ => {
         this.withdrwaCreateLoading = false;
@@ -498,6 +554,7 @@ export default {
           this.balanceOtcLoading = false
         });
     },
+    // 获取配置信息
     getTableData() {
       this.loading = true;
       getUsdtAccount({

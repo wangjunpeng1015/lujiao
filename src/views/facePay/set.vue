@@ -14,8 +14,9 @@
         el-button(type='primary', @click='getAllAcount') 查 询
   .wjp-content.layout-column.flex
     el-table.wjp-table(v-loading="loading" :data='dqyhpz', style='width: 100%', height='250')
-      el-table-column(fixed prop='id', label='id', width='50')
       el-table-column(prop='account', label='账号')
+      el-table-column(label="所属码商" width="250" prop="codeMerchantAccount")
+      el-table-column(label="所属代理" width="250" prop="proxyAccount")
       el-table-column(prop='dailyCeiling', label='今日限额')
       el-table-column( label='已添收款码')
          template(slot-scope='scope')
@@ -27,7 +28,7 @@
               size="small"
               :key="i"
             ) {{item}}
-      
+
       el-table-column(label='操作' width="200")
         template(slot-scope='scope')
           el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")

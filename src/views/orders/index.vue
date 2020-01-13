@@ -39,14 +39,16 @@
                 span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.actualAmount }}
             el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
             el-table-column(prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
-            el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
+            //- el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
             el-table-column(prop='remark', label='系统备注',show-overflow-tooltip)
             //- el-table-column(label='商家备注',show-overflow-tooltip)
             //-   template(slot-scope='scope')
             //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
-            //- el-table-column(prop='remark', label='备注',show-overflow-tooltip)
+            el-table-column(prop='usdtStatus', label='USDT划转状态',show-overflow-tooltip)
+              template(slot-scope="scope")
+                span(v-show="!scope.row.usdtStatus") 角色未启用USDT模式
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
               template(slot-scope='scope')
                 el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")

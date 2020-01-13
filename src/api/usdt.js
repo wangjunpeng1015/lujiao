@@ -72,3 +72,19 @@ export function deleteUsdt (data) {
         data
     })
 }
+//删除usdt配置
+export function withdrawCreate (data) {
+    return request({
+        url: '/hb/withdrawCreate',
+        method: 'post',
+        data
+    })
+}
+
+// 获取最新usdt报价
+export function getUsdtPrice () {
+  return request({
+    url: '/hb/getCny2Usdt',
+    method: 'get'
+  })
+}

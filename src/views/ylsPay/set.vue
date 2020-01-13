@@ -38,6 +38,8 @@
         el-button(type='primary', @click='getAllAcount' size="mini") 查 询
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%', height='550')
     el-table-column(label="账号" width="250" prop="account")
+    el-table-column(label="所属码商" width="250" prop="codeMerchantAccount")
+    el-table-column(label="所属代理" width="250" prop="proxyAccount")
     el-table-column(label="今日剩余收款额度" width="250" prop="dailyCeiling")
     el-table-column(label='启用状态' width="200")
       template(slot-scope='scope')
