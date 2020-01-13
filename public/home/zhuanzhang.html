@@ -5,59 +5,130 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>DD Pay-个人转账</title>
-</head>
-<body>
-</body>
-<script>
-    function ready(callback) {
-      if (window.AlipayJSBridge) {
-        callback && callback();
-      } else {
-        document.addEventListener('AlipayJSBridgeReady', callback, false);
-      }
+  <title>DD Pay-转账</title>
+  <link rel="stylesheet" href="./common.css">
+  <style>
+    [v-cloak] {
+      display: none;
     }
-    function pay() {
-      try {
-        let params = window.location.search.split('?')[1]
-        let config = JSON.parse(unescape(params))
-        if (!config.amount || !config.remark || !config.pId) {
-          throw ('参数错误,请检查参数')
-        }
-        const u = navigator.userAgent;
-        const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-        // const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-        if (isAndroid) {
-          let data = {
-            actionType: 'scan',
-            u: config.pId,
-            a: config.amount,
-            m: config.remark,
-            biz_data: {
-              s: 'money',
+
+    .zfb {
+      width: 60%;
+    }
+
+    #qrcode {
+      margin: 10px auto;
+      width: 250px;
+      height: 250px;
+    }
+
+    .paytext {
+      margin: 5px auto;
+      line-height: 20px;
+      font-size: 12px;
+      background: #ff5e64;
+      text-align: center;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <img class="zfb" src="./zfb.png" alt="">
+    <h2 class="red">￥{{ config.amount }}</h2>
+    <div id='qrcode'></div>
+    <div class="center font-13">
+      <p>订单号：
+        <span class="red">{{config.remark}}</span>
+      </p>
+      <div class="paytext">支付时请不要修改金额，否则无法到账</div>
+      <p>请将二维码保存相册</p>
+      <p>并进行扫码支付</p>
+      <p>请按金额支付
+        <span class="red">{{config.amount}}元</span>
+      </p>
+      <p class="red">请按上面金额支付，否则会不到账!!!</p>
+      <p class="red">二维码仅本次使用</p>
+      <p class="red">重复支付不会到账</p>
+    </div>
+  </div>
+</body>
+<script src="./vue.min.js"></script>
+<script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
+<script>
+  let payVM = new Vue({
+    el: '#app',
+    data() {
+      return {
+        url: '',
+        config: {}
+      }
+    },
+    created() {
+      let that = this;
+      let params = window.location.search.split('?')[1]
+      const config = this.config = JSON.parse(unescape(params))
+      that.url = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
+      if (window.AlipayJSBridge) {
+        this.pay();
+      } else {
+        window.location.href = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/zhuanzhang.html${window.location.search}`
+        // document.addEventListener('AlipayJSBridgeReady', this.pay, false);
+      }
+      setTimeout(() => {
+        new QRCode(document.getElementById("qrcode"), {
+          text: that.url,
+          width: 250,
+          height: 250,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+        });
+      }, 1000)
+
+    },
+    methods: {
+      pay() {
+        let that = this;
+        try {
+          const config = this.config
+          if (!config.amount || !config.remark || !config.pId) {
+            throw ('参数错误,请检查参数')
+          }
+          const u = navigator.userAgent;
+          const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+          // const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+          if (isAndroid) {
+            let data = {
+              actionType: 'scan',
               u: config.pId,
               a: config.amount,
-              m: config.remark
+              m: config.remark,
+              biz_data: {
+                s: 'money',
+                u: config.pId,
+                a: config.amount,
+                m: config.remark
+              }
             }
+            AlipayJSBridge.call('startApp', {
+              appId: '20000123',
+              param: data
+            }, function (e) {
+              if (e.errorCode > 0) {
+                alert(JSON.stringify(a));
+              }
+            });
+          } else {
+            location.href = that.url
           }
-          AlipayJSBridge.call('startApp', {
-            appId: '20000123',
-            param: data
-          }, function (e) {
-            if (e.errorCode > 0) {
-              alert(JSON.stringify(a));
-            }
-          });
-        } else {
-          location.href = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
+        } catch (err) {
+          alert(err)
         }
-      } catch (err) {
-        alert(err)
       }
-    }
-    ready(function () {
-      pay()
-    });
+    },
+  })
+
 </script>
 
 </html>
