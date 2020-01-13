@@ -60,46 +60,25 @@ export const constantRoutes = [
       meta: { title: '首页', icon: 'el-icon-s-home' }
     }]
   },
-
-  //订单
-  // {
-  //   path: '/orders',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'orders',
-  //       component: () => import('@/views/orders/index'),
-  //       meta: { title: '订单管理', icon: 'el-icon-s-order', }
-  //     }
-  //   ]
-  // },
-
 ]
 export const asyncRoutes = [
-  // {
-  //   path: '/channel',
-  //   component: Layout,
-  //   redirect: '/channel/pay',
-  //   name: 'channel',
-  //   meta: {
-  //     title: '支付通道',
-  //     icon: 'example',
-  //     roles: [1, 3, 4],
-  //   },
-  //   children: [
-  //     {
-  //       path: 'pay',
-  //       name: 'pay',
-  //       component: () => import('@/views/channel/pay'),
-  //       meta: {
-  //         title: '支付通道配置',
-  //         icon: 'el-icon-s-tools',
-  //         roles: [1, 3, 4],
-  //       }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/setting',
+    component: Layout,
+    meta: {
+      title: '商户配置',
+      icon: 'el-icon-user-solid',
+      roles: [2]
+    },
+    children: [
+      {
+        path: 'merchant',
+        name: 'merchant',
+        component: () => import('@/views/setting/merchant'),
+        meta: { title: '商户配置', icon: 'el-icon-setting', roles: [2] }
+      }
+    ]
+  },
   {
     path: '/funds',
     component: Layout,
@@ -272,6 +251,7 @@ export const asyncRoutes = [
       }
     ]
   },
+
   //人员管理
   {
     path: '/members',
@@ -279,7 +259,7 @@ export const asyncRoutes = [
     meta: {
       title: '客户管理',
       icon: 'el-icon-user-solid',
-      roles: [1, 2, 3, 4]
+      roles: [1, 3, 4]
     },
     children: [
       {
@@ -292,7 +272,7 @@ export const asyncRoutes = [
         path: 'merchants',
         name: 'merchants',
         component: () => import('@/views/members/merchants'),
-        meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 2, 3] }
+        meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 3] }
       },
       {
         path: 'code',
