@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 import Qs from 'qs'
+//手动转账到usdt
+export function transfer(data) {
+    return request({
+        url: '/hb/dispatchUsdt',
+        method: 'post',
+        data: Qs.stringify(data)
+    })
+}
 export function getOrdersList(data) {
     return request({
         url: '/order/list',

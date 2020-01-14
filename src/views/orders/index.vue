@@ -46,9 +46,9 @@
             //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
             //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
-            el-table-column(prop='usdtStatus', label='USDT划转状态',show-overflow-tooltip)
+            el-table-column(label='USDT划转状态',show-overflow-tooltip)
               template(slot-scope="scope")
-                span(v-show="!scope.row.usdtStatus") 角色未启用USDT模式
+                span(:class="getUsdtClass(scope.row.usdtStatus)") {{ scope.row.usdtStatus}} 
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
               template(slot-scope='scope')
                 el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
@@ -59,6 +59,7 @@
                 template(slot-scope='scope')
                     el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
                     el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
+                    el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.usdtStatus=='请商户添加码商钱包地址'" @click="transfer(scope.row)") 转账USDT
         .page.layout-row.align-center.right
             span 每页显示
             el-pagination.statistics(
@@ -82,7 +83,8 @@ import {
   delOrder,
   supplement,
   changeStatus,
-  createOrder
+  createOrder,
+  transfer
 } from "@/api/order";
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
@@ -222,6 +224,21 @@ export default {
           });
         });
     },
+    getUsdtClass(value) {
+      let cs = "";
+      switch (value) {
+        case "交易完成":
+          cs = "green";
+          break;
+        case "请商户添加码商钱包地址":
+          cs = "red";
+          break;
+        default:
+          cs = "blue";
+          break;
+      }
+      return cs;
+    },
     getClass(value) {
       let cs = "";
       switch (value) {
@@ -258,6 +275,41 @@ export default {
             })
             .catch(err => {
               this.$message.error("补单失败！");
+            })
+            .finally(_ => {
+              this.loading = false;
+              this.getTableData();
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    //USDT手动转账
+    transfer(data) {
+      this.$confirm(
+        `单号：${data.orderNum}  金额：${data.actualAmount}`,
+        "确认",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          this.loading = true;
+          transfer({
+            orderNo: data.orderNum
+          })
+            .then(res => {
+              this.$message.success("提交成功！");
+            })
+            .catch(err => {
+              debugger;
+              this.$message.error(err);
             })
             .finally(_ => {
               this.loading = false;
