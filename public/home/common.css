@@ -3,8 +3,53 @@
     padding:0;
 }
 #app{
-    margin-top:10px;
+    padding-top:10px;
     text-align: center;
+    box-sizing: border-box;
+}
+
+#qrcode,.temp-qrcode{
+    margin: 0 auto;
+    width: 12.5rem;
+    height: 12.5rem;
+}
+.scan-tip {
+    margin: 10px auto;
+}
+button {
+    color: #FFF;
+    background-color: #409EFF;
+    border-color: #409EFF;
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid #DCDFE6;
+    -webkit-appearance: none;
+    text-align: center;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    -webkit-transition: .1s;
+    transition: .1s;
+    font-weight: 500;
+    padding: .75rem
+        .75rem;
+    font-size: 22px;
+    border-radius: 4px;
+}
+
+button.mini {
+    font-size: 14px;
+    padding: .45rem .45rem;
+}
+.layout-row {
+    margin: .625rem 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
 }
 .red{
     color:red;

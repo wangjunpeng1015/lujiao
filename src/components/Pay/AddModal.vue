@@ -4,6 +4,14 @@
       //- el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
       //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //钱方好近
+      div(v-if="form.payWayDictId == 26")
+        el-form-item(label='mchid', prop='mchid')
+          el-input(v-model='form.contentObj.mchid' placeholder="请填写mchid(子商户号)")
+        el-form-item(label='code', prop='code')
+          el-input(v-model='form.contentObj.code' placeholder="请填写code")
+        el-form-item(label='key', prop='key')
+          el-input(v-model='form.contentObj.key' placeholder="请填写key")
       //云靓刷
       div(v-if="form.payWayDictId == 25")
         el-form-item(label='APPID', prop='appid')
