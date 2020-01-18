@@ -272,13 +272,13 @@ export const asyncRoutes = [
         path: 'index',
         name: 'settlement',
         component: () => import('@/views/usdtSettlement/index'),
-        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1, 2, 4] }
+        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1,] }
       },
       {
         path: 'records',
         name: 'records',
         component: () => import('@/views/usdtSettlement/records'),
-        meta: { title: 'USDT结算记录', icon: 'el-icon-coin', roles: [1, 2, 3, 4] }
+        meta: { title: 'USDT结算记录', icon: 'el-icon-coin', roles: [1] }
       }
     ]
   },
