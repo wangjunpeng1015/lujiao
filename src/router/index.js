@@ -172,54 +172,22 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/transfer',
-    component: Layout,
-    redirect: '/transfer/set',
-    name: 'transfer',
-    meta: {
-      title: '转码',
-      icon: 'el-icon-wallet',
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/transfer/set'),
-        meta: {
-          title: '转码配置',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/transfer/Orders'),
-        meta: {
-          title: '转码订单',
-          icon: 'el-icon-s-order',
-        }
-      }
-    ]
-  },
   // {
-  //   path: '/personalCode',
+  //   path: '/transfer',
   //   component: Layout,
-  //   redirect: '/personalCode/set',
-  //   name: 'personalCode',
+  //   redirect: '/transfer/set',
+  //   name: 'transfer',
   //   meta: {
-  //     icon: 'el-icon-s-tools',
-  //     title: 'ali-个码',
-  //     roles: [1, 3, 4],
+  //     title: '转码',
+  //     icon: 'el-icon-wallet',
   //   },
   //   children: [
   //     {
   //       path: 'set',
   //       name: 'set',
-  //       component: () => import('@/views/personalCode/set'),
+  //       component: () => import('@/views/transfer/set'),
   //       meta: {
-  //         title: '个码通道配置',
+  //         title: '转码配置',
   //         icon: 'el-icon-s-tools',
   //         roles: [1, 3, 4],
   //       }
@@ -227,15 +195,47 @@ export const asyncRoutes = [
   //     {
   //       path: 'orders',
   //       name: 'orders',
-  //       component: () => import('@/views/personalCode/orders'),
+  //       component: () => import('@/views/transfer/Orders'),
   //       meta: {
-  //         title: '个码订单',
-  //         icon: 'el-icon-s-tools',
-  //         roles: [1, 3, 4],
+  //         title: '转码订单',
+  //         icon: 'el-icon-s-order',
   //       }
   //     }
   //   ]
   // },
+  {
+    path: '/personalCode',
+    component: Layout,
+    redirect: '/personalCode/set',
+    name: 'personalCode',
+    meta: {
+      icon: 'el-icon-s-tools',
+      title: '微信-个码',
+      roles: [1, 3, 4],
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/personalCode/set'),
+        meta: {
+          title: '个码通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/personalCode/orders'),
+        meta: {
+          title: '个码订单',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      }
+    ]
+  },
   //结算
   {
     path: '/settlement',
@@ -272,13 +272,13 @@ export const asyncRoutes = [
         path: 'index',
         name: 'settlement',
         component: () => import('@/views/usdtSettlement/index'),
-        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1, 2, 4] }
+        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1,] }
       },
       {
         path: 'records',
         name: 'records',
         component: () => import('@/views/usdtSettlement/records'),
-        meta: { title: 'USDT结算记录', icon: 'el-icon-coin', roles: [1, 2, 3, 4] }
+        meta: { title: 'USDT结算记录', icon: 'el-icon-coin', roles: [1] }
       }
     ]
   },

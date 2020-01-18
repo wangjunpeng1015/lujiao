@@ -522,6 +522,10 @@
                         url = `${window.location.origin}/home/zhuanzhang.html?` + escape(params)
                         window.location.href = url
                         break;
+                    case 11:
+                        //钱方
+                        window.location.href = `${window.location.origin}/home/qfhj.html?orderNo=${res.data.data.orderNum}`
+                        break;
                     case 24:
                         //轻松经费
                         if (window.AlipayJSBridge) {
@@ -563,6 +567,10 @@
                         aElement.setAttribute('href', url)
                         window.location.href = url
                         init()
+                        break;
+                    case 26:
+                        //钱方
+                        window.location.href = `${window.location.origin}/home/qfhj.html?orderNo=${res.data.data.orderNum}`
                         break;
                     default:
                         break;

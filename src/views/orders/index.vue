@@ -226,18 +226,13 @@ export default {
     },
     getUsdtClass(value) {
       let cs = "";
-      switch (value) {
-        case "交易完成":
-          cs = "green";
-          break;
-        case "请商户添加码商钱包地址":
-          cs = "red";
-          break;
-        default:
-          cs = "blue";
-          break;
+      if (value == "") {
+        return "blue";
+      } else if (value == "交易完成") {
+        return "green";
+      } else {
+        return "red";
       }
-      return cs;
     },
     getClass(value) {
       let cs = "";

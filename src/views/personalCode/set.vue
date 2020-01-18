@@ -1,41 +1,64 @@
 <template lang="pug">
-.pay-container.layout-column
-  .wjp-tools.layout-row__between
-    div
-      el-button(type='primary' @click="addChannel") 添加账号
-    el-form(label-width='120px' :inline="true")
-      el-form-item(label='账号',)
-        el-input(v-model='account' placeholder="查询账号")
+.layout-column
+  Drawer(
+    :payWayId="11"
+    :visible.sync="visible"
+    @finish="getAllAcount"
+    :account="currentRow"
+    :channels="channels"
+  )
+  el-dialog(
+    title='添加微信账号'
+    :visible.sync='dialogShow'
+    width='40%'
+    @close="closeDialog"
+    :close-on-click-modal="false"
+  )
+    el-form(:model='news' ref='news', label-width='120px')
+      el-form-item(label='微信账号：', prop='account')
+        el-input(v-model='news.account' placeholder="请填写收款微信账号")
+      el-form-item(label="收款上限：" prop="dailyCeiling")
+        el-input(v-model='news.dailyCeiling' placeholder="请填写该账号微信模式每日收款上限" type="number")
+      el-form-item.right
+        el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
+        el-button(size="mini" @click="closeDialog") 取消
+  .funds-header.layout-row__between
+    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加微信账号
+    el-form(label-width='120px' :inline="true" size="mini")
+      el-form-item(label='金额', )
+        .layout-row
+          el-input(v-model='min' style="width:90px" type="number")
+          | ~
+          el-input(v-model='max' style="width:90px" type="number")
       el-form-item()
         el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
           el-option(label='启用', :value='true')
           el-option(label='禁用', :value='false')
       el-form-item()
-        el-button(type='primary', @click='getAllAcount') 查 询
-  .wjp-content.layout-column.flex
-    el-table.wjp-table(v-loading="loading" :data='dqyhpz', style='width: 100%', height='250')
-      el-table-column(fixed prop='id', label='id', width='50')
-      el-table-column(prop='account', label='账号')
-      el-table-column(prop='dailyCeiling', label='今日限额')
-      el-table-column( label='已添收款码')
-         template(slot-scope='scope')
-          .layout-row
-            el-tag(
-              style="margin-left: 5px"
-              v-for="(item,i) in scope.row.amountList"
-              type="success"
-              size="small"
-              :key="i"
-            ) {{item}}
-      
-      el-table-column(label='操作' width="200")
-        template(slot-scope='scope')
-          el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-      el-table-column(width="200")
-        template(slot-scope='scope')
-          el-button(type="primary" @click="edit(scope.row)" size='mini') 添加配置
-          el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
-  .page.layout-row.align-center.right
+        el-button(type='primary', @click='getAllAcount' size="mini") 查 询
+  el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%', height='550')
+    el-table-column(label="账号" width="250" prop="account")
+    el-table-column(label="所属码商" width="250" prop="codeMerchantAccount")
+    el-table-column(label="所属代理" width="250" prop="proxyAccount")
+    el-table-column(label="今日剩余收款额度" width="250" prop="dailyCeiling")
+    el-table-column(label='启用状态' width="200")
+      template(slot-scope='scope')
+        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
+    el-table-column(label="单笔收款限额")
+      template(slot-scope='scope')
+        .layout-row
+          el-link(
+            style="margin-left: 5px"
+            v-for="(item, index) in scope.row.amountList"
+            type="success"
+            :key="index"
+          ) {{item}}
+    el-table-column(label="操作" width="250")
+      template(slot-scope='scope')
+        .layout-row
+          el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
+          el-button(type="danger" size="mini" @click="del(scope.row.id)") 删除
+  .page.layout-row.align-center.right(style="margin-top:20px")
     span 每页显示
     el-pagination.statistics(
     background
@@ -47,21 +70,11 @@
     :page-size="pageSize"
     layout="sizes, prev, pager, next,total"
     :total="totalPage")
-  //添加/修改
-  el-dialog(title='添加账号', :visible.sync='acVisible',  width='40%' :close-on-click-modal="false")
-    el-form(:model='news', :rules='rules', ref='news', label-width='120px')
-      el-form-item(label='账号', prop='account' )
-        el-input(v-model='news.account' placeholder="请填写新加账号")
-      el-form-item(label='每日收款上限', prop='dailyCeiling' placeholder="请填写每日收款上限")
-        el-input(v-model.number='news.dailyCeiling' type="number")
-    span.dialog-footer(slot='footer')
-      el-button(@click='cancel') 取 消
-      el-button(type='primary', @click='addAccount') 确 定
-  Drawer(:visible.sync="visible" @finish="getAllAcount" :account="chooseAccount" :channels="channels")
 </template>
 
 <script>
-import { cloneDeep } from "lodash";
+import Drawer from "@/components/Pay/Drawer";
+import { mapGetters } from "vuex";
 import {
   getAllAcount,
   delAcount,
@@ -69,145 +82,51 @@ import {
   updateConfigPay,
   addAcount
 } from "@/api/pay";
+import addOrder from "@/views/personalCode/addOrder";
 import { getAllchannel } from "@/api/agent";
-import { mapState } from "vuex";
-import Drawer from "@/views/personalCode/Drawer";
 export default {
-  name: "pay",
   components: {
-    Drawer
+    Drawer,
+    addOrder
   },
   computed: {
-    ...mapState(["settings"])
+    ...mapGetters(["userinfo"])
   },
   data() {
     return {
-      tail: "-ali-个码",
-      news: {
-        account: "",
-        dailyCeiling: ""
-      },
-      rules: {
-        account: [{ required: true, message: "请输入账号", trigger: "change" }],
-        dailyCeiling: [
-          { required: true, message: "请输入当日上限", trigger: "change" }
-        ]
-      },
-      acVisible: false,
-      chooseAccount: "",
-      loading: false,
+      channels: [],
       visible: false,
+      loading: false,
+      saveAccountLoading: false,
+      setShow: false,
+      dialogShow: false,
       used: "",
       account: "",
-      channels: [],
-      dqyhpz: [],
+      min: "",
+      max: "",
+      news: {
+        account: "",
+        city: "defualt",
+        dailyCeiling: "",
+        accountType: "wx"
+      },
+      newMoney: {
+        money: ""
+      },
+      currentRow: {
+        className: ""
+      },
+      list: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
       pageSize: 10 //当前页显示数量
     };
   },
-  created() {
+  mounted() {
     this.getAllAcount();
     this.getAllchannel();
   },
-  mounted() {},
   methods: {
-    getAllchannel() {
-      getAllchannel({
-        pageNo: 1,
-        pageSize: 100,
-        param: {}
-      })
-        .then(res => {
-          this.channels = res.data.content;
-        })
-        .catch(err => {
-          this.$message.error("获取通道失败！");
-        });
-    },
-    edit(data) {
-      this.chooseAccount = data;
-      this.visible = true;
-    },
-
-    getAllAcount() {
-      this.loading = true;
-      getAllAcount({
-        pageNo: this.currentPage,
-        pageSize: this.pageSize,
-        param: {
-          account: this.tail, //账号
-          used: this.used //是否启用
-        }
-      })
-        .then(res => {
-          const { totalRecords, pageNo, pageSize, content } = res.data;
-          this.totalPage = totalRecords;
-          this.pageSize = pageSize;
-          this.currentPage = pageNo;
-          this.dqyhpz = content;
-        })
-        .catch(err => {})
-        .finally(_ => {
-          this.loading = false;
-        });
-    },
-    addChannel() {
-      if (this.channels.some(n => n.payWayDictId == 6)) {
-        this.acVisible = true;
-        this.news = {
-          account: "",
-          accountType: "ali",
-          city: "default",
-          dailyCeiling: ""
-        };
-      } else {
-        this.$confirm("请联系我们开通相应通道", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        });
-      }
-    },
-    //账号启用禁用转换
-    useChange(id, used) {
-      this.loading = true;
-      updateUse({
-        id,
-        used
-      })
-        .then(res => {
-          this.$message.success("状态修改成功！");
-        })
-        .finally(_ => {
-          this.loading = false;
-          this.getAllAcount();
-        });
-    },
-    addAccount() {
-      this.loading = true;
-      this.$refs.news.validate(valid => {
-        if (valid) {
-          let params = cloneDeep(this.news);
-          params.account = params.account + this.tail;
-          addAcount(params)
-            .then(res => {
-              this.getAllAcount();
-              this.$message.success("添加账号成功！");
-              this.cancel();
-            })
-            .catch(err => {
-              this.$message.error(err.message);
-            })
-            .finally(e => {
-              this.loading = false;
-            });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
     del(id) {
       this.$confirm("确定删除这个账号?", "提示", {
         confirmButtonText: "确定",
@@ -232,74 +151,125 @@ export default {
           });
         });
     },
-    cancel() {
-      this.$refs.news.resetFields();
-      this.acVisible = false;
+    getAllchannel() {
+      getAllchannel({
+        pageNo: 1,
+        pageSize: 100,
+        param: {}
+      })
+        .then(res => {
+          this.channels = res.data.content;
+        })
+        .catch(err => {
+          this.$message.error("获取通道失败！");
+        });
     },
-    //转换名字
-    dicFilter(val) {
-      return this.settings.payWay.find(item => val == item.value).label;
-    },
-
     sizeChange(num) {
       this.pageSize = num;
       this.getAllAcount();
+    },
+    //账号启用禁用转换
+    useChange(id, used) {
+      this.loading = true;
+      updateUse({
+        id,
+        used
+      })
+        .then(res => {
+          this.$message.success("状态修改成功！");
+        })
+        .finally(_ => {
+          this.loading = false;
+          this.getAllAcount();
+        });
+    },
+    getAllAcount() {
+      this.loading = true;
+      getAllAcount({
+        pageNo: this.currentPage,
+        pageSize: this.pageSize,
+        param: {
+          account: "-wx个码", //账号
+          used: this.used, //是否启用
+          accountType: "wx", //类型
+          min: this.min, //最小
+          max: this.max //最大
+        }
+      })
+        .then(res => {
+          const { totalRecords, pageNo, pageSize, content } = res.data;
+          this.totalPage = totalRecords;
+          this.pageSize = pageSize;
+          this.currentPage = pageNo;
+          this.list = content;
+        })
+        .catch(err => {})
+        .finally(_ => {
+          this.loading = false;
+        });
+    },
+    saveAccount() {
+      this.saveAccountLoading = true;
+      let account = this.news.account + "-wx个码";
+      let param = Object.assign({}, this.news, {
+        account: this.news.account + "-wx个码"
+      });
+      addAcount(param)
+        .then(res => {
+          this.getAllAcount();
+          this.$message.success("添加账号成功！");
+          this.closeDialog();
+        })
+        .catch(err => {
+          this.$message.error(err.message);
+        })
+        .finally(e => {
+          this.saveAccountLoading = false;
+          this.loading = false;
+        });
+    },
+    closeDialog() {
+      this.news = {
+        account: "",
+        city: "defualt",
+        dailyCeiling: "",
+        accountType: "wx"
+      };
+      this.dialogShow = false;
+      this.visible = false;
+    },
+    openSet(row) {
+      this.visible = true;
+      this.currentRow = JSON.parse(JSON.stringify(row));
+    },
+    //图片上传
+    uploadUrl(raw) {
+      let _self = this;
+      let reader = new FileReader();
+      reader.readAsDataURL(raw.file);
+      reader.onload = function() {
+        qrcode.decode(_self.getObjectURL(raw.file));
+        qrcode.callback = function(qrUrl) {
+          if (qrUrl === "error decoding QR Code") {
+            _self.$message.error("未能识别支付二维码！");
+          } else {
+            let data = {
+              //   money: 0,
+              url: reader.result,
+              qrUrl
+            };
+            _self.$set(_self.form, "contentObj", data);
+          }
+        };
+      };
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.pay-label {
-  > div {
-    margin-top: 5px;
-  }
-  p {
-    text-align: right;
-    width: 90px;
-  }
-}
-.dashboard-container {
-  >>> .iconfont {
-    width: 70px;
-  }
-  .title {
-    color: rgba(0, 0, 0, 0.45);
-    font-size: 14px;
-    line-height: 22px;
-    height: 22px;
-  }
-  .num {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    word-break: break-all;
-    white-space: nowrap;
-    color: rgba(0, 0, 0, 0.85);
-    margin-top: 4px;
-    margin-bottom: 0;
-    font-size: 30px;
-    line-height: 38px;
-    height: 38px;
-  }
-
-  .field {
-    padding-top: 9px;
-    margin-top: 8px;
-    border-top: 1px solid #e8e8e8;
-    box-sizing: border-box;
-    span:nth-of-type(2) {
-      margin-left: 10px;
-    }
-  }
-  .el-card {
-    width: 100%;
-  }
-  .line {
-    height: 300px;
-  }
-  .money {
-    margin-left: 15px;
-    font-size: 40px;
-  }
+<style scoped>
+.funds-header .el-form-item {
+  margin-bottom: 0;
 }
 </style>
+
