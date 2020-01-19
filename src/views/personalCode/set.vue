@@ -189,7 +189,7 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          account: "-wx个码", //账号
+          account: "-钱方商户", //账号
           used: this.used, //是否启用
           accountType: "wx", //类型
           min: this.min, //最小
@@ -210,9 +210,9 @@ export default {
     },
     saveAccount() {
       this.saveAccountLoading = true;
-      let account = this.news.account + "-wx个码";
+      let account = this.news.account + "-钱方商户";
       let param = Object.assign({}, this.news, {
-        account: this.news.account + "-wx个码"
+        account: this.news.account + "-钱方商户"
       });
       addAcount(param)
         .then(res => {

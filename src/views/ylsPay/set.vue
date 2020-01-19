@@ -44,7 +44,7 @@
     el-table-column(label='启用状态' width="200")
       template(slot-scope='scope')
         el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="单笔收款限额")
+    el-table-column(label="单笔收款限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
           el-link(

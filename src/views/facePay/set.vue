@@ -17,8 +17,7 @@
       el-table-column(prop='account', label='账号')
       el-table-column(label="所属码商" width="250" prop="codeMerchantAccount")
       el-table-column(label="所属代理" width="250" prop="proxyAccount")
-      el-table-column(prop='dailyCeiling', label='今日限额')
-      el-table-column( label='已添收款码')
+      el-table-column( label='已添收款码'  show-overflow-tooltip)
          template(slot-scope='scope')
           .layout-row
             el-tag(
@@ -28,6 +27,7 @@
               size="small"
               :key="i"
             ) {{item}}
+      el-table-column(prop='dailyCeiling', label='今日限额')
 
       el-table-column(label='操作' width="200")
         template(slot-scope='scope')

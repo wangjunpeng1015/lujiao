@@ -68,14 +68,14 @@ export const asyncRoutes = [
     meta: {
       title: '商户配置',
       icon: 'el-icon-user-solid',
-      roles: [2]
+      roles: [1]
     },
     children: [
       {
         path: 'merchant',
         name: 'merchant',
         component: () => import('@/views/setting/merchant'),
-        meta: { title: '商户配置', icon: 'el-icon-setting', roles: [2] }
+        meta: { title: '商户配置', icon: 'el-icon-setting', roles: [1] }
       }
     ]
   },
@@ -85,7 +85,7 @@ export const asyncRoutes = [
     redirect: '/funds/set',
     name: 'funds',
     meta: {
-      title: '轻松经费',
+      title: '经费通道',
       icon: 'el-icon-wallet',
     },
     children: [
@@ -94,7 +94,7 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/Funds/Set'),
         meta: {
-          title: '经费配置',
+          title: '通道配置',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }
@@ -116,7 +116,7 @@ export const asyncRoutes = [
     redirect: '/facePay/set',
     name: 'funds',
     meta: {
-      title: '当面付',
+      title: '当面付通道',
       icon: 'el-icon-wallet',
     },
     children: [
@@ -125,7 +125,7 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/facePay/set'),
         meta: {
-          title: '当面付配置',
+          title: '通道配置',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }
@@ -147,7 +147,7 @@ export const asyncRoutes = [
     redirect: '/ylsPay/set',
     name: 'funds',
     meta: {
-      title: 'YLS',
+      title: '云靓刷通道',
       icon: 'el-icon-wallet',
     },
     children: [
@@ -156,7 +156,7 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/ylsPay/set'),
         meta: {
-          title: 'YLS配置',
+          title: '通道配置',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }
@@ -166,7 +166,7 @@ export const asyncRoutes = [
         name: 'orders',
         component: () => import('@/views/ylsPay/Orders'),
         meta: {
-          title: 'YLS订单',
+          title: '云靓刷订单',
           icon: 'el-icon-s-order',
         }
       }
@@ -209,8 +209,8 @@ export const asyncRoutes = [
     redirect: '/personalCode/set',
     name: 'personalCode',
     meta: {
-      icon: 'el-icon-s-tools',
-      title: '微信-个码',
+      icon: 'el-icon-wallet',
+      title: '钱方通道',
       roles: [1, 3, 4],
     },
     children: [
@@ -219,7 +219,7 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/personalCode/set'),
         meta: {
-          title: '个码通道配置',
+          title: '通道配置',
           icon: 'el-icon-s-tools',
           roles: [1, 3, 4],
         }
@@ -229,8 +229,8 @@ export const asyncRoutes = [
         name: 'orders',
         component: () => import('@/views/personalCode/orders'),
         meta: {
-          title: '个码订单',
-          icon: 'el-icon-s-tools',
+          title: '钱方订单',
+          icon: 'el-icon-s-order',
           roles: [1, 3, 4],
         }
       }
@@ -272,7 +272,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'settlement',
         component: () => import('@/views/usdtSettlement/index'),
-        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1,] }
+        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1] }
       },
       {
         path: 'records',

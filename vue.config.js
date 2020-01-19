@@ -47,7 +47,7 @@ module.exports = {
       // },
       [process.env.VUE_APP_BASE_API]: {
         // '/': {
-        // target: `http://192.168.8.105:8092/backend`,
+        // target: `http://192.168.8.105:8092`,
         // target: `http://192.168.8.114:8092/`,
         target: `http://39.99.177.97:8097/`,
         changeOrigin: true,
