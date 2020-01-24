@@ -151,6 +151,8 @@ $cursor: #fff;
 }
 /* reset element-ui css */
 .login-container {
+  background: url('../../assets/img/new-bg.jpg') no-repeat 100% 100%;
+  background-size: cover;
   position: relative;
   #login {
     position: absolute;
