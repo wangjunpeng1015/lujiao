@@ -1,7 +1,7 @@
 var frontUrl = location.protocol + '//'
 if (location.host.startsWith('192') || location.host.startsWith('localhost')) {
-    frontUrl += '192.168.8.105:8092'
-    // frontUrl += '39.99.177.97:8092'
+    // frontUrl += '192.168.8.105:8092'
+    frontUrl += '39.99.177.97:8092'
 } else {
     frontUrl += location.host + ':8097'
 }

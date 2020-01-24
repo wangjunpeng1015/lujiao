@@ -2,22 +2,23 @@
 .orders-container.layout-column
   .wjp-tools.layout-row__between
     div
-      el-button(v-if="userinfo.roleId ==1 || userinfo.roleId==3 ||(userinfo.roleId == 4 &&userinfo.level ==1)" type='primary' @click="merchantVisible = true") 添加码商
+      el-button(size='mini' v-if="userinfo.roleId ==1 || userinfo.roleId==3 ||(userinfo.roleId == 4 &&userinfo.level ==1)" type='primary' @click="merchantVisible = true") 添加码商
     .buttons.layout-row.align-center
-      el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='码商账号' style="width:200px;")
-      el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+      el-input(size='mini' v-model='account',@keyup.enter.native="getTableData" placeholder='码商账号' style="width:200px;")
+      el-button(size='mini' type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:data='tableData', style='width: 100%', height='550')
-        el-table-column(prop='account', label='账号', )
-        el-table-column(prop='rootAccount', label='代理')
-        el-table-column(prop='pcodeAccount', label='上级码商', v-if="userinfo.level==2")
-        el-table-column(prop='level', label='等级')
-        el-table-column(label="是否启用账号以及其收款码")
+      el-table.wjp-table(v-loading="loading" ,:data='tableData', style='width: 100%')
+        el-table-column(prop='account' show-overflow-tooltip label='账号', )
+        el-table-column(prop='rootAccount' show-overflow-tooltip label='代理')
+        el-table-column(prop='pcodeAccount' show-overflow-tooltip label='上级码商', v-if="userinfo.level==2")
+        el-table-column(prop='level' show-overflow-tooltip label='等级')
+          template(slot-scope="scope")
+            span {{scope.row.level == 2 ? '二级码商' : '一级码商'}}
+        el-table-column(prop='balance' show-overflow-tooltip label='当日收款', )
+        //- el-table-column(prop='createTime' show-overflow-tooltip label='创建时间',)
+        el-table-column(label="是否启用账号" show-overflow-tooltip)
           template(slot-scope='scope')
             el-switch(v-model='scope.row.status',@change="changeStatus(scope.row.id)" :active-text="scope.row.status?'启用':'停用'")
-        el-table-column(prop='phone', label='手机号', )
-        el-table-column(prop='balance', label='当日收款', )
-        el-table-column(prop='createTime', label='创建时间',)
         el-table-column(width="100" v-if="userinfo.roleId == 1 || userinfo.roleId == 3")
           template(slot-scope='scope')
             el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
@@ -31,7 +32,7 @@
           @current-change="getTableData"
           :current-page.sync="currentPage"
           :page-size="pageSize"
-          layout=" prev, pager, next,total"
+          layout=" sizes,prev, pager, next,total"
           :total="totalPage")
   add-merchants(:visible.sync="merchantVisible" @finish="getTableData" :id="4")
 </template>

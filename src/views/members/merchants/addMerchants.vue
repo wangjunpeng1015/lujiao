@@ -10,8 +10,8 @@ el-dialog(:title="id==2?'添加商户':'添加码商'", :visible.sync='visible' 
         el-form-item(label='姓名', prop="userName")
             el-input(v-model='form.userName')
     .dialog-footer(slot='footer')
-        el-button(@click='cancel') 取 消
-        el-button(type='primary', :disaled='loading' @click='add') 确 定
+        el-button(@click='cancel' size="mini") 取 消
+        el-button(type='primary', :disaled='loading' @click='add' size="mini") 确 定
 </template>
 
 <script>
@@ -64,7 +64,7 @@ export default {
       loading: false,
       form: {
         account: "",
-        userName: Random.name(),
+        userName: "",
         userPassword: "",
         phone: `159${Random.integer(10000000, 99999999)}`
       },

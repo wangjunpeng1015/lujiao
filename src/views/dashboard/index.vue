@@ -1,12 +1,11 @@
 <template lang="pug">
 .dashboard-container.layout-column(style="overflow: auto")
-  el-divider(content-position="left") 收款数据
   .layout-row__between
     el-card(shadow="hover")
       div(slot="header")
         .layout-row__between
-          div 累计收款金额
-          .money {{(amountData.all.amount / 10000).toFixed(6)}} 万
+          div 累计入金
+          .money {{amountData.all.amount}}
       .card-item.layout-row__between
         .layout-column
           div 订单数
@@ -17,8 +16,8 @@
     el-card(shadow="hover")
       div(slot="header")
         .layout-row__between
-          div 本月收款金额
-          .money {{(amountData.thisMonth.amount/10000).toFixed(6)}} 万
+          div 本月入金
+          .money {{amountData.thisMonth.amount}}
       .card-item.layout-row__between
         .layout-column
           div 订单数
@@ -29,8 +28,8 @@
     el-card(shadow="hover")
       div(slot="header")
         .layout-row__between
-          div 昨日收款金额
-          .money {{(amountData.yesterday.amount/10000).toFixed(6)}} 万
+          div 昨日入金
+          .money {{amountData.yesterday.amount}}
       .card-item.layout-row__between
         .layout-column
           div 订单数
@@ -41,8 +40,8 @@
     el-card(shadow="hover")
       div(slot="header")
         .layout-row__between
-          div 今日收款金额
-          .money {{(amountData.today.amount/10000).toFixed(6)}} 万
+          div 今日入金
+          .money {{amountData.today.amount}}
       .card-item.layout-row__between
         .layout-column
           div 订单数
@@ -50,59 +49,23 @@
         .layout-column
           div 成功率
           div.num {{(amountData.today.successRate * 100).toFixed(2)}}%
-    //- el-card(shadow="hover")
-    //-   div(slot="header")
-    //-     .layout-row__between
-    //-       div 总结算金额
-    //-       .money {{amountData.settlement.amount || 0}} 元
-    //-   .card-item.layout-row__between
-    //-     .layout-column
-    //-       div 已结算金额
-    //-       div.num {{amountData.settlement.hasBeenSettled || 0}}
-    //-     .layout-column
-    //-       div 待结算金额
-    //-       div.num {{amountData.settlement.forThe || 0}}
-  //- el-divider(content-position="left") 昨日通道数据
-  //- .layout-row
-  //-   el-card(shadow="hover" v-for="(item, index) in payList" v-show="item.name")
-  //-     div(slot="header")
-  //-       .layout-row__between
-  //-         div {{item.name}}
-  //-         .money {{item.amount}} 元
-  //-     .card-item.layout-row__between
-  //-       .layout-column
-  //-         div 订单数
-  //-         div.num {{item.num}}笔
-  //-       .layout-column
-  //-         div 成功率
-  //-         div.num {{item.rate}}%
+  el-divider(content-position="left")
+    el-select(v-model="dayNum" size="mini" @change="getBody")
+      el-option(label="昨日数据" :value="1")
+      el-option(label="今日实时数据" :value="0")
   el-collapse(v-model="activeNames")
-    el-collapse-item(title='昨日代理数据', name='1' v-if="userinfo.roleId===1")
+    el-collapse-item(title='代理数据', name='1' v-if="userinfo.roleId===1")
       el-table(:data="proxyList" :stripe="true" border)
         el-table-column(label="代理名称" prop="name")
         el-table-column(label="金额" prop="amount")
         el-table-column(label="订单数量" prop="orders")
         el-table-column(label="成功率" prop="successRate")
-    el-collapse-item(title='昨日商户数据', name='2' v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
+    el-collapse-item(title='商户数据', name='2' v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
       el-table(:data="merchantList" :stripe="true" border)
         el-table-column(label="商户名称" prop="name")
         el-table-column(label="金额" prop="amount")
         el-table-column(label="订单数量" prop="orders")
         el-table-column(label="成功率" prop="successRate")
-  //- .layout-column__between(v-if="userinfo.roleId===1")
-  //-   el-divider(content-position="left") 今日代理数据
-  //-   el-table(:data="proxyList" :stripe="true" border)
-  //-     el-table-column(label="代理名称" prop="name")
-  //-     el-table-column(label="金额" prop="amount")
-  //-     el-table-column(label="订单数量" prop="orders")
-  //-     el-table-column(label="成功率" prop="successRate")
-  //- .layout-column__between(v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
-  //-   el-divider(content-position="left") 今日商户数据
-  //-   el-table(:data="merchantList" :stripe="true" border)
-  //-     el-table-column(label="商户名称" prop="name")
-  //-     el-table-column(label="金额" prop="amount")
-  //-     el-table-column(label="订单数量" prop="orders")
-  //-     el-table-column(label="成功率" prop="successRate")
   SettleModal(:visible.sync="visible")
 </template>
 
@@ -180,6 +143,7 @@ export default {
         settlementSuccessMoney: 0,
         successRate: {}
       },
+      dayNum: 0,
       body: []
     };
   },
@@ -232,44 +196,40 @@ export default {
     getHead() {
       getHead()
         .then(res => {
-          console.log(res);
           this.amountData = res.data;
         })
         .catch(err => {});
     },
     getBody() {
       // 昨日
-      getBody({ dayNum: 1 }).then(res => {
+      getBody({ dayNum: this.dayNum }).then(res => {
         let proxy = res.data.proxy;
         let merchant = res.data.merchant;
+        this.proxyList = []
+        this.merchantList = []
         for (let key in proxy) {
           let name = key;
-          this.proxyList.push({
-            name: key,
-            amount: proxy[key].amount || 0,
-            successRate: proxy[key].successRate * 100 + "%",
-            orders: proxy[key].orders
-          });
+          if (proxy[key].orders !== 0) {
+            this.proxyList.push({
+              name: key,
+              amount: proxy[key].amount || 0,
+              successRate: (proxy[key].successRate * 100).toFixed(2) + "%",
+              orders: proxy[key].orders
+            });
+          }
         }
         for (let item in merchant) {
           let name = item;
-          this.merchantList.push({
-            name: item,
-            amount: merchant[item].amount || 0,
-            successRate: merchant[item].successRate * 100 + "%",
-            orders: merchant[item].orders
-          });
+          if (merchant[item].orders !== 0) {
+            this.merchantList.push({
+              name: item,
+              amount: merchant[item].amount || 0,
+              successRate: (merchant[item].successRate * 100).toFixed(2) + "%",
+              orders: merchant[item].orders
+            });
+          }
         }
       });
-
-      // getBody({
-      //   dayNum: dayjs(this.time[1]).diff(this.time[0], "day")
-      // })
-      //   .then(res => {
-      //     this.body = res.data;
-      //     this.setOption(res.data);
-      //   })
-      //   .catch(err => {});
     }
   }
 };

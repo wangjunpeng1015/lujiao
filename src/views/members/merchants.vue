@@ -2,29 +2,27 @@
 .orders-container.layout-column
   .wjp-tools.layout-row__between
     div
-      el-button(v-if="userinfo.roleId ==1 ||userinfo.roleId==3" type='primary' @click="merchantVisible = true") 添加商户
+      el-button(size="mini" v-if="userinfo.roleId ==1 ||userinfo.roleId==3" type='primary' @click="merchantVisible = true") 添加商户
     .buttons.layout-row.align-center
-      el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='商户账号' style="width:200px;")
-      el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
-      div -
-      el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
-      el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+      el-input(size="mini" v-model='account',@keyup.enter.native="getTableData" placeholder='商户账号' style="width:200px;")
+      el-button(size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
-          el-table-column(prop='account', label='账号', )
-          el-table-column(prop='rootAccount', label='代理', )
-          el-table-column(prop='userName', label='商户姓名', )
-          el-table-column(label='支付回调', )
+      el-table.wjp-table(v-loading="loading"  :data='tableData', style='width: 100%')
+          el-table-column(prop='account' show-overflow-tooltip label='账号', )
+          el-table-column(prop='rootAccount' show-overflow-tooltip label='所属代理', )
+          el-table-column(prop='userName' show-overflow-tooltip label='商户姓名', )
+          //- el-table-column(label='支付回调' show-overflow-tooltip)
+          //-   template(slot-scope='scope')
+          //-     el-input(v-if="scope.row.show" v-model='scope.row.returnUrl',@blur="changeUrl(scope.row)" placeholder='支付回调' style="width:100px;")
+          //-     span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.returnUrl||'localhost:8080' }}
+          //- el-table-column(prop='phone', label='手机号' show-overflow-tooltip )
+          el-table-column(prop='balance', label='今日订单金额' show-overflow-tooltip )
+          el-table-column(prop='createTime', label='创建时间' show-overflow-tooltip)
+          el-table-column(label='操作')
             template(slot-scope='scope')
-              el-input(v-if="scope.row.show" v-model='scope.row.returnUrl',@blur="changeUrl(scope.row)" placeholder='支付回调' style="width:100px;")
-              span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.returnUrl||'localhost:8080' }}
-          el-table-column(prop='phone', label='手机号', )
-          el-table-column(prop='balance', label='订单金额', )
-          el-table-column(prop='createTime', label='创建时间',)
-          el-table-column(label='操作',)
-            template(slot-scope='scope')
-              el-button(size="mini" type='primary' @click="edit(scope.row)") 编辑
-              el-button(size="mini" type='danger' @click="del(scope.row)") 删除
+              .layout-row
+                el-button(size="mini" type='primary' @click="edit(scope.row)") 商户通道配置
+                el-button(size="mini" type='danger' @click="del(scope.row)") 删除
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -35,7 +33,7 @@
           @current-change="getTableData"
           :current-page.sync="currentPage"
           :page-size="pageSize"
-          layout=" prev, pager, next,total"
+          layout="sizes, prev, pager, next,total"
           :total="totalPage")
   drawer(:visible.sync="drawerVisible" :data="chooseMerchants")
   add-merchants(:visible.sync="merchantVisible" @finish="getTableData" :id="2")

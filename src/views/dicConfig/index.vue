@@ -4,8 +4,7 @@
       el-button(type='primary' @click="addDic") 添加字典
       el-button(type='primary' @click="getTableData") 刷 新
   .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:data='dicTable', style='width: 100%', height='550')
-          el-table-column(prop="id" label='id' width="50")
+      el-table.wjp-table(v-loading="loading" ,:data='dicTable', style='width: 100%')
           el-table-column(label='字典key', )
             template(slot-scope='scope')
               el-input(v-model='scope.row.dictKey' :disabled="!scope.row.disabled")
@@ -29,7 +28,7 @@
               el-input(v-model='scope.row.optional_3' :disabled="!scope.row.disabled")
           el-table-column(label='操作',)
             template(slot-scope='scope')
-              div(v-show="!scope.row.disabled")
+              .layout-row(v-show="!scope.row.disabled")
                 el-button(type='primary' size="mini" @click="edit(scope.row)") 编 辑
                 el-button(type='danger' size="mini" @click="del(scope.row.id)") 删 除
               div(v-show="scope.row.disabled")

@@ -23,13 +23,13 @@ export default {
   /*50 = navbar  */
   height: calc(100vh - 50px);
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 .app-main > div {
   border-radius: 10px;
   padding: 10px;
   margin: 20px;
-  height: calc(100vh - 90px);
+  /* height: calc(100vh - 90px); */
   box-shadow: 0px 0px 18px -10px #666;
 }
 .fixed-header + .app-main {

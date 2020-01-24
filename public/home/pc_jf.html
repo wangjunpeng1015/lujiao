@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+</head>
+<style>
+  body{
+    width: 1200px;
+    margin: 0 auto;
+    background: #eff0f2;
+  }
+  .body{
+    background: #fff;
+
+    display: flex;
+  }
+  /* qrcode1 {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+  } */
+  #qrcode1 img {
+    margin: 0 auto;
+  }
+  .header{
+    padding-top: 30px;
+    position: relative;
+    padding-bottom: 20px;
+    border-bottom: 5px solid #999;
+  }
+  #money{
+    position: absolute;
+    right: 0;
+    top: 40px;
+  }
+  p {
+    text-align: center;
+    margin: 0;
+  }
+</style>
+<body>
+  <div id="pre_create" class='center'>
+    <div class="header">
+      <div style="display:inline-block;padding-right: 10px;border-right: 1px solid #ccc">
+        <img src="./zfb.png" width="100px" alt="">
+      </div>
+      <span>我的收银台</span>
+      <div id="money">
+        <span style="color:#f27838;font-weight: bold;font-size:22px;">49.00</span>
+        <span>元</span>
+      </div>
+    </div>
+    <div class="body">
+      <div style="flex:0.8;padding: 100px 0 ;">
+        <div style="padding: 10px;border: 1px solid #ccc;width: 200px;margin: 0 auto;">
+          <div id="qrcode1"></div>
+          <p style="margin-top: 10px">打开手机支付宝</p>
+          <p>扫一扫继续付款</p>
+        </div>
+        <p style="color:#999;text-decoration: underline;margin-top:10px;">首次支付请确认授权</p>
+      </div>
+      <div style="flex:0.2;background:#e6e6e6">
+        <p style="color:red;margin-top:10px;text-align:left;padding-left:10px">1. 首次支付请确认授权</p>
+        <img style="width:90%;height:auto;margin:10px auto;display:block" src="./yd1.jpg" alt="" />
+        <p style="color:red;margin-top:10px;text-align:left;padding-left:10px">2. 请在学生姓名栏输入任意文字</p>
+        <p style="color:red;margin-top:10px;text-align:left;padding-left:10px">3. 如遇到“您已支付过此订单”，请重新创建订单</p>
+        <img style="width:90%;height:auto;margin:10px auto;display:block" src="./payed.jpg" alt="" />
+      </div>
+    </div>
+    <!-- <h3 class="red">请打开支付宝扫一扫</h3> -->
+    <!-- <img style="width:50%;height:auto;margin:0 auto" src="./yd1.jpg" alt="" /> -->
+  </div>
+</body>
+<script src="./polyfill.min.js"></script>
+<script src="./axios.min.js"></script>
+<script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
+<script type='text/javascript' src='./utils.js' charset='utf-8'></script>
+<script>
+  function orderState () {
+    return new Promise((resolve, reject) => {
+      axios({
+        method: "POST",
+        url: frontUrl + '/backend/order/findOrderNum',
+        data: {
+          orderNum: getUserParam("orderNo"),
+        },
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+  orderState().then(function (res) {
+    // document.getElementById('pre_create').style.display = 'block'
+    const { qrUrl } = JSON.parse(res.data.data.payContent)
+    new QRCode(document.getElementById("qrcode1"), {
+      text: qrUrl,
+      width: 200,
+      height: 200,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+    });
+  })
+</script>
+</html>

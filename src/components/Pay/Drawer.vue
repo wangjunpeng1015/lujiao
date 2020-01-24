@@ -1,34 +1,34 @@
 <template lang="pug">
 div
-  el-drawer(title='账号通道',size="50%", @close='cancel', :visible.sync='visible', direction='rtl', custom-class='drawer', ref='drawer')
+  el-drawer(title='账号配置',size="60%", @close='cancel', :visible.sync='visible', direction='rtl', custom-class='drawer', ref='drawer')
     .container.layout-column
       .wjp-tools.layout-row__between
         div
-          el-button(v-if="(userinfo.roleId ==4 || userinfo.roleId ==1)&&!(single&&table.length<2)" type='primary' @click="addChannel") 添加收款方式
+          el-button(v-if="(userinfo.roleId ==4 || userinfo.roleId ==1)&&!(single&&table.length<2)" type='primary' @click="addChannel" size="mini") 添加收款方式
         .layout-row.buttons
-          el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
-            el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-          el-select(v-model='used', placeholder='是否启用' clearable @change="getPays")
+          //- el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
+          //-   el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+          el-select(size="mini" v-model='used', placeholder='是否启用' clearable @change="getPays")
             el-option(label='启用', :value='true')
             el-option(label='禁用', :value='false')
       .wjp-content
-        el-table.wjp-table(v-loading="loading" :data='table', style='width: 100%', height='550')
-          el-table-column(fixed prop='id', label='id', width='50')
-          el-table-column(prop='payWayDictId', label='支付名称')
-            template(slot-scope='scope')
-              span {{ dicFilter(scope.row.payWayDictId) }}
+        el-table.wjp-table(v-loading="loading" :data='table', style='width: 100%')
+          //- el-table-column(fixed prop='id', label='id', width='50')
+          //- el-table-column(prop='payWayDictId', label='支付名称')
+          //-   template(slot-scope='scope')
+          //-     span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
-          el-table-column(label='金额')
+          el-table-column(label='金额'  show-overflow-tooltip)
             template(slot-scope='scope')
               span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
-          el-table-column(prop='remark', label='备注')
+          el-table-column(prop='remark', label='备注'  show-overflow-tooltip)
           el-table-column(label='编辑' v-if="userinfo.roleId == 4")
             template(slot-scope='scope')
               el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
-          el-table-column(label='操作')
+          el-table-column(label='是否开启')
             template(slot-scope='scope')
-              el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-          el-table-column(width="100")
+              el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
+          el-table-column( label="操作")
             template(slot-scope='scope')
               el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
         .page.layout-row.align-center.right
@@ -257,6 +257,7 @@ export default {
 }
 >>> .drawer {
   padding: 20px;
+  overflow:auto;
   header {
     padding-left: 0;
     span {

@@ -1,25 +1,18 @@
 <template lang="pug">
 .orders-container.layout-column
-  .wjp-tools.layout-row__between
-    div
-    .buttons
-      //- el-select(v-model='type', placeholder='支付方式' clearable @change="getTableData")
-      //-   el-option(v-for='(item,i) in payWay', :key='i', :label='item.label', :value='item.value')
-      //- el-input(v-model='account',@keyup.enter.native="getTableData" placeholder='结算账号' style="width:200px;")
-      el-button(type='primary' @click="getTableData" :disabled="loading") 刷 新
-  .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
-          el-table-column(prop='account', label='账号', )
-          el-table-column(prop='balance', label='已收金额',)
+  .wjp-content.flex.layout-column(style="margin-top:0")
+      el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%')
+          el-table-column(prop='account' show-overflow-tooltip label='账号', )
+          el-table-column(prop='balance' show-overflow-tooltip label='已收金额',)
             template(slot-scope='scope')
               p.red {{ scope.row.balance }} 元
-          el-table-column(prop='settlementBalance', label='待结算金额',)
+          el-table-column(prop='settlementBalance' show-overflow-tooltip label='待结算金额',)
             template(slot-scope='scope')
               p.red {{ scope.row.settlementBalance }} 元
           //- el-table-column(label='状态')
           //-   template(slot-scope='scope')
           //-     p(:style="{color:scope.row.state?'green':''}") {{ scope.row.state?'开启':'关闭' }}
-          el-table-column(label='操作')
+          el-table-column(label='操作' show-overflow-tooltip)
               template(slot-scope='scope')
                 el-button(type='primary',size='mini' @click="settlement(scope.row)") 申请结算
       .page.layout-row.align-center.right
@@ -32,10 +25,10 @@
           @current-change="getTableData"
           :current-page.sync="currentPage"
           :page-size="pageSize"
-          layout=" prev, pager, next,total"
+          layout="sizes, prev, pager, next,total"
           :total="totalPage")
   SettleModal(@finish="getTableData" :visible.sync="visible" :data='settlementData')
-    
+
 </template>
 
 <script>

@@ -1,15 +1,15 @@
 <template lang="pug">
 .orders-container.layout-column
   .wjp-tools
-      el-button(type='primary' @click="addAgent") 添加代理
+      el-button(type='primary' @click="addAgent" size="mini") 添加代理
   .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
+      el-table.wjp-table(v-loading="loading"  :data='tableData', style='width: 100%')
           el-table-column(prop='account', label='账号', )
-          el-table-column(prop='phone', label='手机', )
+          //- el-table-column(prop='phone', label='手机', )
           el-table-column(prop='createTime', label='开通时间')
           el-table-column(label='操作')
             template(slot-scope='scope')
-               el-button(size="mini" type='primary' @click="edit(scope.row)") 编辑
+               el-button(size="mini" type='primary' @click="edit(scope.row)") 通道配置
                el-button(size="mini" type='danger' @click="delUser(scope.row)") 删除
       .page.layout-row.align-center.right
           span 每页显示
@@ -21,41 +21,33 @@
           @current-change="getTableData"
           :current-page.sync="currentPage"
           :page-size="pageSize"
-          layout=" prev, pager, next,total"
+          layout=" sizes,prev, pager, next,total"
           :total="totalPage")
   //---------------------------------------- 弹窗
   //- 添加代理弹窗
   el-dialog(title="添加代理", :visible.sync='agentVisible' width="30%" label-width="80px")
-    el-form.dialog-form(ref="form" :model='form' :rules="rules")
-      .layout-row__between
-        el-form-item(label='账号', prop="account")
-          el-input(v-model='form.account')
-        el-form-item(label='密码', prop="userPassword")
-          el-input(v-model='form.userPassword')
-      .layout-row__between
-        el-form-item(label='手机号', prop="phone")
-          el-input(v-model='form.phone')
+    el-form.dialog-form.full-form-item(ref="form" :model='form' :rules="rules")
+      el-form-item(label='账号', prop="account")
+        el-input(v-model='form.account')
+      el-form-item(label='密码', prop="userPassword")
+        el-input(v-model='form.userPassword')
+      el-form-item(label='手机号', prop="phone")
+        el-input(v-model='form.phone')
     .dialog-footer(slot='footer')
-      el-button(@click='agentVisible = false') 取 消
-      el-button(type='primary', @click='register') 确 定
-  
-  el-drawer(title='已开通通道',size="50%" ,:visible.sync='drawerVisible', direction='rtl', :before-close='drawerClose')
+      el-button(@click='agentVisible = false' size="mini") 取 消
+      el-button(type='primary' size="mini" @click='register') 确 定
+
+  el-drawer(title='代理通道配置',size="50%" ,:visible.sync='drawerVisible', direction='rtl', :before-close='drawerClose')
     .wjp-tools.layout-row__between
-      div
-        el-button(type='primary' @click="cedit") 添加通道
-      .layout-row.buttons.align-center
-        el-input(v-model='minRate',@keyup.enter.native="getAllchannel" placeholder='最小利率' style="width:100px;")
-        div - 
-        el-input(v-model='maxRate',@keyup.enter.native="getAllchannel" placeholder='最大利率' style="width:100px;")
-        el-button(type='primary' @click="getAllchannel" :disabled="loading") 搜 索
-    el-table.wjp-table(v-loading="loading" , :data='drawerData', style='width: 100%', height='550')
-      el-table-column(prop='proxyAccount', label='代理名称')
-      el-table-column(label='通道名称')
+      el-button(size="mini" type='primary' @click="cedit") 添加通道
+    el-table.wjp-table(v-loading="loading" , :data='drawerData', style='width: 100%')
+      el-table-column(prop='proxyAccount' show-overflow-tooltip label='代理名称')
+      el-table-column(label='通道名称' show-overflow-tooltip)
         template(slot-scope='scope')
           p {{ dicFilter(scope.row.payWayDictId) }}
       //- el-table-column(prop='state', label='状态')
-      el-table-column(prop='createTime', label='创建时间')
-      el-table-column(label='通道利率')
+      el-table-column(prop='createTime' show-overflow-tooltip label='创建时间')
+      el-table-column(label='通道费率' show-overflow-tooltip)
         template(slot-scope='scope')
           el-input(v-if="scope.row.show" v-model='scope.row.channelRate',@blur="changeRate(scope.row)" placeholder='利率' style="width:100px;")
           span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.channelRate }}
@@ -77,9 +69,9 @@
 
   //- 添加通道
   add-channel(@finish="getAllchannel" :id="chooseProxy.id" :visible.sync="channelVisible")
-  
 
-    
+
+
 </template>
 
 <script>
@@ -345,7 +337,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+>>> .el-drawer{
+  overflow: auto;
+}
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
+.full-form-item /deep/ .el-form-item{
+  width: 100%;
+}
 </style>

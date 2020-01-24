@@ -4,22 +4,22 @@
     div
       //- el-button(type='primary' @click="settlement") 申请结算
     .buttons
-      el-select(v-model='accountId', placeholder='被结算人账号' filterable,clearable @change="getTableData")
+      el-select(size="mini" v-model='accountId', placeholder='被结算人账号' filterable,clearable @change="getTableData")
         el-option(v-for='(item,i) in accounts', :key='i', :label='item.account', :value='item.id')
-      el-date-picker(v-model='time', type='daterange', value-format="yyyy-MM-dd",align='right', unlink-panels, range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期' @change="getTableData")
-      el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
+      el-date-picker(size="mini" v-model='time', type='daterange', value-format="yyyy-MM-dd",align='right', unlink-panels, range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期' @change="getTableData")
+      el-button(size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
   .wjp-content.flex.layout-column
-      el-table.wjp-table(v-loading="loading" ,:height="450", :data='tableData', style='width: 100%', height='250')
-          el-table-column(prop='byClearingAccount', label='结算人', )
-          el-table-column(prop='initiatorAccount', label='被结算人', )
-          el-table-column(label='结算方式')
+      el-table.wjp-table(v-loading="loading"  :data='tableData', style='width: 100%')
+          el-table-column(prop='byClearingAccount' show-overflow-tooltip label='结算人', )
+          el-table-column(prop='initiatorAccount' show-overflow-tooltip label='被结算人', )
+          el-table-column(label='结算方式' show-overflow-tooltip)
             template(slot-scope='scope')
               p {{filterDic(scope.row.settlementTypeDictId)}}
-          el-table-column(prop='settlementMoney', label='结算金额',)
-          el-table-column(label='状态',)
+          el-table-column(prop='settlementMoney', label='结算金额' show-overflow-tooltip)
+          el-table-column(label='状态' show-overflow-tooltip)
             template(slot-scope='scope')
               p(:class="colorState(scope.row)") {{ scope.row.settlementStatus }}
-          el-table-column(prop='createTime', label='创建时间',)
+          el-table-column(prop='createTime', label='创建时间' show-overflow-tooltip)
           el-table-column(label='操作',width='250')
             template(slot-scope='scope')
               div(v-if="userinfo.roleId ==3||scope.row.initiatorId == userinfo.id")
@@ -29,17 +29,18 @@
       .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
-          background
-          prev-text="上一页"
-          next-text="下一页"
-          @size-change="sizeChange"
-          @current-change="getTableData"
-          :current-page.sync="currentPage"
-          :page-size="pageSize"
-          layout=" prev, pager, next,total"
-          :total="totalPage")
+            background
+            prev-text="上一页"
+            next-text="下一页"
+            @size-change="sizeChange"
+            @current-change="getTableData"
+            :current-page.sync="currentPage"
+            :page-size="pageSize"
+            layout="sizes,prev, pager, next,total"
+            :total="totalPage"
+          )
   //- SettleModal(:visible.sync="visible")
-    
+
 </template>
 
 <script>

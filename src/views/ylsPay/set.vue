@@ -8,7 +8,7 @@
     :channels="channels"
   )
   el-dialog(
-    title='添加yls账号'
+    title='添加云靓刷账号'
     :visible.sync='dialogShow'
     width='40%'
     @close="closeDialog"
@@ -23,36 +23,32 @@
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
   .funds-header.layout-row__between
-    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加yls账号
+    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加云靓刷账号
     el-form(label-width='120px' :inline="true" size="mini")
-      el-form-item(label='金额', )
-        .layout-row
-          el-input(v-model='min' style="width:90px" type="number")
-          | ~
-          el-input(v-model='max' style="width:90px" type="number")
-      el-form-item()
+      el-form-item
         el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
           el-option(label='启用', :value='true')
           el-option(label='禁用', :value='false')
       el-form-item()
         el-button(type='primary', @click='getAllAcount' size="mini") 查 询
-  el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%', height='550')
-    el-table-column(label="账号" width="250" prop="account")
-    el-table-column(label="所属码商" width="250" prop="codeMerchantAccount")
-    el-table-column(label="所属代理" width="250" prop="proxyAccount")
-    el-table-column(label="今日剩余收款额度" width="250" prop="dailyCeiling")
-    el-table-column(label='启用状态' width="200")
-      template(slot-scope='scope')
-        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="单笔收款限额" show-overflow-tooltip)
+  el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
+    el-table-column(label="账号" show-overflow-tooltip prop="account")
+    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
+    el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
+    el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
+    el-table-column(label="单笔收款限额" width="300" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
-          el-link(
+          el-tag(
             style="margin-left: 5px"
             v-for="(item, index) in scope.row.amountList"
             type="success"
+            size="small"
             :key="index"
           ) {{item}}
+    el-table-column(label='启用状态' show-overflow-tooltip)
+      template(slot-scope='scope')
+        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
     el-table-column(label="操作" width="250")
       template(slot-scope='scope')
         .layout-row

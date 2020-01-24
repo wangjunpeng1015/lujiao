@@ -260,7 +260,7 @@
           @current-change="getTableData"
           :current-page.sync="currentPage"
           :page-size="pageSize"
-          layout=" prev, pager, next,total"
+          layout="sizes, prev, pager, next,total"
           :total="totalPage")
   el-dialog(title='账号信息', :visible.sync='addVisible' :close-on-click-modal='true')
     el-form(:model='form' :rules="rules" ref="form" label-width="150px")

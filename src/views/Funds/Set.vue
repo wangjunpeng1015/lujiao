@@ -23,29 +23,21 @@
       el-form-item.right
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
-  .funds-header.layout-row__between
-    el-button(v-if="userinfo.roleId == 4" type="primary" size="mini" @click="dialogShow = true") 添加支付宝账号
-    el-form(label-width='120px' :inline="true" size="mini")
-      el-form-item(label='金额', )
-        .layout-row
-          el-input(v-model='min' style="width:90px" type="number")
-          | ~
-          el-input(v-model='max' style="width:90px" type="number")
-      el-form-item()
-        el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
-          el-option(label='启用', :value='true')
-          el-option(label='禁用', :value='false')
-      el-form-item()
-        el-button(type='primary', @click='getAllAcount' size="mini") 查 询
-  el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%', height='550')
-    el-table-column(label="支付宝账号" width="250" prop="account")
-    el-table-column(label="所属码商" width="250" prop="codeMerchantAccount")
-    el-table-column(label="所属代理" width="250" prop="proxyAccount")
-    el-table-column(label="今日额度" width="250" prop="dailyCeiling")
-    el-table-column(label='启用状态' width="200")
-      template(slot-scope='scope')
-        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="已添加收款码"  show-overflow-tooltip)
+  .funds-header.layout-row__between(style="padding-bottom: 5px;")
+    el-button(type="primary" size="mini" @click="dialogShow = true") 添加账号
+    .layout-row
+      el-form(label-width='100px' :inline="true" size="mini")
+        el-form-item(label="是否启用：")
+          el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
+            el-option(label='启用', :value='true')
+            el-option(label='禁用', :value='false')
+      el-button(type='primary', @click='getAllAcount' size="mini") 查 询
+  el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
+    el-table-column(label="账号" fixed show-overflow-tooltip prop="account")
+    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
+    el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
+    el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
+    el-table-column(label="已添加收款码(建议每天最多产5个码)" width="300" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
           el-tag(
@@ -55,7 +47,10 @@
             size="small"
             :key="index"
           ) {{item}}
-    el-table-column(label="操作" width="250")
+    el-table-column(label='是否开启' show-overflow-tooltip)
+      template(slot-scope='scope')
+        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
+    el-table-column(label="操作" width="250" fixed="right")
       template(slot-scope='scope')
         .layout-row
           el-button(type="primary" size="mini" @click="openSet(scope.row)") 添加经费

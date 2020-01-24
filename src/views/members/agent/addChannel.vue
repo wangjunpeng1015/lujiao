@@ -5,11 +5,11 @@ el-dialog(:title="form.id?'修改通道':'添加通道'", :visible.sync='visible
             el-form-item(label='通道', prop="payWayDictId")
                 el-select(v-model='form.payWayDictId', placeholder='通道' clearable)
                     el-option(v-for='(item,i) in payWay' :key="i" :label='item.dictValueDisplayName', :value='item.id')
-            el-form-item(label='利率', prop="channelRate")
-                el-input(v-model='form.channelRate')
+            el-form-item(label='费率', prop="channelRate")
+                el-input(v-model='form.channelRate' placeholder="请以小数点表示")
     .dialog-footer(slot='footer')
-        el-button(@click='cancel') 取 消
-        el-button(type='primary', @click='addChannel') 确 定
+        el-button(@click='cancel' size="mini") 取 消
+        el-button(type='primary', @click='addChannel' size="mini") 确 定
 </template>
 
 <script>

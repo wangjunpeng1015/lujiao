@@ -3,9 +3,9 @@
     .wjp-tools.layout-row__between
       .layout-row__between
          el-button(v-if="userinfo.roleId == 1 || userinfo.roleId == 3" type='primary' @click="addOrder" size="mini") 新增订单
-         el-link(type="primary" style="margin-left:10px" target="_blank" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/qfjk.apk") 监控APP下载
+         el-link(type="primary" v-if="isQF" style="margin-left:10px" target="_blank" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/qfjk.apk") 监控APP下载
       .layout-row.buttons.align-center
-        el-select.flex( size="mini" v-model='type', :disabled="true" placeholder='支付方式' clearable @change="getTableData" v-show="!isQF")
+        el-select.flex( size="mini" v-model='type', :disabled="true" placeholder='支付方式' clearable @change="getTableData" v-show="false")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
         el-select.flex( size="mini" v-model='state', placeholder='支付状态' clearable @change="getTableData")
           el-option(v-for='item in status', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
@@ -16,9 +16,7 @@
         el-date-picker( size="mini" v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期'  value-format="yyyy-MM-dd" style="width:250px;")
         el-button( size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content.flex.layout-column
-        el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%', height='250')
-            //- el-table-column(fixed prop='id', label='id', width='50')
-            //- el-table-column(prop='name', label='订单号', )
+        el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%')
             el-table-column(type='expand')
               template(slot-scope='props')
                 el-form.demo-table-expand(label-position='left', inline='')
@@ -26,41 +24,36 @@
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
                     //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
             //- el-table-column(prop='orderNum', label='系统订单号', show-overflow-tooltip width="100")
-            el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip width="100")
-            el-table-column(prop='orderUserAccount', label='商户账号',width="100" show-overflow-tooltip)
-            //- el-table-column(prop='webSite', label='网站', )
-            //- el-table-column(prop='orderName', label='名称', )
-            el-table-column(v-if="isQF" label='原始金额',width="100" prop="amount",show-overflow-tooltip)
-              //- template(slot-scope='scope')
-              //-   span(v-if="scope.row.payStatusDictValue =='支付成功'") {{ scope.row.amount }}
-              //-   span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.amount }}
-            el-table-column(label='实际金额',width="100",show-overflow-tooltip)
+            el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip)
+            el-table-column(prop='orderUserAccount', label='商户账号' show-overflow-tooltip)
+            el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
+            el-table-column(v-if="!isQF" prop='remark', label='系统备注',show-overflow-tooltip)
+            el-table-column(v-if="isQF" label='原始金额' width="100" prop="amount",show-overflow-tooltip)
+            el-table-column(label='实际金额'  width="100" show-overflow-tooltip)
               template(slot-scope='scope')
                 span(v-if="scope.row.payStatusDictValue =='支付成功' || scope.row.payStatusDictValue =='支付超时'") {{ scope.row.actualAmount }}
                 span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.actualAmount }}
-            el-table-column(prop='payConfigPayConfigAccountAccount', label='收款账号',show-overflow-tooltip)
-            el-table-column(v-if="!isQF" prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
+            //- el-table-column(v-if="!isQF" prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             //- el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
-            el-table-column(v-if="!isQF" prop='remark', label='系统备注',show-overflow-tooltip)
             //- el-table-column(label='商家备注',show-overflow-tooltip)
             //-   template(slot-scope='scope')
             //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
-            //- el-table-column(prop='endTime', label='结束时间',show-overflow-tooltip)
-            el-table-column(label='USDT实时转账状态',show-overflow-tooltip)
-              template(slot-scope="scope")
-                span(v-if="!scope.row.usdtStatus") 账号未开通功能
-                span(v-else :class="getUsdtClass(scope.row.usdtStatus)") {{ scope.row.usdtStatus}}
+            //- el-table-column(label='USDT实时转账状态',show-overflow-tooltip)
+            //-   template(slot-scope="scope")
+            //-     span(v-if="!scope.row.usdtStatus") 账号未开通功能
+            //-     span(v-else :class="getUsdtClass(scope.row.usdtStatus)") {{ scope.row.usdtStatus}}
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
               template(slot-scope='scope')
                 el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
-            el-table-column(prop='payStatusDictValue', label='状态',width="80")
+            el-table-column(prop='payStatusDictValue', label='状态')
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
-            el-table-column(prop='payStatusDictValue', label='操作',width="160")
+            el-table-column(prop='payStatusDictValue' width="150" label='操作' fixed="right")
                 template(slot-scope='scope')
+                  .layout-row__between
                     el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
-                    el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
+                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
                     el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.usdtStatus=='请商户添加码商钱包地址'" @click="transfer(scope.row)") 转账USDT
         .page.layout-row.align-center.right
             span 每页显示

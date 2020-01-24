@@ -1,29 +1,20 @@
 <template lang="pug">
-el-drawer(title='通道利率',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
-    .wjp-tools.layout-row__between
-      div
-        el-button(v-if="userinfo.roleId == 3" type='primary' @click="addVisible = true") 添加通道
-      .buttons.layout-row.align-center
-        el-input(v-model='minRate',@keyup.enter.native="getTableData" placeholder='最小利率' style="width:100px;")
-        div - 
-        el-input(v-model='maxRate',@keyup.enter.native="getTableData" placeholder='最大利率' style="width:100px;")
-        el-button(type='primary' @click="getTableData" :disabled="loading") 搜 索
-    el-table.wjp-table(v-loading="loading" , :data='drawerData', style='width: 100%', height='550')
-      el-table-column(prop='merchantAccount', label='商户账号')
-      el-table-column(label='通道名称')                        
+el-drawer(title='商户通道配置',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
+    el-table.wjp-table(v-loading="loading" , :data='drawerData', style='width: 100%')
+      el-table-column(prop='merchantAccount' show-overflow-tooltip label='商户账号')
+      el-table-column(label='通道名称' show-overflow-tooltip)
         template(slot-scope='scope')
           p {{ dicFilter(scope.row.proxyOpenPayWayDictId) }}
-      el-table-column(prop="remark" label='备注')                        
-      el-table-column(label='通道利率' width="80")
+      el-table-column(label='通道费率(单击可修改)' show-overflow-tooltip)
         template(slot-scope='scope')
           div(v-if="userinfo.roleId != 2")
               el-input(v-if="scope.row.show" v-model='scope.row.interestRate',@blur="changeRate(scope.row)" placeholder='利率' style="width:100px;")
               span(v-else @click.stop="$set(scope.row,'show',true)") {{ scope.row.interestRate }}
           p(v-else) {{ scope.row.interestRate  }}
-      el-table-column(prop='createTime', label='创建时间')
       el-table-column(label='操作' v-if="userinfo.roleId!=2")
         template(slot-scope='scope')
-            el-switch(v-model='scope.row.state', @change="shutdownChannel(scope.row.id)" :active-text="scope.row.state?'开启':'关闭'")
+          .layout-row
+            //- el-switch(v-model='scope.row.state', @change="shutdownChannel(scope.row.id)" :active-text="scope.row.state?'开启':'关闭'")
             el-button(style="margin-left:10px" size="mini" type='danger' @click="delMerchantChannel(scope.row)") 删除
     .page.layout-row.align-center.right
       span 每页显示
@@ -217,4 +208,7 @@ export default {
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
+>>> .el-drawer{
+  overflow: auto;
+}
 </style>

@@ -57,28 +57,12 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'el-icon-s-home' }
+      meta: { title: '数据统计', icon: 'iconfont iconicon-test' }
     }]
   },
 ]
 export const asyncRoutes = [
-  {
-    path: '/setting',
-    component: Layout,
-    meta: {
-      title: '商户配置',
-      icon: 'el-icon-user-solid',
-      roles: [1]
-    },
-    children: [
-      {
-        path: 'merchant',
-        name: 'merchant',
-        component: () => import('@/views/setting/merchant'),
-        meta: { title: '商户配置', icon: 'el-icon-setting', roles: [1] }
-      }
-    ]
-  },
+
   {
     path: '/funds',
     component: Layout,
@@ -86,7 +70,7 @@ export const asyncRoutes = [
     name: 'funds',
     meta: {
       title: '经费通道',
-      icon: 'el-icon-wallet',
+      icon: 'iconfont iconshuidi',
     },
     children: [
       {
@@ -117,7 +101,7 @@ export const asyncRoutes = [
     name: 'funds',
     meta: {
       title: '当面付通道',
-      icon: 'el-icon-wallet',
+      icon: 'iconfont icon-dangmianfu-',
     },
     children: [
       {
@@ -148,7 +132,7 @@ export const asyncRoutes = [
     name: 'funds',
     meta: {
       title: '云靓刷通道',
-      icon: 'el-icon-wallet',
+      icon: 'iconfont iconshangjia',
     },
     children: [
       {
@@ -209,7 +193,7 @@ export const asyncRoutes = [
     redirect: '/personalCode/set',
     name: 'personalCode',
     meta: {
-      icon: 'el-icon-wallet',
+      icon: 'iconfont iconshangjia',
       title: '钱方通道',
       roles: [1, 3, 4],
     },
@@ -242,7 +226,7 @@ export const asyncRoutes = [
     component: Layout,
     meta: {
       title: '结算管理',
-      icon: 'el-icon-document',
+      icon: 'iconfont iconjiesuan',
     },
     children: [
       {
@@ -265,7 +249,7 @@ export const asyncRoutes = [
     component: Layout,
     meta: {
       title: 'USDT实时结算',
-      icon: 'el-icon-document',
+      icon: 'iconfont iconziyuan',
     },
     children: [
       {
@@ -282,14 +266,30 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/setting',
+    component: Layout,
+    meta: {
+      title: '商户配置',
+      icon: 'el-icon-user-solid',
+      roles: [1]
+    },
+    children: [
+      {
+        path: 'merchant',
+        name: 'merchant',
+        component: () => import('@/views/setting/merchant'),
+        meta: { title: '商户配置', icon: 'el-icon-setting', roles: [1] }
+      }
+    ]
+  },
   //人员管理
   {
     path: '/members',
     component: Layout,
     meta: {
       title: '客户管理',
-      icon: 'el-icon-user-solid',
+      icon: 'iconfont iconkehuguanlicopy',
       roles: [1, 3, 4]
     },
     children: [
@@ -297,19 +297,19 @@ export const asyncRoutes = [
         path: 'agent',
         name: 'agent',
         component: () => import('@/views/members/agent'),
-        meta: { title: '代理管理', icon: 'el-icon-position', roles: [1] }
+        meta: { title: '代理管理', icon: 'iconfont iconagency-management', roles: [1] }
       },
       {
         path: 'merchants',
         name: 'merchants',
         component: () => import('@/views/members/merchants'),
-        meta: { title: '商户管理', icon: 'el-icon-s-custom', roles: [1, 3] }
+        meta: { title: '商户管理', icon: 'iconfont iconshanghuguanli', roles: [1, 3] }
       },
       {
         path: 'code',
         name: 'code',
         component: () => import('@/views/members/code'),
-        meta: { title: '码商管理', icon: 'el-icon-coordinate', roles: [1, 3, 4] }
+        meta: { title: '码商管理', icon: 'iconfont iconerweima', roles: [1, 3, 4] }
       }
     ]
   },
@@ -321,7 +321,7 @@ export const asyncRoutes = [
     name: 'doc',
     meta: {
       title: '帮助文档',
-      icon: 'el-icon-question',
+      icon: 'iconfont iconbangzhuwendang-sel',
       roles: [1, 2, 3, 4]
     },
     children: [
@@ -331,17 +331,17 @@ export const asyncRoutes = [
         component: () => import('@/views/doc/funds'),
         meta: { title: '开通经费帮助', icon: 'el-icon-document', roles: [1, 3, 4] }
       },
-      {
-        path: 'proxyDoc',
-        name: 'proxyDoc',
-        component: () => import('@/views/doc/proxy'),
-        meta: { title: '后台使用帮助', icon: 'el-icon-document', roles: [1, 3, 4] }
-      },
+      // {
+      //   path: 'proxyDoc',
+      //   name: 'proxyDoc',
+      //   component: () => import('@/views/doc/proxy'),
+      //   meta: { title: '后台使用帮助', icon: 'el-icon-document', roles: [1, 3, 4] }
+      // },
       {
         path: 'index',
         name: 'index',
         component: () => import('@/views/doc/index'),
-        meta: { title: '商户API文档', icon: 'el-icon-document', roles: [1, 2, 3, 4] }
+        meta: { title: '商户API文档', icon: 'iconfont iconapi', roles: [1, 2, 3, 4] }
       },
       {
         path: 'aliPid',
@@ -384,7 +384,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'record',
         component: () => import('@/views/record/index'),
-        meta: { title: '登录记录', icon: 'el-icon-date' }
+        meta: { title: '登录记录', icon: 'iconfont icondenglucopy' }
       }
     ]
   },
@@ -397,7 +397,7 @@ export const asyncRoutes = [
         path: 'index',
         name: 'dicConfig',
         component: () => import('@/views/dicConfig/index'),
-        meta: { title: '字典配置', icon: 'el-icon-setting', roles: [1] }
+        meta: { title: '字典配置', icon: 'iconfont iconzidian', roles: [1] }
       }
     ]
   },
