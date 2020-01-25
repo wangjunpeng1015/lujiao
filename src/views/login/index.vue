@@ -1,75 +1,49 @@
-<template >
-  <div class="login-container">
-    <div id="login"></div>
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
-      <div class="title-container">
-        <h3 class="title">七七支付</h3>
-      </div>
-
-      <!-- <el-form-item prop="type" class="type">
-        <span class="svg-container">
-          <i class="el-icon-collection"></i>
-        </span>
-        <el-select>
-          <el-option label="商户"></el-option>
-          <el-option label="码商"></el-option>
-          <el-option label="管理员"></el-option>
-        </el-select>
-      </el-form-item>-->
-
-      <el-form-item prop="account">
-        <span class="svg-container">
-          <svg-icon icon-class="user"/>
-        </span>
-        <el-input
-          ref="account"
-          v-model="loginForm.account"
-          placeholder="请输入账号"
-          name="account"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-          @keyup.enter.native.native="handleLogin"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password"/>
-        </span>
-        <el-input
-          :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
-          :type="passwordType"
-          placeholder="请输入密码"
-          name="password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native.native="handleLogin"
-        />
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
-        </span>
-      </el-form-item>
-      <!-- <div class="right tips">
-        <router-link to="/register">注册</router-link>
-      </div>-->
-      <el-button
-        :loading="loading"
-        type="primary"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin"
-      >登 录</el-button>
-    </el-form>
-  </div>
+<template lang="pug">
+  .login-container
+    #login
+    div(style="margin-top: -200px")
+      .title-container
+        .title
+          span.title-bg 77
+          span 支付
+        .sub-title 一个以技术驱动的支付团队
+      el-form.login-form(ref="loginForm" :model="loginForm" :rules="loginRulels" auto-complete="on")
+        el-form-item(prop="account")
+          span.svg-container
+            svg-icon(icon-class="user")
+          el-input(
+            ref="account"
+            v-model="loginForm.account"
+            placeholder="请输入账号"
+            name="account"
+            type="text"
+            tabindex="1"
+            auto-complete="on"
+            @keyup.enter.native.native="handleLogin"
+          )
+        el-form-item(prop="password")
+          span.svg-container
+            svg-icon(icon-class="password")
+          el-input(
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="请输入密码"
+            name="password"
+            tabindex="2"
+            auto-complete="on"
+            @keyup.enter.native.native="handleLogin"
+          )
+          span.show-pwd(@click="showPwd")
+            svg-icon(:icon-class="passwordType === 'password' ? 'eye' : 'eye-open'")
+        .submit-btn
+          el-button(
+            :loading="loading"
+            type="primary"
+            style="background: #ffa900;height:47px"
+            @click.native.prevent="handleLogin"
+          ) 登 录
 </template>
 
 <script>
@@ -176,7 +150,6 @@ $cursor: #fff;
       // color: $light_gray;
       color: #000;
       height: 47px;
-      caret-color: $cursor;
 
       &:-webkit-autofill {
         box-shadow: 0 0 0px 1000px $bg inset !important;
@@ -187,7 +160,7 @@ $cursor: #fff;
 
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
+    // background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
   }
@@ -210,18 +183,53 @@ $light_gray: #eee;
 .login-container {
   min-height: 100%;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   // background-color: $bg;
   // background: url("../../assets/img/bg-01.jpg") 100% 100%/100% 100% no-repeat;
   overflow: hidden;
 
   .login-form {
+    background: #2884f6;
+    padding: 6px;
     position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
+    max-width: 80%;
     margin: 0 auto;
     overflow: hidden;
     z-index: 100;
+    display: flex;
+    border-radius: 6px;
+    .submit-btn{
+      padding-left: 13px;
+      box-sizing: border-box;
+      border-left: 1px dashed #fff;
+      position: relative;
+      &:before, &:after{
+        content: "";
+        display: block;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: #fff;
+        border-radius: 100%;
+        left: -10px;
+      }
+      &:before{
+        top: -20px;
+      }
+      &:after{
+        bottom: -20px;
+      }
+    }
+    /deep/ .el-form-item{
+      flex: 1;
+      margin:0 10px;
+      background: #fff;
+      .el-form-item__content{
+        display: flex;
+      }
+    }
   }
 
   .tips {
@@ -239,6 +247,7 @@ $light_gray: #eee;
   .svg-container {
     padding: 6px 5px 6px 15px;
     // color: $dark_gray;
+    height: 47px;
     color: #409eff;
     vertical-align: middle;
     width: 30px;
@@ -247,14 +256,38 @@ $light_gray: #eee;
 
   .title-container {
     position: relative;
+    margin-bottom: 30px;
+    .sub-title{
+      margin-top: 32px;
+      color: rgba(54,63,84,.6);
+      font-size: 24px;
+      text-align: center;
+    }
 
     .title {
-      font-size: 26px;
+      font-size: 32px;
       // color: $light_gray;
-      color: #000;
+      color: #363f54;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
+      span{
+        font-size: 32px;
+      }
+      .title-bg{
+        position: relative;
+      }
+      .title-bg:before{
+        content: "";
+        display: inline-block;
+        position: absolute;
+        width: 100%;
+        background: rgba(255,169,0,.8);
+        height: 30%;
+        top: 45%;
+        left: -6px;
+        z-index: -1;
+      }
     }
   }
 
