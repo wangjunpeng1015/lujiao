@@ -91,6 +91,15 @@ export const asyncRoutes = [
           title: '经费订单',
           icon: 'el-icon-s-order',
         }
+      },
+      {
+        path: 'introduce',
+        name: 'introduce',
+        component: () => import('@/views/Funds/Introduce'),
+        meta: {
+          title: '经费模式介绍',
+          icon: 'el-icon-info',
+        }
       }
     ]
   },
@@ -152,6 +161,15 @@ export const asyncRoutes = [
         meta: {
           title: '云靓刷订单',
           icon: 'el-icon-s-order',
+        }
+      },
+      {
+        path: 'introduce',
+        name: 'introduce',
+        component: () => import('@/views/ylsPay/Introduce'),
+        meta: {
+          title: '云靓刷通道介绍',
+          icon: 'el-icon-info',
         }
       }
     ]
@@ -216,6 +234,15 @@ export const asyncRoutes = [
           title: '钱方订单',
           icon: 'el-icon-s-order',
           roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'introduce',
+        name: 'introduce',
+        component: () => import('@/views/personalCode/Introduce'),
+        meta: {
+          title: '钱方通道介绍',
+          icon: 'el-icon-info',
         }
       }
     ]

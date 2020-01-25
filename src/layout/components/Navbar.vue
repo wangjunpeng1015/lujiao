@@ -7,8 +7,10 @@
     />
 
     <breadcrumb class="breadcrumb-container"/>
-
     <div class="right-menu">
+      <!-- <el-badge is-dot>
+        <i class="el-icon-message-solid" style="font-size:20px"></i>
+      </el-badge> -->
       <span
         @click="sk === '点击查看/隐藏' ? sk = userinfo.secretKey : sk = '点击查看/隐藏'"
         v-if="userinfo.roleId === 2"
@@ -150,7 +152,12 @@ export default {
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
-
+  /deep/ .el-badge{
+    margin-right: 10px;
+  }
+  /deep/ .el-badge__content.is-fixed{
+    top: 12px;
+  }
   .hamburger-container {
     line-height: 46px;
     height: 100%;

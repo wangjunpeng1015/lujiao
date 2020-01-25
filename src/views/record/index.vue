@@ -1,9 +1,7 @@
 <template lang="pug">
 .orders-container.layout-column
     .wjp-content.flex.layout-column
-        el-table.wjp-table(v-loading="loading" ,:height="750", :data='tableData', style='width: 100%', height='250')
-            el-table-column(fixed prop='id', label='id', width='50')
-            //- el-table-column(prop='name', label='订单号', )
+        el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%')
             el-table-column(prop='loginAccount', label='登录账号', )
             el-table-column(prop='ip', label='ip', )
             el-table-column(prop='loginPlace', label='地点', )
@@ -20,7 +18,7 @@
             :page-size="pageSize"
             layout=" prev, pager, next,total"
             :total="totalPage")
-    
+
 </template>
 
 <script>
