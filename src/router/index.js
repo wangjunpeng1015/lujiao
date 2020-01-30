@@ -174,37 +174,37 @@ export const asyncRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/transfer',
-  //   component: Layout,
-  //   redirect: '/transfer/set',
-  //   name: 'transfer',
-  //   meta: {
-  //     title: '转码',
-  //     icon: 'el-icon-wallet',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'set',
-  //       name: 'set',
-  //       component: () => import('@/views/transfer/set'),
-  //       meta: {
-  //         title: '转码配置',
-  //         icon: 'el-icon-s-tools',
-  //         roles: [1, 3, 4],
-  //       }
-  //     },
-  //     {
-  //       path: 'orders',
-  //       name: 'orders',
-  //       component: () => import('@/views/transfer/Orders'),
-  //       meta: {
-  //         title: '转码订单',
-  //         icon: 'el-icon-s-order',
-  //       }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/transfer',
+    component: Layout,
+    redirect: '/transfer/set',
+    name: 'transfer',
+    meta: {
+      title: '转账码',
+      icon: 'el-icon-wallet',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/transfer/set'),
+        meta: {
+          title: '通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/transfer/Orders'),
+        meta: {
+          title: '转账码订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
   {
     path: '/personalCode',
     component: Layout,
@@ -213,7 +213,6 @@ export const asyncRoutes = [
     meta: {
       icon: 'iconfont iconshangjia',
       title: '钱方通道',
-      roles: [1, 3, 4],
     },
     children: [
       {
@@ -233,7 +232,6 @@ export const asyncRoutes = [
         meta: {
           title: '钱方订单',
           icon: 'el-icon-s-order',
-          roles: [1, 3, 4],
         }
       },
       {

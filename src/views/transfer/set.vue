@@ -8,22 +8,22 @@
     :channels="channels"
   )
   el-dialog(
-    title='添加转账码账号'
+    title='添加支付宝账号'
     :visible.sync='dialogShow'
     width='40%'
     @close="closeDialog"
     :close-on-click-modal="false"
   )
     el-form(:model='news' ref='news', label-width='120px')
-      el-form-item(label='转账码账号：', prop='account')
-        el-input(v-model='news.account' placeholder="请填写收款转账码账号")
+      el-form-item(label='支付宝账号：', prop='account')
+        el-input(v-model='news.account' placeholder="请填写收款转支付宝账号或备注")
       el-form-item(label="收款上限：" prop="dailyCeiling")
         el-input(v-model='news.dailyCeiling' placeholder="请填写该账号转账码模式每日收款上限" type="number")
       el-form-item.right
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
   .funds-header.layout-row__between
-    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加转账码账号
+    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加支付宝收款号
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item(label='金额', )
         .layout-row

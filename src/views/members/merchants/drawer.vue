@@ -1,5 +1,6 @@
 <template lang="pug">
 el-drawer(title='商户通道配置',size="50%" ,:visible.sync='visible', direction='rtl', :before-close='cancel')
+    el-button(type="primary" size="mini" @click="addVisible=true") 添加通道
     el-table.wjp-table(v-loading="loading" , :data='drawerData', style='width: 100%')
       el-table-column(prop='merchantAccount' show-overflow-tooltip label='商户账号')
       el-table-column(label='通道名称' show-overflow-tooltip)

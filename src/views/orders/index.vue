@@ -3,7 +3,6 @@
     .wjp-tools.layout-row__between
       .layout-row__between
          el-button(v-if="userinfo.roleId == 1 || userinfo.roleId == 3" type='primary' @click="addOrder" size="mini") 新增订单
-         el-link(type="primary" v-if="isQF" style="margin-left:10px" target="_blank" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/qfjk.apk") 监控APP下载
       .layout-row.buttons.align-center
         el-select.flex( size="mini" v-model='type', :disabled="true" placeholder='支付方式' clearable @change="getTableData" v-show="false")
           el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
