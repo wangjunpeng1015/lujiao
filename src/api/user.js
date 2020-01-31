@@ -3,7 +3,7 @@ import Qs from 'qs'
 //登录
 export function login(data) {
   return request({
-    url: '/login',
+    url: '/api/user/login',
     method: 'post',
     data: Qs.stringify(data)
   })
@@ -49,14 +49,14 @@ export function delUser(id) {
 //用户信息
 export function getInfo() {
   return request({
-    url: `/base/user/getCurrentUser`,
+    url: `/api/user/getCurrentUser`,
     method: 'get',
   })
 }
 //用户信息
 export function getRoles() {
   return request({
-    url: `/role/getRole`,
+    url: `/api/user/getRoles`,
     method: 'get',
   })
 }
@@ -71,7 +71,7 @@ export function changePassword(data) {
 //退出
 export function logout() {
   return request({
-    url: '/logout',
+    url: '/api/user/logout',
     method: 'post'
   })
 }

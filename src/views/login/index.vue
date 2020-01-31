@@ -7,8 +7,13 @@
           span.title-bg 77
           span 支付
         .sub-title 一个以技术驱动的支付团队
-      el-form.login-form(ref="loginForm" :model="loginForm" :rules="loginRulels" auto-complete="on")
-        el-form-item(prop="account")
+      el-form.login-form#login-form(
+        ref="loginForm"
+        :model="loginForm"
+        :rules="loginRules"
+        auto-complete="on"
+      )
+        el-form-item(prop="account" :style="{marginBottom: isMobile?'22px': '0px'}")
           span.svg-container
             svg-icon(icon-class="user")
           el-input(
@@ -21,7 +26,7 @@
             auto-complete="on"
             @keyup.enter.native.native="handleLogin"
           )
-        el-form-item(prop="password")
+        el-form-item(prop="password" :style="{marginBottom: isMobile?'22px': '0px'}")
           span.svg-container
             svg-icon(icon-class="password")
           el-input(
@@ -37,6 +42,10 @@
           )
           span.show-pwd(@click="showPwd")
             svg-icon(:icon-class="passwordType === 'password' ? 'eye' : 'eye-open'")
+        el-form-item(prop="captcha" :style="{marginBottom: isMobile?'22px': '0px'}")
+          .layout-row
+            el-input(v-model="loginForm.captcha" placeholder="请输入验证码" style="flex:1")
+            img(:src="captchaUrl" @click="resetCaptcha")
         .submit-btn
           el-button(
             :loading="loading"
@@ -52,17 +61,21 @@ export default {
   name: "Login",
   data() {
     return {
+      captchaUrl: `http://localhost:3001/api/user/captcha?${Math.random()}`,
       loginForm: {
         account: "",
-        password: ""
+        password: "",
+        captcha: ""
       },
       loginRules: {
         account: [{ required: true, trigger: "blur", message: "请输入账号" }],
-        password: [{ required: true, trigger: "blur", message: "请输入密码" }]
+        password: [{ required: true, trigger: "blur", message: "请输入密码" }],
+        captcha: [{ required: true, trigger: "blur", message: "请输入验证码" }]
       },
       loading: false,
       passwordType: "password",
-      redirect: undefined
+      redirect: undefined,
+      isMobile: false
     };
   },
   watch: {
@@ -74,9 +87,17 @@ export default {
     }
   },
   mounted() {
+    if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+      this.isMobile = true
+      document.getElementById('login-form').style.display = 'block'
+    }
     new Particle(document.getElementById("login"));
+    this.resetCaptcha()
   },
   methods: {
+    resetCaptcha () {
+      this.captchaUrl = `http://localhost:3001/api/user/captcha?${Math.random()}`
+    },
     showPwd() {
       if (this.passwordType === "password") {
         this.passwordType = "";
@@ -91,15 +112,16 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true;
-          this.$store
-            .dispatch("user/login", { ...this.loginForm, type: "admin" })
-            .then(() => {
-              this.$router.push({ path: this.redirect || "/" });
-              this.loading = false;
-            })
-            .catch(() => {
-              this.loading = false;
-            });
+          this.$store.dispatch("user/login", { ...this.loginForm}).then(() => {
+            this.$router.push({ path: this.redirect || "/" });
+            this.loading = false;
+          }).catch((e) => {
+            if (e.toString().includes('验证码错误，请重新输入')) {
+              this.resetCaptcha()
+              this.loginForm.captcha = ''
+            }
+            this.loading = false;
+          });
         } else {
           console.log("error submit!!");
           return false;
@@ -201,6 +223,7 @@ $light_gray: #eee;
     display: flex;
     border-radius: 6px;
     .submit-btn{
+      text-align:center;
       padding-left: 13px;
       box-sizing: border-box;
       border-left: 1px dashed #fff;

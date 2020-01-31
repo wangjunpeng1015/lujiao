@@ -45,7 +45,11 @@ module.exports = {
       //   target: `http://192.168.8.110:3000/`,
       //   changeOrigin: true,
       // },
-      [process.env.VUE_APP_BASE_API]: {
+      '/api': {
+        target: `http://localhost:3001`,
+        changeOrigin: true,
+      },
+      ['/backend']: {
         // '/': {
         // target: `http://192.168.8.105:8092`,
         // target: `http://192.168.8.114:8092/`,

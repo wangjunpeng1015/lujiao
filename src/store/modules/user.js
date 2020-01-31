@@ -25,15 +25,19 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { account, password, type } = userInfo
+    const { account, password, captcha } = userInfo
     return new Promise((resolve, reject) => {
-      login({ account: account.trim(), password: password.trim(), type, ip: returnCitySN.cip }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        this.dispatch('user/getInfo')
-        this.dispatch("settings/getdic")
-        resolve()
+      login({ account: account.trim(), password: password.trim(), captcha, ip: returnCitySN.cip }).then(response => {
+        if (response.code === 200) {
+          const { data } = response
+          commit('SET_TOKEN', data.token)
+          setToken(data.token)
+          this.dispatch('user/getInfo')
+          this.dispatch("settings/getdic")
+          resolve()
+        } else {
+          reject('验证码错误，请重新输入')
+        }
       }).catch(error => {
         reject(error)
       })
@@ -62,14 +66,19 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
-        const { data } = response
+        let { data } = response
         if (!data) {
           reject('请重新登录！')
         }
         // let hash = Math.random().toString(36).substr(2)
         // initWebSocket(getToken(), data.account, hash)
-        commit('SET_USER_INFO', data)
-        resolve(data)
+        let roles = [state.roles.find((n) => n.id === data.role_id)]
+        commit('SET_USER_INFO', Object.assign(data, {
+          roles
+        }))
+        resolve(Object.assign(data, {
+          roles
+        }))
       }).catch(error => {
         reject(error)
       })

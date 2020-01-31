@@ -2,7 +2,7 @@ import request from '@/utils/request'
 import Qs from 'qs'
 export function getConfig() {
     return request({
-        url: '/base/dict/dictMaps',
+        url: '/api/common/dictMaps',
         method: 'get',
     })
 }
