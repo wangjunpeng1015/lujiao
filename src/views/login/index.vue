@@ -4,7 +4,7 @@
     div(style="margin-top: -200px")
       .title-container
         .title
-          span.title-bg 77
+          span.title-bg {{name}}
           span 支付
         .sub-title 一个以技术驱动的支付团队
       el-form.login-form(ref="loginForm" :model="loginForm" :rules="loginRulels" auto-complete="on")
@@ -52,6 +52,7 @@ export default {
   name: "Login",
   data() {
     return {
+      name: window.location.search.includes('n=9') ? '玖玖' : '77',
       loginForm: {
         account: "",
         password: ""
