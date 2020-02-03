@@ -7,6 +7,8 @@
           el-tag(type="primary") {{item.key}}
           el-divider(direction="vertical")
           el-link(type="primary" style="margin-left: 20px;") {{item.value}}
+        el-divider(content-position="left") 文档
+        el-link(target="_blank" type="primary" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/%E4%BA%91%E9%9D%93%E5%88%B7%E5%BC%80%E5%8F%B7%E4%B8%8A%E7%A0%81%E6%B5%81%E7%A8%8B.docx") 开号上码流程
   </el-popover>
 </template>
 

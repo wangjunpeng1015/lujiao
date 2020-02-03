@@ -34,6 +34,8 @@
       el-button(type='primary', @click='getAllAcount' size="mini") 查 询
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
     el-table-column(label="账号" fixed show-overflow-tooltip prop="account")
+    el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
+    el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
     el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
