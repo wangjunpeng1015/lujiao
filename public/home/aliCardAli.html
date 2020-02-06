@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+  <link rel="stylesheet" href="./common.css">
+  <style>
+    #time {
+      font-size: 16px;
+      color: red;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .zfb {
+      width: 60%;
+    }
+
+    #qrcode {
+      margin: 10px auto;
+      width: 250px;
+      height: 250px;
+    }
+
+    #ylsUrl,
+    #jfUrl,
+    #zzUrl,
+    .button {
+      background: #ccc;
+      color: #fff;
+      display: block;
+      width: 70%;
+      margin: 0.5rem auto;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+    }
+
+    .scan-tip {
+      margin: 10px auto;
+    }
+
+    .paytext {
+      font-weight: bold;
+      font-size: 16px;
+      margin: 5px auto;
+      line-height: 20px;
+      background: #ff5e64;
+      text-align: center;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div style="background:#fff;padding: 20px 0 ">
+      <img class="scan-tip" src="./alipay.png" width="30%" alt="">
+      <p style="font-size:16px;font-weight:bold">温馨提示</p>
+      <p style="font-size: 14px;color: #999">请耐心等待授权</p>
+      <p style="margin-top: 20px">剩余授权时间:
+        <span id="time"></span>秒</p>
+      <div>
+        <button id="btn" class="button" disabled="true" onclick="pay()">授权中, 请稍后...</button>
+      </div>
+    </div>
+  </div>
+</body>
+<!-- <script src="./polyfill.min.js"></script> -->
+<script>
+  var config = {}
+  function ready(callback) {
+    // 如果jsbridge已经注入则直接调用
+    if (window.AlipayJSBridge) {
+      callback && callback();
+    } else {
+      // 如果没有注入则监听注入的事件
+      document.addEventListener('AlipayJSBridgeReady', callback, false);
+    }
+  }
+  ready(function () {
+    try {
+
+      window.AlipayJSBridge.call('setTitle', {
+        title: '自助充值',
+        subtitle: '安全支付'
+      });
+      let time = 15000
+      let params = window.location.search.split('?')[1]
+      config = JSON.parse(unescape(params))
+      // that.url = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
+
+      var t = setInterval(function () {
+        if (time > 0) {
+          time = time - 1000
+          document.getElementById('time').innerText = time / 1000
+        } else {
+          clearInterval(t)
+          document.getElementById('btn').innerText = '支付'
+          document.getElementById('btn').style.background = '#00a7ef'
+          document.getElementById('btn').removeAttribute('disabled')
+        }
+      }, 1000)
+    } catch (e) {
+      alert(e)
+    }
+  })
+
+  function pay() {
+    var MAP = {
+      BOCB2C: '中国银行',
+      ICBCB2C: '中国工商银行',
+      ICBCBTB: '中国工商银行(B2B)',
+      CMB: '招商银行',
+      CCB: '中国建设银行',
+      CCBBTB: '中国建设银行(B2B)',
+      ABC: '中国农业银行',
+      ABCBTB: '中国农业银行(B2B)',
+      SPDB: '上海浦东发展银行',
+      SPDBB2B: '上海浦东发展银行(B2B)',
+      CIB: '兴业银行',
+      GDB: '广东发展银行',
+      SDB: '深圳发展银行',
+      CMBC: '中国民生银行',
+      COMM: '交通银行',
+      CITIC: '中信银行',
+      CEBBANK: '光大银行',
+      NBBANK: '宁波银行',
+      HZCBB2C: '杭州银行',
+      SHBANK: '上海银行',
+      SPABANK: '平安银行',
+      BJRCB: '北京农村商业银行',
+      fdb101: '富滇银行',
+    }
+    var url = `alipays://platformapi/startapp?appId=20000200&actionType=toCard&sourceId=bill&ap_framework_sceneId=20000067&cardNo=请勿修改金额****&bankAccount=${unescape(config.name)}&bankName=${unescape(MAP[config.bankName])}&bankMark=${unescape(config.bankName)}&money=${unescape(config.amount)}&amount=${unescape(config.amount)}&REALLY_STARTAPP=true&startFromExternal=false&cardIndex=${unescape(config.cardIndex)}&cardNoHidden=true&ap_framework_sceneId=20000200&&cardChannel=HISTORY_CARD&orderSource=from`
+    window.location.href = url
+  }
+</script>
+
+</html>

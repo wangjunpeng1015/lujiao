@@ -49,6 +49,12 @@
         .layout-column
           div 成功率
           div.num {{(amountData.today.successRate * 100).toFixed(2)}}%
+  el-divider(content-position="left") 昨日通道数据
+  el-table(:data="payWayList" :stripe="true" border)
+    el-table-column(label="通道名称" prop="name")
+    el-table-column(label="订单金额" prop="amount")
+    el-table-column(label="订单数量" prop="orders")
+    el-table-column(label="成功率" prop="successRate")
   el-divider(content-position="left")
     el-select(v-model="dayNum" size="mini" @change="getBody")
       el-option(label="昨日数据" :value="1")
@@ -79,6 +85,15 @@ import { mapGetters, mapState } from "vuex";
 import dayjs from "dayjs";
 import { uniqBy, sortBy } from "lodash";
 let line;
+const NAME_MAP = {
+  'alipay-当面付原生': '当面付',
+  'alipay-yls': '云靓刷',
+  'alipay-轻松经费': '经费',
+  'alipay-个码': '支付宝个码',
+  'alipay-转账码(自动金额)': '支付宝转账码',
+  'wx-个码': '微信个码',
+  'alipay-飞行转卡': '支付宝转卡'
+}
 export default {
   name: "Dashboard",
   components: {
@@ -144,7 +159,8 @@ export default {
         successRate: {}
       },
       dayNum: 0,
-      body: []
+      body: [],
+      payWayList: []
     };
   },
   computed: {
@@ -197,6 +213,17 @@ export default {
       getHead()
         .then(res => {
           this.amountData = res.data;
+          let payWays = res.data.payWay
+          for (let key in payWays) {
+            if (payWays[key].orders !== 0) {
+              this.payWayList.push({
+                name: NAME_MAP[key],
+                amount: payWays[key].amount,
+                successRate: (payWays[key].successRate * 100).toFixed(2) + '%',
+                orders: payWays[key].orders
+              })
+            }
+          }
         })
         .catch(err => {});
     },

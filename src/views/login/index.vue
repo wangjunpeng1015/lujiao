@@ -1,7 +1,7 @@
 <template lang="pug">
   .login-container
     #login
-    div(style="margin-top: -200px")
+    div(style="margin-top: -200px;position: relative;z-index: 999")
       .title-container
         .title
           span.title-bg {{name}}

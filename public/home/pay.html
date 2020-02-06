@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>DD Pay</title>
+  <title></title>
   <meta name="viewport" content="initial-scale=1, maximum-scale=1">
   <link rel="shortcut icon" href="/favicon.ico">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -177,7 +177,7 @@
     #pre_create {
       display: none;
     }
-    #ylsUrl, #jfUrl{
+    #ylsUrl, #jfUrl, #zzUrl{
       background: #00a7ef;
       color: #fff;
       display: block;
@@ -543,8 +543,24 @@
               pId
             })
             url = `${window.location.origin}/home/zhuanzhang.html?` + escape(params)
+
             window.location.href = url
             break;
+          case 10:
+          // 宝转卡
+            var orderNum10 = res.data.data.orderNum
+            var payMoney10 = res.data.data.payMoney
+            const { name, bankName, cardIndex } = JSON.parse(res.data.data.payContent)
+            var params10 = JSON.stringify({
+              amount: payMoney10,
+              remark: orderNum10,
+              name,
+              bankName,
+              cardIndex
+            })
+            url = `${window.location.origin}/home/aliCard.html?orderNo=${orderNum10}&params=` + escape(params10)
+            window.location.href = url
+            break
           case 11:
             //钱方
             window.location.href = `${window.location.origin}/home/qfhj.html?orderNo=${res.data.data.orderNum}`
