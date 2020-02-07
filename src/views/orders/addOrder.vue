@@ -6,7 +6,7 @@ el-dialog(title='添加订单',:visible.sync='visible' @close="cancel")
         el-option(v-for='(item,i) in merchants', :key='i', :label='item.userAccount', :value='item.merchantNumber')
     el-form-item(label='收款方式', prop="payWay")
       el-select(v-model='form.payWay', placeholder='请选择收款通道方式' style='width:200px' ,:disabled="loading")
-        el-option(v-for='item in channels', :key='item.value', :label='item.label', :value='item.value')
+        el-option(v-for='item in settings.payWay', :key='item.value', :label='item.label', :value='item.value')
     el-form-item(label='金额', prop="money")
       el-input(type="number", v-model='form.money' style='width:200px')
   .dialog-footer(slot='footer')
@@ -28,28 +28,23 @@ export default {
         return false;
       },
       type: Boolean
-    },
-    payWay: {
-      default() {
-        return [];
-      },
-      type: Array
     }
   },
   computed: {
     ...mapGetters(["userinfo"]),
-    ...mapState(["settings"]),
-    channels() {
-      return channelToPayWay(
-        this.payWay,
-        this.settings.dict.PayWay.dicts,
-        this.settings.payWay
-      );
-    }
+    ...mapState(["settings"])
+    // channels() {
+    //   return channelToPayWay(
+    //     this.payWay,
+    //     this.settings.dict.PayWay.dicts,
+    //     this.settings.payWay
+    //   );
+    // }
   },
   watch: {
     visible(val) {
       if (val) {
+        console.log(this.payWay);
         this.getMerchants();
       }
     }

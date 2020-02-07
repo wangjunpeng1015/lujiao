@@ -43,7 +43,7 @@ div
           :page-size="pageSize"
           layout="sizes, prev, pager, next,total"
           :total="totalPage")
-  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWay='payWay' :payWayId="payWayId" :account="account")
+  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWayId="payWayId" :account="account")
 </template>
 
 <script>
@@ -88,28 +88,16 @@ export default {
   },
   computed: {
     ...mapState(["settings"]),
-    ...mapGetters(["userinfo"]),
-    payWay() {
-      if (this.settings.dict && !!this.account) {
-        let alis = this.settings.dict.PayWay.dicts.filter(n =>
-          n.dictValue.includes("ali")
-        );
-        let wxs = this.settings.dict.PayWay.dicts.filter(n =>
-          n.dictValue.includes("wx")
-        );
-        let dicts = [];
-        if (this.account.accountType === "ali") {
-          dicts = alis;
-        } else if (this.account.accountType === "wx") {
-          dicts = wxs;
-        }
-        return dicts.filter(item => {
-          return this.channels.find(n => n.payWayDictId == item.id);
-        });
-      } else {
-        return [];
-      }
-    }
+    ...mapGetters(["userinfo"])
+    // payWay() {
+    //   if (this.settings.dict && !!this.account) {
+    //     return this.settings.dict.filter(item => {
+    //       return this.channels.find(n => n.payWayDictId == item.id);
+    //     });
+    //   } else {
+    //     return [];
+    //   }
+    // }
   },
   watch: {
     account: {
@@ -237,12 +225,12 @@ export default {
       this.isAdd = true;
       this.drawerVisible = true;
     },
-    dicFilter(id) {
-      let payWay = this.payWay.find(item => id == item.id);
-      return payWay
-        ? this.payWay.find(item => id == item.id).dictValueDisplayName
-        : "";
-    },
+    // dicFilter(id) {
+    //   let payWay = this.payWay.find(item => id == item.id);
+    //   return payWay
+    //     ? this.payWay.find(item => id == item.id).dictValueDisplayName
+    //     : "";
+    // },
     sizeChange(num) {
       this.pageSize = num;
       this.getPays();
@@ -257,7 +245,7 @@ export default {
 }
 >>> .drawer {
   padding: 20px;
-  overflow:auto;
+  overflow: auto;
   header {
     padding-left: 0;
     span {

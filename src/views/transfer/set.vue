@@ -102,14 +102,14 @@ export default {
       dialogShow: false,
       used: "",
       account: "",
-      accountType: "ali",
+      accountType: "zfbzzm",
       min: "",
       max: "",
       news: {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "ali"
+        accountType: "zfbzzm"
       },
       newMoney: {
         money: ""
@@ -192,7 +192,7 @@ export default {
         param: {
           account: "-转账码", //账号
           used: this.used, //是否启用
-          accountType: "ali", //类型
+          accountType: "zfbzzm", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -233,7 +233,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "ali"
+        accountType: "zfbzzm"
       };
       this.dialogShow = false;
       this.visible = false;

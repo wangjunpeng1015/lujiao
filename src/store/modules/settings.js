@@ -4,21 +4,43 @@ const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
   channel: null,
+  // payWay: [{
+  //   label: '其它',
+  //   value: 'other'
+  // }, {
+  //   label: '支付宝',
+  //   value: 'ali'
+  // }, {
+  //   label: '微信',
+  //   value: 'wx'
+  // }, {
+  //   label: '银行卡',
+  //   value: 'bank'
+  // }, {
+  //   label: '云闪付',
+  //   value: 'cloud'
+  // }],
   payWay: [{
-    label: '其它',
-    value: 'other'
+    label: '云靓刷',
+    value: 'yls'
   }, {
-    label: '支付宝',
-    value: 'ali'
+    label: '轻松经费',
+    value: 'jf'
   }, {
-    label: '微信',
-    value: 'wx'
+    label: '宝转卡',
+    value: 'bzk'
   }, {
-    label: '银行卡',
-    value: 'bank'
+    label: '微信个码',
+    value: 'wxgm'
   }, {
-    label: '云闪付',
-    value: 'cloud'
+    label: '支付宝转账码',
+    value: 'zfbzzm'
+  }, {
+    label: '钱方通道-微信',
+    value: 'qftd-wx'
+  }, {
+    label: '当面付',
+    value: 'dmf'
   }],
   website: 'http://wangjunpeng.online',
   dict: null,
