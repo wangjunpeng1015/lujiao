@@ -22,25 +22,27 @@ const state = {
   // }],
   payWay: [{
     label: '云靓刷',
-    value: 'yls'
+    value: '8000101'
   }, {
     label: '轻松经费',
-    value: 'jf'
+    value: '8000103'
   }, {
     label: '宝转卡',
-    value: 'bzk'
-  }, {
-    label: '微信个码',
-    value: 'wxgm'
-  }, {
+    value: '8000102'
+  },
+  //  {
+  //   label: '微信个码',
+  //   value: 'wxgm'
+  // }, 
+  {
     label: '支付宝转账码',
-    value: 'zfbzzm'
+    value: '8000104'
   }, {
     label: '钱方通道-微信',
-    value: 'qftd-wx'
+    value: '8000105'
   }, {
     label: '当面付',
-    value: 'dmf'
+    value: '8000106'
   }],
   website: 'http://wangjunpeng.online',
   dict: null,

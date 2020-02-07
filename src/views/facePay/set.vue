@@ -135,7 +135,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "dmf"
+        accountType: "8000106"
       };
       this.visible = false;
     },
@@ -146,7 +146,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           account: this.tail, //账号
-          accountType: "dmf", //类型
+          accountType: "8000106", //类型
           used: this.used //是否启用
         }
       })
@@ -167,7 +167,7 @@ export default {
         this.acVisible = true;
         this.news = {
           account: "",
-          accountType: "dmf",
+          accountType: "8000106",
           city: "default",
           dailyCeiling: ""
         };
