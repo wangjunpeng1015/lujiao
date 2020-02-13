@@ -49,7 +49,7 @@ module.exports = {
         // '/': {
         // target: `http://192.168.8.105:8092`,
         // target: `http://192.168.8.114:8092/`,
-        target: `http://39.99.196.237/:8092/`,
+        target: `http://39.99.196.237:8092/`,
         changeOrigin: true,
         // pathRewrite: {
         //   ['^' + process.env.VUE_APP_BASE_API]: ''
