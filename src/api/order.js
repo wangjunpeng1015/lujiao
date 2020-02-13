@@ -99,9 +99,9 @@ export function createOrder(data) {
     })
 }
 //创建测试订单
-export function createOrder(data) {
+export function createTestOrder(data) {
     return request({
-        url: `/order/optimalPay`,
+        url: `/pcAccountTestOrder`,
         method: 'post',
         data: Qs.stringify(data)
     })

@@ -39,9 +39,9 @@
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
     el-table-column(label="账号" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
-    el-table-column(label="今日实时成功率" show-overflow-tooltip prop="succesRate")
+    el-table-column(label="今日实时成功率" show-overflow-tooltip prop="nowSuccessRate")
     el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
-    el-table-column(label="账号连续失败次数" show-overflow-tooltip prop="failNum")
+    el-table-column(label="账号连续失败次数" show-overflow-tooltip prop="failureOrderNum")
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
     el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
@@ -89,6 +89,7 @@ import {
   addAcount
 } from "@/api/pay";
 import { getMerchants } from "@/api/members";
+import { createTestOrder } from "@/api/order";
 import { getAllchannel } from "@/api/agent";
 export default {
   components: {
@@ -99,7 +100,6 @@ export default {
   },
   data() {
     return {
-      orderData: {},
       coder: [], //码商
       channels: [],
       visible: false,
@@ -152,7 +152,40 @@ export default {
     },
     //测试下单
     testOrder(data) {
-      this.orderData = data;
+      this.$prompt("请输入金额：", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPattern: /^\d+$/,
+        inputErrorMessage: "金额不正确"
+      })
+        .then(({ value }) => {
+          createTestOrder({
+            id: data.id,
+            amount: value
+          })
+            .then(res => {
+              this.$notify({
+                title: "成功",
+                message: `${data.account}账号可以创建订单！`,
+                type: "success",
+                duration: 0
+              });
+            })
+            .catch(err => {
+              this.$notify({
+                title: "失败",
+                message: `${data.account}账号不能创建订单！`,
+                type: "error",
+                duration: 0
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入"
+          });
+        });
     },
     del(id) {
       this.$confirm("确定删除这个账号?", "提示", {
