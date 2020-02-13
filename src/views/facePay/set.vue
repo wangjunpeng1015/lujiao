@@ -49,7 +49,7 @@
     layout="sizes, prev, pager, next,total"
     :total="totalPage")
   //添加/修改
-  el-dialog(title='添加当面付账号', :visible.sync='acVisible',  width='40%' :close-on-click-modal="false")
+  el-dialog(title='添加当面付账号', :visible.sync='acVisible',  width='40%' :close-on-click-modal="false" @close="closeDialog")
     el-form(:model='news', :rules='rules', ref='news', label-width='120px')
       el-form-item(label='账号', prop='account' )
         el-input(v-model='news.account' placeholder="请填写新加账号")
@@ -83,7 +83,7 @@ export default {
   },
   data() {
     return {
-      tail: "-ali-当面付",
+      tail: "-当面付",
       news: {
         account: "",
         dailyCeiling: ""
@@ -130,7 +130,15 @@ export default {
       this.chooseAccount = data;
       this.visible = true;
     },
-
+    closeDialog() {
+      this.news = {
+        account: "",
+        city: "defualt",
+        dailyCeiling: "",
+        accountType: "8000106"
+      };
+      this.visible = false;
+    },
     getAllAcount() {
       this.loading = true;
       getAllAcount({
@@ -138,6 +146,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           account: this.tail, //账号
+          accountType: "8000106", //类型
           used: this.used //是否启用
         }
       })
@@ -158,7 +167,7 @@ export default {
         this.acVisible = true;
         this.news = {
           account: "",
-          accountType: "ali",
+          accountType: "8000106",
           city: "default",
           dailyCeiling: ""
         };
