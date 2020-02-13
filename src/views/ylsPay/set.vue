@@ -26,6 +26,11 @@
     el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加云靓刷账号
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item
+        el-select(v-model='code', placeholder='码商账号' filterable clearable @change="getAllAcount")
+          el-option(v-for="(item,i) in coder" :key="i" :label='item.account', :value='item.id')
+      el-form-item
+        el-input(v-model='account' placeholder="请输入收款yls账号")
+      el-form-item
         el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
           el-option(label='启用', :value='true')
           el-option(label='禁用', :value='false')
@@ -34,7 +39,9 @@
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
     el-table-column(label="账号" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
+    el-table-column(label="今日实时成功率" show-overflow-tooltip prop="succesRate")
     el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
+    el-table-column(label="账号连续失败次数" show-overflow-tooltip prop="failNum")
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
     el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
@@ -54,6 +61,7 @@
     el-table-column(label="操作" width="250")
       template(slot-scope='scope')
         .layout-row
+          el-button(type="primary" size="mini" @click="testOrder(scope.row)") 测试下单
           el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
           el-button(type="danger" size="mini" @click="del(scope.row.id)") 删除
   .page.layout-row.align-center.right(style="margin-top:20px")
@@ -80,24 +88,26 @@ import {
   updateConfigPay,
   addAcount
 } from "@/api/pay";
-import addOrder from "@/views/ylsPay/addOrder";
+import { getMerchants } from "@/api/members";
 import { getAllchannel } from "@/api/agent";
 export default {
   components: {
-    Drawer,
-    addOrder
+    Drawer
   },
   computed: {
     ...mapGetters(["userinfo"])
   },
   data() {
     return {
+      orderData: {},
+      coder: [], //码商
       channels: [],
       visible: false,
       loading: false,
       saveAccountLoading: false,
       setShow: false,
       dialogShow: false,
+      code: "",
       used: "",
       account: "",
       min: "",
@@ -123,8 +133,27 @@ export default {
   mounted() {
     this.getAllAcount();
     this.getAllchannel();
+    this.getAllCoder();
   },
   methods: {
+    //获取全部码商
+    getAllCoder() {
+      getMerchants({
+        pageNo: 1,
+        pageSize: 9000,
+        param: { account: "", type: 4 }
+      })
+        .then(res => {
+          this.coder = res.data.content;
+        })
+        .catch(err => {
+          this.$message.error("获码商失败！");
+        });
+    },
+    //测试下单
+    testOrder(data) {
+      this.orderData = data;
+    },
     del(id) {
       this.$confirm("确定删除这个账号?", "提示", {
         confirmButtonText: "确定",
@@ -187,7 +216,8 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          account: "-yls", //账号
+          code: this.code, //码商
+          account: `${this.account}`, //账号
           used: this.used, //是否启用
           accountType: "8000101", //类型
           min: this.min, //最小
