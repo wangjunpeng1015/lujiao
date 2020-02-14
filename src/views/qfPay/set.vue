@@ -1,7 +1,7 @@
 <template lang="pug">
 .layout-column
   Drawer(
-    :payWayId="25"
+    :payWayId="26"
     :visible.sync="visible"
     @finish="getAllAcount"
     :account="currentRow"
@@ -17,13 +17,6 @@
     el-form(:model='news' ref='news', label-width='120px')
       el-form-item(label='钱方账号：', prop='account')
         el-input(v-model='news.account' placeholder="请填写收款钱方账号")
-      el-form-item(label='钱方密码：', prop='password')
-        el-input(v-model='news.password' placeholder="请填写收款钱方密码")
-      el-form-item(label='手机UDID：', prop='udid')
-        el-input(v-model='news.udid' placeholder="请填写手机UDID")
-      el-form-item()
-        router-link(to="/doc/udid") 查看获取步骤
-          i.el-icon-question.red(slot='reference')
       el-form-item(label="收款上限：" prop="dailyCeiling")
         el-input(v-model='news.dailyCeiling' placeholder="请填写该账号每日收款上限" type="number")
       el-form-item.right
@@ -69,7 +62,6 @@
       template(slot-scope='scope')
         .layout-row
           el-button(type="primary" size="mini" @click="testOrder(scope.row)") 测试下单
-          el-button(type="primary" size="mini" @click="simulation(scope.row)") 模拟登陆
           el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
           el-button(type="danger" size="mini" @click="del(scope.row.id)") 删除
   .page.layout-row.align-center.right(style="margin-top:20px")
@@ -122,11 +114,9 @@ export default {
       max: "",
       news: {
         account: "",
-        password: "",
-        udid: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "8000107"
+        accountType: "ali"
       },
       newMoney: {
         money: ""
@@ -159,19 +149,6 @@ export default {
         .catch(err => {
           this.$message.error("获码商失败！");
         });
-    },
-    //模拟登陆穿cookie
-    simulation(data) {
-      getQfCookie({
-        username: "",
-        password: "",
-        udid: ""
-      }).then(res => {
-        debugger;
-        setQfCookie(res.data.sessionid).then(res => {
-          debugger;
-        });
-      });
     },
     //测试下单
     testOrder(data) {
@@ -273,9 +250,9 @@ export default {
         pageSize: this.pageSize,
         param: {
           code: this.code, //码商
-          account: `${this.account}`, //账号
+          account: `${this.account}-钱方`, //账号
           used: this.used, //是否启用
-          accountType: "8000106", //类型
+          accountType: "ali", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -295,7 +272,7 @@ export default {
     saveAccount() {
       this.saveAccountLoading = true;
       let param = Object.assign({}, this.news, {
-        account: this.news.account
+        account: `${this.news.account}-钱方`
       });
       addAcount(param)
         .then(res => {
@@ -313,11 +290,9 @@ export default {
     closeDialog() {
       this.news = {
         account: "",
-        password: "",
-        udid: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "8000107"
+        accountType: "ali"
       };
       this.dialogShow = false;
       this.visible = false;

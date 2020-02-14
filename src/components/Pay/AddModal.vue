@@ -6,12 +6,18 @@
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
       //钱方好近
       div(v-if="form.payWayDictId == 26")
-        el-form-item(label='mchid', prop='mchid')
-          el-input(v-model='form.contentObj.mchid' placeholder="请填写mchid(子商户号)")
-        el-form-item(label='code', prop='code')
-          el-input(v-model='form.contentObj.code' placeholder="请填写code")
-        el-form-item(label='key', prop='key')
-          el-input(v-model='form.contentObj.key' placeholder="请填写key")
+        //- el-form-item(label='mchid', prop='mchid')
+        //-   el-input(v-model='form.contentObj.mchid' placeholder="请填写mchid(子商户号)")
+        //- el-form-item(label='code', prop='code')
+        //-   el-input(v-model='form.contentObj.code' placeholder="请填写code")
+        //- el-form-item(label='key', prop='key')
+        //-   el-input(v-model='form.contentObj.key' placeholder="请填写key")
+        el-form-item(label='钱方账号', prop='account')
+          el-input(v-model='form.contentObj.account' placeholder="请填写钱方账号")
+        el-form-item(label='钱方密码', prop='pwd')
+          el-input(v-model='form.contentObj.pwd' placeholder="请填写钱方密码")
+        el-form-item(label='手机udid', prop='udid')
+          el-input(v-model='form.contentObj.udid' placeholder="请填写手机udid")
       //云靓刷
       div(v-if="form.payWayDictId == 25")
         el-form-item(label='APPID', prop='appid')
@@ -142,7 +148,7 @@ import { updateConfigPay } from "@/api/pay";
 import { getMerchant } from "@/api/user";
 import { isEmpty } from "lodash";
 import { mapState } from "vuex";
-import axios from 'axios';
+import axios from "axios";
 export default {
   props: ["visible", "data", "isAdd", "payWay", "account", "payWayId"],
   components: {},
@@ -152,11 +158,10 @@ export default {
   watch: {
     data: {
       handler(val) {
-        console.log(val)
+        console.log(val);
         this.$set(this, "form", val);
         if (this.payWayId) {
           this.form.payWayDictId = this.payWayId;
-
         }
       },
       deep: true
@@ -171,7 +176,7 @@ export default {
   },
   data() {
     return {
-      cardNo: '',
+      cardNo: "",
       loading: false,
       form: {
         // merchantIds: [],
@@ -185,19 +190,23 @@ export default {
   mounted() {},
 
   methods: {
-    getBankName (val) {
+    getBankName(val) {
       if (val.length === 16) {
-        axios.get(`https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo=${val}&cardBinCheck=true`).then(res => {
-          if (!res.data.validated) {
-            this.$message.error('卡片暂时不可用, 请更换卡号')
-            return false
-          }
-          if (res.data.stat !== 'ok') {
-            this.$message.error('银行卡暂不可用, 请更换银卡哈')
-            return false
-          }
-          this.$set(this.form.contentObj, "bankName", res.data.bank)
-        })
+        axios
+          .get(
+            `https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo=${val}&cardBinCheck=true`
+          )
+          .then(res => {
+            if (!res.data.validated) {
+              this.$message.error("卡片暂时不可用, 请更换卡号");
+              return false;
+            }
+            if (res.data.stat !== "ok") {
+              this.$message.error("银行卡暂不可用, 请更换银卡哈");
+              return false;
+            }
+            this.$set(this.form.contentObj, "bankName", res.data.bank);
+          });
       }
     },
     getMerchant() {

@@ -4,49 +4,49 @@ const { showSettings, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
   channel: null,
-  // payWay: [{
-  //   label: '其它',
-  //   value: 'other'
-  // }, {
-  //   label: '支付宝',
-  //   value: 'ali'
-  // }, {
-  //   label: '微信',
-  //   value: 'wx'
-  // }, {
-  //   label: '银行卡',
-  //   value: 'bank'
-  // }, {
-  //   label: '云闪付',
-  //   value: 'cloud'
-  // }],
   payWay: [{
-    label: '云靓刷',
-    value: '8000101'
+    label: '其它',
+    value: 'other'
   }, {
-    label: '轻松经费',
-    value: '8000103'
+    label: '支付宝',
+    value: 'ali'
   }, {
-    label: '宝转卡',
-    value: '8000102'
-  },
+    label: '微信',
+    value: 'wx'
+  }, {
+    label: '银行卡',
+    value: 'bank'
+  }, {
+    label: '云闪付',
+    value: 'cloud'
+  }],
+  // payWay: [{
+  //   label: '云靓刷',
+  //   value: '8000101'
+  // }, {
+  //   label: '轻松经费',
+  //   value: '8000103'
+  // }, {
+  //   label: '宝转卡',
+  //   value: '8000102'
+  // },
   //  {
   //   label: '微信个码',
   //   value: 'wxgm'
   // }, 
-  {
-    label: '支付宝转账码',
-    value: '8000104'
-  }, {
-    label: '钱方通道-H5',
-    value: '8000107'
-  }, {
-    label: '钱方通道-微信',
-    value: '8000105'
-  }, {
-    label: '当面付',
-    value: '8000106'
-  }],
+  // {
+  //   label: '支付宝转账码',
+  //   value: '8000104'
+  // }, {
+  //   label: '钱方通道-H5',
+  //   value: '8000107'
+  // }, {
+  //   label: '钱方通道-微信',
+  //   value: '8000105'
+  // }, {
+  //   label: '当面付',
+  //   value: '8000106'
+  // }],
   website: 'http://wangjunpeng.online',
   dict: null,
   showSettings: showSettings,
