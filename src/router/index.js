@@ -67,7 +67,7 @@ export const asyncRoutes = [
     path: '/ylsPay',
     component: Layout,
     redirect: '/ylsPay/orders',
-    name: 'funds',
+    name: 'yls',
     meta: {
       title: '云靓刷通道',
       icon: 'iconfont iconshangjia',
@@ -103,7 +103,88 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  // 钱方H5
+  {
+    path: '/qfPay',
+    component: Layout,
+    redirect: '/qfPay/orders',
+    name: 'qfpay',
+    meta: {
+      title: '钱方H5通道',
+      icon: 'iconfont iconshangjia',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/qfPay/set'),
+        meta: {
+          title: '通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/qfPay/Orders'),
+        meta: {
+          title: '钱方H5订单',
+          icon: 'el-icon-s-order',
+        }
+      },
+      {
+        path: 'introduce',
+        name: 'introduce',
+        component: () => import('@/views/qfPay/Introduce'),
+        meta: {
+          title: '钱方H5介绍',
+          icon: 'el-icon-info',
+        }
+      }
+    ]
+  },
+  // 钱方
+  {
+    path: '/personalCode',
+    component: Layout,
+    redirect: '/personalCode/orders',
+    name: 'personalCode',
+    meta: {
+      icon: 'iconfont iconshangjia',
+      title: '钱方固码通道',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/personalCode/set'),
+        meta: {
+          title: '通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/personalCode/orders'),
+        meta: {
+          title: '钱方固码订单',
+          icon: 'el-icon-s-order',
+        }
+      },
+      {
+        path: 'introduce',
+        name: 'introduce',
+        component: () => import('@/views/personalCode/Introduce'),
+        meta: {
+          title: '钱方通道介绍',
+          icon: 'el-icon-info',
+        }
+      }
+    ]
+  },
   // 宝转卡
   {
     path: '/aliCard',
@@ -218,47 +299,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  // 钱方
-  {
-    path: '/personalCode',
-    component: Layout,
-    redirect: '/personalCode/orders',
-    name: 'personalCode',
-    meta: {
-      icon: 'iconfont iconshangjia',
-      title: '钱方通道',
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/personalCode/set'),
-        meta: {
-          title: '通道配置',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/personalCode/orders'),
-        meta: {
-          title: '钱方订单',
-          icon: 'el-icon-s-order',
-        }
-      },
-      {
-        path: 'introduce',
-        name: 'introduce',
-        component: () => import('@/views/personalCode/Introduce'),
-        meta: {
-          title: '钱方通道介绍',
-          icon: 'el-icon-info',
-        }
-      }
-    ]
-  },
+
   // 当面付
   {
     path: '/facePay',
