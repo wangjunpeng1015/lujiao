@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import axios from 'axios'
 import Qs from 'qs'
 //手动转账到usdt
 export function transfer(data) {
@@ -100,6 +101,33 @@ export function createOrder(data) {
 }
 //创建测试订单
 export function createTestOrder(data) {
+    return request({
+        url: `/pcAccountTestOrder`,
+        method: 'post',
+        data: Qs.stringify(data)
+    })
+}
+//钱方H5通道模拟登陆
+export function getQfCookie({ username, password, udid }) {
+    return axios.post('https://o.qfpay.com/mchnt/user/login', {
+        "expire_time": 864000,
+        "username": username,
+        "password": password,
+        "udid": udid,
+    }, {
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": "NearMerchant/042100(iPhone;iOS13.3;Scale/3.00;Language/zh-CN)",
+                Host: "o.qfpay.com",
+                Connection: "keep-alive",
+                "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9",
+                "Content-Length": 97,
+                "Accept-Encoding": "gzip, deflate, br"
+            }
+        })
+}
+//钱方H5给后端cookie
+export function setQfCookie(data) {
     return request({
         url: `/pcAccountTestOrder`,
         method: 'post',

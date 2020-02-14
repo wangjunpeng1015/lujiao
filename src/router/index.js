@@ -463,6 +463,12 @@ export const asyncRoutes = [
         meta: { title: '获取支付宝PID', icon: 'el-icon-document', roles: [1, 2, 3, 4] }
       },
       {
+        path: 'udid',
+        name: 'udid',
+        component: () => import('@/views/doc/udid'),
+        meta: { title: '获取手机UDID', icon: 'el-icon-document', roles: [1, 2, 3, 4] }
+      },
+      {
         path: 'cardId',
         name: 'cardId',
         component: () => import('@/views/doc/cardId'),

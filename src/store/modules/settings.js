@@ -38,6 +38,9 @@ const state = {
     label: '支付宝转账码',
     value: '8000104'
   }, {
+    label: '钱方通道-H5',
+    value: '8000107'
+  }, {
     label: '钱方通道-微信',
     value: '8000105'
   }, {
