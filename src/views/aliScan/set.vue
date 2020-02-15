@@ -22,7 +22,9 @@
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
   .funds-header.layout-row__between
-    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加支付宝账号
+    div
+      el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加支付宝账号
+      el-link(target="_blank" type="primary" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/zfjt77.v1.apk" style="margin-left:10px") 监控APP 下载
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item
         el-select(v-model='code', placeholder='码商账号' filterable clearable @change="getAllAcount")
