@@ -103,6 +103,38 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 支付宝扫码
+  {
+    path: '/aliScan',
+    component: Layout,
+    redirect: '/aliScan/orders',
+    name: 'aliScan',
+    meta: {
+      title: '支付宝扫码通道',
+      icon: 'iconfont iconerweima',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/aliScan/set'),
+        meta: {
+          title: '通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/aliScan/Orders'),
+        meta: {
+          title: '支付宝扫码订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
   // 钱方H5
   {
     path: '/qfPay',

@@ -102,7 +102,7 @@
       let params = window.location.search.split('?')[1].split('&')[1].split('=')[1]
       const config = this.config = JSON.parse(unescape(params))
       var selfUrl = window.location.href.replace('aliCard', 'aliCardAli')
-      var URL = 'http://39.99.177.97/home/aliCardAli.html?' + escape(JSON.stringify(config))
+      var URL = 'http://39.99.196.237/home/aliCardAli.html?' + escape(JSON.stringify(config))
       var url = `alipays://platformapi/startapp?appId=20000067&url=${URL}`
       var aElement = document.getElementById('zzUrl')
       aElement.setAttribute('href', url)

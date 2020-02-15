@@ -533,6 +533,10 @@
             url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/face.html?orderNo=${getUserParam('orderNo')}`;
             window.location.href = url
             break;
+          case 6:
+            url = `${window.location.origin}/home/aliscan.html??orderNo=${getUserParam('orderNo')}`
+            window.location.href = url
+            break;
           case 8:
             //转账码
             const { orderNum, payMoney } = res.data.data
@@ -573,7 +577,7 @@
             }
             if (window.AlipayJSBridge) {
               if (!JSON.parse(getUserParam('autho'))) {
-                window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
+                window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.196.237%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
               } else {
                 if (JSON.parse(getUserParam('isOk'))) {
                   init()

@@ -105,7 +105,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "8000102"
+        accountType: "ali"
       },
       newMoney: {
         money: ""
@@ -188,7 +188,7 @@ export default {
         param: {
           account: "-宝转卡", //账号
           used: this.used, //是否启用
-          accountType: "8000102", //类型
+          accountType: "ali", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -230,7 +230,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "8000102"
+        accountType: "ali"
       };
       this.dialogShow = false;
       this.visible = false;

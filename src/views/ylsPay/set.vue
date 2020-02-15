@@ -116,7 +116,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "8000101"
+        accountType: "ali"
       },
       newMoney: {
         money: ""
@@ -252,7 +252,7 @@ export default {
           code: this.code, //码商
           account: `${this.account}`, //账号
           used: this.used, //是否启用
-          accountType: "8000101", //类型
+          accountType: "ali", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -262,6 +262,9 @@ export default {
           this.totalPage = totalRecords;
           this.pageSize = pageSize;
           this.currentPage = pageNo;
+          content.forEach(item => {
+            item.nowSuccessRate = item.nowSuccessRate * 100 + '%'
+          })
           this.list = content;
         })
         .catch(err => {})

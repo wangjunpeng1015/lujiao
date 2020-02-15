@@ -105,7 +105,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "8000105"
+        accountType: "wx"
       },
       newMoney: {
         money: ""
@@ -188,7 +188,7 @@ export default {
         param: {
           account: "-钱方商户", //账号
           used: this.used, //是否启用
-          accountType: "8000105", //类型
+          accountType: "wx", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -230,7 +230,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "8000105"
+        accountType: "wx"
       };
       this.dialogShow = false;
       this.visible = false;

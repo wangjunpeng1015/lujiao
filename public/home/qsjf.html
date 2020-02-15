@@ -298,7 +298,7 @@
     }
     //轻松经费
     if (!JSON.parse(getUserParam('autho'))) {
-        window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
+        window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.196.237%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
     } else {
         if (JSON.parse(getUserParam('isOk'))) {
             init()
@@ -311,7 +311,7 @@
         }
     }
 
-    window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.177.97%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`;
+    window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.196.237%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`;
     const orderState = () => {
         return new Promise((resolve, reject) => {
             axios({
