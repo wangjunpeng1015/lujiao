@@ -116,6 +116,7 @@ export function getQfCookie({ username, password, udid }) {
             "Connection": "keep-alive",
             "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9",
             "Content-Length": 97,
+            "Access-Control-Allow-Origin": '*',
             "Accept-Encoding": "gzip, deflate, br"
         },
         method: 'post',

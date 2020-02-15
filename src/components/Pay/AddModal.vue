@@ -16,8 +16,6 @@
           el-input(v-model='form.contentObj.account' placeholder="请填写钱方账号")
         el-form-item(label='钱方密码', prop='pwd')
           el-input(v-model='form.contentObj.pwd' placeholder="请填写钱方密码")
-        el-form-item(label='手机udid', prop='udid')
-          el-input(v-model='form.contentObj.udid' placeholder="请填写手机udid")
       //云靓刷
       div(v-if="form.payWayDictId == 25")
         el-form-item(label='APPID', prop='appid')
