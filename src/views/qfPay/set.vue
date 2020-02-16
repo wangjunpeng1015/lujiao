@@ -250,7 +250,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           code: this.code, //码商
-          account: `${this.account}-钱方`, //账号
+          account: `${this.account}-qfh5`, //账号
           used: this.used, //是否启用
           accountType: "ali", //类型
           min: this.min, //最小
@@ -272,7 +272,7 @@ export default {
     saveAccount() {
       this.saveAccountLoading = true;
       let param = Object.assign({}, this.news, {
-        account: `${this.news.account}-钱方`
+        account: `${this.news.account}-qfh5`
       });
       addAcount(param)
         .then(res => {

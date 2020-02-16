@@ -250,7 +250,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           code: this.code, //码商
-          account: `${this.account}`, //账号
+          account: `${this.account}-yls`, //账号
           used: this.used, //是否启用
           accountType: "ali", //类型
           min: this.min, //最小
@@ -263,7 +263,7 @@ export default {
           this.pageSize = pageSize;
           this.currentPage = pageNo;
           content.forEach(item => {
-            item.nowSuccessRate = item.nowSuccessRate * 100 + '%'
+            item.nowSuccessRate = (item.nowSuccessRate * 100).toFixed(2) + '%'
           })
           this.list = content;
         })

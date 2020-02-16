@@ -227,7 +227,7 @@ export default {
           this.pageSize = pageSize;
           this.currentPage = pageNo;
           content.forEach(item => {
-            item.nowSuccessRate = item.nowSuccessRate * 100 + '%'
+            item.nowSuccessRate = (item.nowSuccessRate * 100).toFixed(2) + '%'
           })
           this.list = content;
         })
