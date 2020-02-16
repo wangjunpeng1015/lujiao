@@ -26,18 +26,19 @@
             el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip)
             el-table-column(prop='orderUserAccount', label='商户账号' show-overflow-tooltip)
             el-table-column(prop='payConfigPayConfigAccountAccount' label='收款账号',show-overflow-tooltip)
-            el-table-column( prop='remark' v-if="payWayId!=25"  label='系统备注',show-overflow-tooltip)
-            el-table-column(v-if="isQF" label='原始金额' width="100" prop="amount",show-overflow-tooltip)
+            //- el-table-column( prop='remark' v-if="payWayId!=25"  label='系统备注',show-overflow-tooltip)
+            //- el-table-column(v-if="isQF" label='原始金额' width="100" prop="amount",show-overflow-tooltip)
             el-table-column(label='实际金额'  width="100" show-overflow-tooltip)
               template(slot-scope='scope')
-                span(v-if="scope.row.payStatusDictValue =='支付成功' || scope.row.payStatusDictValue =='支付超时'") {{ scope.row.actualAmount }}
-                span(v-else style="font-weight:bold;font-size:20px;color:red" ) {{ scope.row.actualAmount }}
+                span(v-if="scope.row.payStatusDictValue =='支付成功'" style="font-weight:bold;color:green") {{ scope.row.actualAmount }}
+                span(v-else-if="scope.row.payStatusDictValue =='支付中' || scope.row.payStatusDictValue =='支付超时'" ) {{ scope.row.actualAmount }}
             //- el-table-column(v-if="!isQF" prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
             //- el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
             //- el-table-column(label='商家备注',show-overflow-tooltip)
             //-   template(slot-scope='scope')
             //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
+            el-table-column(prop='payWayType', v-if="payWayId==26" label='支付方式',show-overflow-tooltip)
             //- el-table-column(label='USDT实时转账状态',show-overflow-tooltip)
             //-   template(slot-scope="scope")
             //-     span(v-if="!scope.row.usdtStatus") 账号未开通功能
@@ -336,6 +337,9 @@ export default {
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;
+            content.forEach(n => {
+              n.payWayType = n.payWayType === 'wx' ? '微信H5' : '支付宝H5'
+            })
             this.tableData = content;
           } else {
             this.$message.error("获取表格数据失败！");

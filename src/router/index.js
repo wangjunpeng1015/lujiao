@@ -103,6 +103,57 @@ export const asyncRoutes = [
       }
     ]
   },
+  // 钱方H5
+  {
+    path: '/qfPay',
+    component: Layout,
+    redirect: '/qfPay/orders',
+    name: 'qfpay',
+    meta: {
+      title: '钱方H5通道',
+      icon: 'iconfont iconshangjia',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/qfPay/set'),
+        meta: {
+          title: '支付宝通道配置',
+          icon: 'iconfont iconzhifubao',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'vxset',
+        name: 'set',
+        component: () => import('@/views/qfPay/vxset'),
+        meta: {
+          title: '微信通道配置',
+          icon: 'iconfont iconweixin',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/qfPay/Orders'),
+        meta: {
+          title: '钱方H5订单',
+          icon: 'el-icon-s-order',
+        }
+      },
+      {
+        path: 'introduce',
+        name: 'introduce',
+        component: () => import('@/views/qfPay/Introduce'),
+        meta: {
+          title: '钱方H5介绍',
+          icon: 'el-icon-info',
+        }
+      }
+    ]
+  },
   // 支付宝扫码
   {
     path: '/aliScan',
@@ -131,47 +182,6 @@ export const asyncRoutes = [
         meta: {
           title: '支付宝扫码订单',
           icon: 'el-icon-s-order',
-        }
-      }
-    ]
-  },
-  // 钱方H5
-  {
-    path: '/qfPay',
-    component: Layout,
-    redirect: '/qfPay/orders',
-    name: 'qfpay',
-    meta: {
-      title: '钱方H5通道',
-      icon: 'iconfont iconshangjia',
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/qfPay/set'),
-        meta: {
-          title: '通道配置',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/qfPay/Orders'),
-        meta: {
-          title: '钱方H5订单',
-          icon: 'el-icon-s-order',
-        }
-      },
-      {
-        path: 'introduce',
-        name: 'introduce',
-        component: () => import('@/views/qfPay/Introduce'),
-        meta: {
-          title: '钱方H5介绍',
-          icon: 'el-icon-info',
         }
       }
     ]

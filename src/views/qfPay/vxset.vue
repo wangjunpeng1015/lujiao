@@ -39,7 +39,7 @@
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
     el-table-column(label="账号" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
-    el-table-column(label="今日成功率" show-overflow-tooltip prop="nowSuccessRate")
+    el-table-column(label="成功率" show-overflow-tooltip prop="nowSuccessRate")
     el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
     el-table-column(label="连续失败次数" show-overflow-tooltip prop="failureOrderNum")
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
@@ -116,7 +116,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "ali"
+        accountType: "wx"
       },
       newMoney: {
         money: ""
@@ -250,9 +250,9 @@ export default {
         pageSize: this.pageSize,
         param: {
           code: this.code, //码商
-          account: `${this.account}-qf_ali`, //账号
+          account: `${this.account}-qf_wx`, //账号
           used: this.used, //是否启用
-          accountType: "ali", //类型
+          accountType: "wx", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -272,7 +272,7 @@ export default {
     saveAccount() {
       this.saveAccountLoading = true;
       let param = Object.assign({}, this.news, {
-        account: `${this.news.account}-qf_ali`
+        account: `${this.news.account}-qf_wx`
       });
       addAcount(param)
         .then(res => {
@@ -292,7 +292,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "ali"
+        accountType: "wx"
       };
       this.dialogShow = false;
       this.visible = false;

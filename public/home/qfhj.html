@@ -24,6 +24,16 @@
         .logo {
             width: 200px;
         }
+        #jump-url, .button{
+          background: #00a7ef;
+          color: #fff;
+          display: block;
+          width: 70%;
+          margin: 0.5rem auto;
+          padding: 0.5rem;
+          border-radius: 0.3rem;
+          margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 
@@ -31,6 +41,7 @@
     <div id="app" v-cloak>
         <img v-if="" class="logo" :src="orderData.payWay=='ali'?'./zfb.png':'./wxpay.png'" alt="">
         <p class="scan-tip">订单号：<span>{{orderNo}}</span></p>
+        <a id="jump-url" href="" v-if="orderData.payWay=='ali'">打开支付宝支付</a>
         <van-loading size="200px" color="#4fc08d" v-show="isLoading"></van-loading>
         <div v-show='showcode && !isLoading' id="qrcode"></div>
         <div v-show='!showcode' classs="temp-qrcode"></div>
@@ -38,20 +49,17 @@
             <span>[支付有效时间]</span>
             <span class="red" v-html="stateHtml"></span>
         </div>
-        <p class="red scan-tip">请务必填写准确金额，否则无法到账!!！</p>
-        <p class="red scan-tip">请务必填写准确金额，否则无法到账!!！</p>
-        <p class="red scan-tip">请务必填写准确金额，否则无法到账!!！</p>
         <div class="layout-row">
-            <div class="layout-row">
+            <!-- <div class="layout-row">
                 <h3>￥</h3>
                 <h3 class="bold" id="remark">{{ orderData.payMoney }} </h3>
             </div>
             <button :style="{background:orderData.payWay=='ali'?'#00a7ef':'#28a538'}" style="padding: .25rem .25rem;margin-left:10px;"
-                class="copy-link" data-clipboard-target="#remark"> 复制金额</button>
+                class="copy-link" data-clipboard-target="#remark"> 复制金额</button> -->
         </div>
         <h3 class="red">具体支付方式如下</h3>
         <p class="">1.请截图保存该页面</p>
-        <p class="">2.打开{{orderData.payWay}}扫一扫</p>
+        <p class="">2.打开{{orderData.payWay === 'wx' ? '微信' : '支付宝' }}扫一扫</p>
         <p class="">3.选择相册保存的二维码进行识别支付</p>
     </div>
 </body>
@@ -144,6 +152,12 @@
                                 this.first = false;
                                 this.showcode = true;
                                 const { qrUrl } = JSON.parse(data.payContent)
+                                if (this.orderData.payWay === 'ali') {
+                                  var url = `alipays://platformapi/startapp?appId=20000067&url=${qrUrl}`
+                                  var aElement = document.getElementById('jump-url')
+                                  aElement.setAttribute('href', url)
+                                  window.location.href = url
+                                }
                                 setTimeout(() => {
                                     new QRCode(document.getElementById("qrcode"), {
                                         text: qrUrl,
