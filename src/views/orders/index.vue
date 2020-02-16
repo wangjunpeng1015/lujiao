@@ -66,7 +66,7 @@
             :page-size="pageSize"
             layout="sizes, prev, pager, next,total"
             :total="totalPage")
-    add-order(@finish="getTableData" :visible.sync="addVisible" :payWay='payWay')
+    add-order(@finish="getTableData" :visible.sync="addVisible" :payWay='payWay' :isQF="isQF")
 </template>
 
 <script>

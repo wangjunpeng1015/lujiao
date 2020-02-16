@@ -1,5 +1,5 @@
 <template lang="pug">
-Orders(payWayName="钱方订单" :payWayId="26")
+Orders(payWayName="钱方订单" ,:payWayId="26" ,:isQF="true")
 </template>
 
 <script>
