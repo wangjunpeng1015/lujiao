@@ -18,11 +18,12 @@ div
           //-   template(slot-scope='scope')
           //-     span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
+          el-table-column(label="连续失败" prop="failuresNum")
           el-table-column(label='金额'  show-overflow-tooltip)
             template(slot-scope='scope')
               span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
-          el-table-column(prop='remark', label='备注'  show-overflow-tooltip)
-          el-table-column(label='编辑' v-if="userinfo.roleId == 4")
+          //- el-table-column(prop='remark', label='备注'  show-overflow-tooltip)
+          //- el-table-column(label='编辑' v-if="userinfo.roleId == 4 || userinfo.roleId === 1")
             template(slot-scope='scope')
               el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
           el-table-column(label='是否开启')
@@ -30,6 +31,7 @@ div
               el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
           el-table-column( label="操作")
             template(slot-scope='scope')
+              el-button(type="primary" v-if="userinfo.roleId == 4 || userinfo.roleId === 1" @click="edit(scope.row)" size='mini') 编辑
               el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
         .page.layout-row.align-center.right
           span 每页显示

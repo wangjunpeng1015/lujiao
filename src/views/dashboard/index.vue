@@ -92,7 +92,8 @@ const NAME_MAP = {
   'alipay-个码': '支付宝个码',
   'alipay-转账码(自动金额)': '支付宝转账码',
   'wx-个码': '微信个码',
-  'alipay-飞行转卡': '支付宝转卡'
+  'alipay-飞行转卡': '支付宝转卡',
+  '钱方通道-H5': '钱方H5'
 }
 export default {
   name: "Dashboard",

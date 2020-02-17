@@ -41,13 +41,12 @@
     el-table-column(label="账号" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
     el-table-column(label="实时成功率" show-overflow-tooltip prop="nowSuccessRate")
-    el-table-column(label="连续失败" show-overflow-tooltip prop="failureOrderNum")
+    el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
+    //- el-table-column(label="连续失败" show-overflow-tooltip prop="failureOrderNum")
+      template
+        span 请在配置中查看
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     //- el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
-    el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
-    el-table-column(label='启用状态' show-overflow-tooltip)
-      template(slot-scope='scope')
-        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
     el-table-column(label="单笔收款限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
@@ -58,6 +57,9 @@
             size="small"
             :key="index"
           ) {{item}}
+    el-table-column(label='启用状态' show-overflow-tooltip)
+      template(slot-scope='scope')
+        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
     el-table-column(label="操作" width="250")
       template(slot-scope='scope')
         .layout-row

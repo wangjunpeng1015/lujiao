@@ -15,10 +15,10 @@
     :close-on-click-modal="false"
   )
     el-form(:model='news' ref='news', label-width='120px')
-      el-form-item(label='yls账号：', prop='account')
-        el-input(v-model='news.account' placeholder="请填写收款yls账号")
+      el-form-item(label='账号：', prop='account')
+        el-input(v-model='news.account' placeholder="请填写收款账号(可以随意填写)")
       el-form-item(label="收款上限：" prop="dailyCeiling")
-        el-input(v-model='news.dailyCeiling' placeholder="请填写该账号yls模式每日收款上限" type="number")
+        el-input(v-model='news.dailyCeiling' placeholder="请填写该账号云靓刷模式每日收款上限" type="number")
       el-form-item.right
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
@@ -39,13 +39,12 @@
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
     el-table-column(label="账号" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
-    el-table-column(label="今日实时成功率" show-overflow-tooltip prop="nowSuccessRate")
-    el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
-    el-table-column(label="账号连续失败次数" show-overflow-tooltip prop="failureOrderNum")
-    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
-    el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
     el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
-    el-table-column(label="单笔收款限额" width="300" show-overflow-tooltip)
+    el-table-column(label="成功率" show-overflow-tooltip prop="nowSuccessRate")
+    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
+    //- el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
+
+    el-table-column(label="单笔收款限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
           el-tag(
@@ -55,6 +54,7 @@
             size="small"
             :key="index"
           ) {{item}}
+    el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
     el-table-column(label='启用状态' show-overflow-tooltip)
       template(slot-scope='scope')
         el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
@@ -296,7 +296,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "yls"
+        accountType: "ali"
       };
       this.dialogShow = false;
       this.visible = false;
