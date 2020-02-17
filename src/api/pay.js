@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 import Qs from 'qs'
+
+export function resetFail(id) {
+  return request({
+    url: '/payConfig/reset/' + id,
+    method: 'get'
+  })
+}
+
+
 //获取支付配置
 export function getPays(data) {
     return request({

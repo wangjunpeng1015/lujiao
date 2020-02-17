@@ -19,6 +19,10 @@ div
           //-     span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
           el-table-column(label="连续失败" prop="failuresNum")
+            template(slot-scope="scope")
+              .layout-row
+                span(style="align-self:center") {{scope.row.failuresNum}}次
+                el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)") 重置并开启
           el-table-column(label='金额'  show-overflow-tooltip)
             template(slot-scope='scope')
               span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
@@ -32,6 +36,7 @@ div
           el-table-column( label="操作")
             template(slot-scope='scope')
               el-button(type="primary" v-if="userinfo.roleId == 4 || userinfo.roleId === 1" @click="edit(scope.row)" size='mini') 编辑
+
               el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
         .page.layout-row.align-center.right
           span 每页显示
@@ -49,7 +54,7 @@ div
 </template>
 
 <script>
-import { getPays, updatePayUse, delConfigPay } from "@/api/pay";
+import { getPays, updatePayUse, delConfigPay, resetFail } from "@/api/pay";
 import { cloneDeep } from "lodash";
 import { mapState, mapGetters } from "vuex";
 import { decrypt } from "@/utils/index";
@@ -126,6 +131,12 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    resetFailStart (id) {
+      resetFail(id).then(res => {
+        this.getPays()
+        this.$message.success('重置成功')
+      })
+    },
     edit(data) {
       this.isAdd = false;
       this.drawerVisible = true;
@@ -209,10 +220,12 @@ export default {
       })
         .then(res => {
           this.$message.success("状态修改成功！");
+          resolve()
         })
         .finally(_ => {
           this.loading = false;
           this.getPays();
+          resolve()
         });
     },
     cancel() {
