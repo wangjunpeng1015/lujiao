@@ -44,6 +44,12 @@ export default {
         return false;
       },
       type: Boolean
+    },
+    payWayId: {
+      default () {
+        return 6
+      },
+      type: [String, Number]
     }
   },
   computed: {
@@ -155,6 +161,9 @@ export default {
         if (valid) {
           this.creatLoading = true;
           let temp = cloneDeep(this.form);
+          if (this.payWayId === 6) {
+            temp.payWayId = 6
+          }
           if (!this.isQF) {
             delete temp.payWayType;
           }
@@ -163,6 +172,13 @@ export default {
           );
           //商户号+支付金额+商户秘钥
           const sign = md5(temp.merchantNum + temp.money + merchant.secretKey);
+          console.log({
+            ...temp,
+            merchantOrderNo: "default",
+            sign,
+            ip: returnCitySN.cip || "0.0.0.0"
+          })
+
           createOrder({
             ...temp,
             merchantOrderNo: "default",

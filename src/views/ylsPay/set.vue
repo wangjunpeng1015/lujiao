@@ -43,7 +43,11 @@
     el-table-column(label="成功率" show-overflow-tooltip prop="nowSuccessRate")
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     //- el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
-
+    el-table-column(label="失败次数" show-overflow-tooltip)
+      template(slot-scope="scope")
+        .layout-row
+          span(style="align-self:center") {{scope.row.configfailuresNum}}次
+          el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.configId, scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
     el-table-column(label="单笔收款限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
@@ -61,7 +65,7 @@
     el-table-column(label="操作" width="250")
       template(slot-scope='scope')
         .layout-row
-          el-button(type="primary" size="mini" @click="testOrder(scope.row)") 测试下单
+          //- el-button(type="primary" size="mini" @click="testOrder(scope.row)") 测试下单
           el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
           el-button(type="danger" size="mini" @click="del(scope.row.id)") 删除
   .page.layout-row.align-center.right(style="margin-top:20px")
@@ -86,7 +90,9 @@ import {
   delAcount,
   updateUse,
   updateConfigPay,
-  addAcount
+  addAcount,
+  getPays,
+  resetFail
 } from "@/api/pay";
 import { getMerchants } from "@/api/members";
 import { createTestOrder } from "@/api/order";
@@ -136,6 +142,12 @@ export default {
     this.getAllCoder();
   },
   methods: {
+    resetFailStart (configId, id) {
+      resetFail(configId).then(res => {
+        this.getPayConfig(id)
+        this.$message.success('重置成功')
+      })
+    },
     //获取全部码商
     getAllCoder() {
       getMerchants({
@@ -264,13 +276,32 @@ export default {
           this.currentPage = pageNo;
           content.forEach(item => {
             item.nowSuccessRate = (item.nowSuccessRate * 100).toFixed(2) + '%'
+            item.configfailuresNum = 0
+            item.configId = 0
           })
           this.list = content;
+          this.list.forEach(item => {
+            this.getPayConfig(item.id)
+          })
         })
         .catch(err => {})
         .finally(_ => {
           this.loading = false;
         });
+    },
+    getPayConfig (id) {
+      getPays({
+        pageNo: 1,
+        pageSize: 1,
+        param: {
+          payConfigAccountId: id, //
+          payWayDictId: '', //支付类型
+          used: '' //是否启用
+        }
+      }).then(result => {
+        this.list.find((n) => n.id === id).configfailuresNum = result.data.content[0].failuresNum
+        this.list.find((n) => n.id === id).configId = result.data.content[0].id
+      })
     },
     saveAccount() {
       this.saveAccountLoading = true;
