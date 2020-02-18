@@ -22,7 +22,7 @@ div
             template(slot-scope="scope")
               .layout-row
                 span(style="align-self:center") {{scope.row.failuresNum}}次
-                el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)") 重置并开启
+                el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
           el-table-column(label='金额'  show-overflow-tooltip)
             template(slot-scope='scope')
               span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
@@ -37,7 +37,7 @@ div
             template(slot-scope='scope')
               el-button(type="primary" v-if="userinfo.roleId == 4 || userinfo.roleId === 1" @click="edit(scope.row)" size='mini') 编辑
 
-              el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
+              el-button(type="danger" @click="del(scope.row.id)" size='mini' v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 删 除
         .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(

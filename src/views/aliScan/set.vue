@@ -47,6 +47,7 @@
         span 请在配置中查看
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     //- el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
+    el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
     el-table-column(label="单笔收款限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
@@ -64,7 +65,7 @@
       template(slot-scope='scope')
         .layout-row
           el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
-          el-button(type="danger" size="mini" @click="del(scope.row.id)") 删除
+          el-button(type="danger" size="mini" @click="del(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.id == 3" ) 删除
   .page.layout-row.align-center.right(style="margin-top:20px")
     span 每页显示
     el-pagination.statistics(
