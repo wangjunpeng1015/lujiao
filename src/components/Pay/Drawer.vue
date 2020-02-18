@@ -18,6 +18,7 @@ div
           //-   template(slot-scope='scope')
           //-     span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
+          el-table-column(label="二维码ID" prop="failuresNum")
           el-table-column(label="连续失败" prop="failuresNum")
             template(slot-scope="scope")
               .layout-row
