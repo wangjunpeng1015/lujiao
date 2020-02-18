@@ -1,45 +1,49 @@
 <template lang="pug">
 .layout-column
   Drawer(
-    :payWayId="24"
+    :payWayId="26"
     :visible.sync="visible"
     @finish="getAllAcount"
     :account="currentRow"
     :channels="channels"
   )
   el-dialog(
-
-    title='添加支付宝账号'
+    title='添加钱方账号'
     :visible.sync='dialogShow'
     width='40%'
     @close="closeDialog"
     :close-on-click-modal="false"
   )
     el-form(:model='news' ref='news', label-width='120px')
-      el-form-item(label='支付宝账号：', prop='account')
-        el-input(v-model='news.account' placeholder="请填写收款支付宝账号")
+      el-form-item(label='钱方账号：', prop='account')
+        el-input(v-model='news.account' placeholder="请填写收款钱方账号")
       el-form-item(label="收款上限：" prop="dailyCeiling")
-        el-input(v-model='news.dailyCeiling' placeholder="请填写该账号经费模式每日收款上限" type="number")
+        el-input(v-model='news.dailyCeiling' placeholder="请填写该账号每日收款上限" type="number")
       el-form-item.right
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
-  .funds-header.layout-row__between(style="padding-bottom: 5px;")
-    el-button(type="primary" size="mini" @click="dialogShow = true") 添加账号
-    .layout-row
-      el-form(label-width='100px' :inline="true" size="mini")
-        el-form-item(label="是否启用：")
-          el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
-            el-option(label='启用', :value='true')
-            el-option(label='禁用', :value='false')
-      el-button(type='primary', @click='getAllAcount' size="mini") 查 询
+  .funds-header.layout-row__between
+    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加钱方账号
+    el-form(label-width='120px' :inline="true" size="mini")
+      el-form-item
+        el-select(v-model='code', placeholder='码商账号' filterable clearable @change="getAllAcount")
+          el-option(v-for="(item,i) in coder" :key="i" :label='item.account', :value='item.id')
+      el-form-item
+        el-input(v-model='account' placeholder="请输入钱方账号")
+      el-form-item
+        el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
+          el-option(label='启用', :value='true')
+          el-option(label='禁用', :value='false')
+      el-form-item()
+        el-button(type='primary', @click='getAllAcount' size="mini") 查 询
   el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
-    el-table-column(label="账号" fixed show-overflow-tooltip prop="account")
+    el-table-column(label="账号" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
-    el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
+    el-table-column(label="剩余额度" show-overflow-tooltip prop="dailyCeiling")
+    el-table-column(label="成功率" show-overflow-tooltip prop="nowSuccessRate")
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
-    el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
-    el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
-    el-table-column(label="已添加收款码(建议每天最多产5个码)" width="300" show-overflow-tooltip)
+    el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
+    el-table-column(label="单笔收款限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
           el-tag(
@@ -49,13 +53,14 @@
             size="small"
             :key="index"
           ) {{item}}
-    el-table-column(label='是否开启' show-overflow-tooltip)
+    el-table-column(label='启用状态' show-overflow-tooltip)
       template(slot-scope='scope')
-        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="操作" width="250" fixed="right")
+        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
+    el-table-column(label="操作" width="250")
       template(slot-scope='scope')
         .layout-row
-          el-button(type="primary" size="mini" @click="openSet(scope.row)") 添加经费
+          el-button(type="primary" size="mini" @click="testOrder(scope.row)") 测试下单
+          el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
           el-button(type="danger" size="mini" @click="del(scope.row.id)") 删除
   .page.layout-row.align-center.right(style="margin-top:20px")
     span 每页显示
@@ -81,6 +86,8 @@ import {
   updateConfigPay,
   addAcount
 } from "@/api/pay";
+import { getMerchants } from "@/api/members";
+import { createTestOrder, getQfCookie, setQfCookie } from "@/api/order";
 import { getAllchannel } from "@/api/agent";
 export default {
   components: {
@@ -91,12 +98,14 @@ export default {
   },
   data() {
     return {
+      coder: [], //码商
       channels: [],
       visible: false,
       loading: false,
       saveAccountLoading: false,
       setShow: false,
       dialogShow: false,
+      code: "",
       used: "",
       account: "",
       min: "",
@@ -122,8 +131,60 @@ export default {
   mounted() {
     this.getAllAcount();
     this.getAllchannel();
+    this.getAllCoder();
   },
   methods: {
+    //获取全部码商
+    getAllCoder() {
+      getMerchants({
+        pageNo: 1,
+        pageSize: 9000,
+        param: { account: "", type: 4 }
+      })
+        .then(res => {
+          this.coder = res.data.content;
+        })
+        .catch(err => {
+          this.$message.error("获码商失败！");
+        });
+    },
+    //测试下单
+    testOrder(data) {
+      this.$prompt("请输入金额：", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPattern: /^\d+$/,
+        inputErrorMessage: "金额不正确"
+      })
+        .then(({ value }) => {
+          createTestOrder({
+            id: data.id,
+            amount: value
+          })
+            .then(res => {
+              this.$notify({
+                title: "成功",
+                message: `${data.account}账号可以创建订单！`,
+                type: "success",
+                duration: 0
+              });
+            })
+            .catch(err => {
+              this.$notify({
+                title: "失败",
+                message: `${data.account}账号不能创建订单！`,
+                type: "error",
+                duration: 0
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "取消输入"
+          });
+        });
+    },
     del(id) {
       this.$confirm("确定删除这个账号?", "提示", {
         confirmButtonText: "确定",
@@ -186,7 +247,8 @@ export default {
         pageNo: this.currentPage,
         pageSize: this.pageSize,
         param: {
-          account: "-经费", //账号
+          code: this.code, //码商
+          account: `${this.account}-qf_ali`, //账号
           used: this.used, //是否启用
           accountType: "ali", //类型
           min: this.min, //最小
@@ -207,9 +269,8 @@ export default {
     },
     saveAccount() {
       this.saveAccountLoading = true;
-      let account = this.news.account + "-经费";
       let param = Object.assign({}, this.news, {
-        account: this.news.account + "-经费"
+        account: `${this.news.account}-qf_ali`
       });
       addAcount(param)
         .then(res => {

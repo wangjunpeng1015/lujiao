@@ -2,6 +2,7 @@
 .layout-column(style="overflow: auto")
   #doc1
     el-link(style="margin-bottom:10px" type="primary" target="__blank" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/%E5%95%86%E6%88%B7%E5%AF%B9%E6%8E%A5%E6%96%87%E6%A1%A3.docx") 文档下载
+    el-link(style="margin-bottom:10px;margin-left:10px;" type="primary" target="_blank" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/JAVA%E5%9B%9E%E8%B0%83Demo.zip") JAVA 回调DEMO
     h1.line.layout-row
       span(style="margin-right: 10px;align-self:center") 1.
       el-tag(size="small" style="align-self:center") 创建订单

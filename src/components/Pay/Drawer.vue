@@ -18,11 +18,16 @@ div
           //-   template(slot-scope='scope')
           //-     span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
+          el-table-column(label="连续失败" prop="failuresNum")
+            template(slot-scope="scope")
+              .layout-row
+                span(style="align-self:center") {{scope.row.failuresNum}}次
+                el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
           el-table-column(label='金额'  show-overflow-tooltip)
             template(slot-scope='scope')
               span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
-          el-table-column(prop='remark', label='备注'  show-overflow-tooltip)
-          el-table-column(label='编辑' v-if="userinfo.roleId == 4")
+          //- el-table-column(prop='remark', label='备注'  show-overflow-tooltip)
+          //- el-table-column(label='编辑' v-if="userinfo.roleId == 4 || userinfo.roleId === 1")
             template(slot-scope='scope')
               el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
           el-table-column(label='是否开启')
@@ -30,7 +35,9 @@ div
               el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
           el-table-column( label="操作")
             template(slot-scope='scope')
-              el-button(type="danger" @click="del(scope.row.id)" size='mini') 删 除
+              el-button(type="primary" v-if="userinfo.roleId == 4 || userinfo.roleId === 1" @click="edit(scope.row)" size='mini') 编辑
+
+              el-button(type="danger" @click="del(scope.row.id)" size='mini' v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 删 除
         .page.layout-row.align-center.right
           span 每页显示
           el-pagination.statistics(
@@ -43,11 +50,11 @@ div
           :page-size="pageSize"
           layout="sizes, prev, pager, next,total"
           :total="totalPage")
-  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWay='payWay' :payWayId="payWayId" :account="account")
+  AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWayId="payWayId" :account="account")
 </template>
 
 <script>
-import { getPays, updatePayUse, delConfigPay } from "@/api/pay";
+import { getPays, updatePayUse, delConfigPay, resetFail } from "@/api/pay";
 import { cloneDeep } from "lodash";
 import { mapState, mapGetters } from "vuex";
 import { decrypt } from "@/utils/index";
@@ -88,28 +95,16 @@ export default {
   },
   computed: {
     ...mapState(["settings"]),
-    ...mapGetters(["userinfo"]),
-    payWay() {
-      if (this.settings.dict && !!this.account) {
-        let alis = this.settings.dict.PayWay.dicts.filter(n =>
-          n.dictValue.includes("ali")
-        );
-        let wxs = this.settings.dict.PayWay.dicts.filter(n =>
-          n.dictValue.includes("wx")
-        );
-        let dicts = [];
-        if (this.account.accountType === "ali") {
-          dicts = alis;
-        } else if (this.account.accountType === "wx") {
-          dicts = wxs;
-        }
-        return dicts.filter(item => {
-          return this.channels.find(n => n.payWayDictId == item.id);
-        });
-      } else {
-        return [];
-      }
-    }
+    ...mapGetters(["userinfo"])
+    // payWay() {
+    //   if (this.settings.dict && !!this.account) {
+    //     return this.settings.dict.filter(item => {
+    //       return this.channels.find(n => n.payWayDictId == item.id);
+    //     });
+    //   } else {
+    //     return [];
+    //   }
+    // }
   },
   watch: {
     account: {
@@ -136,6 +131,12 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    resetFailStart (id) {
+      resetFail(id).then(res => {
+        this.getPays()
+        this.$message.success('重置成功')
+      })
+    },
     edit(data) {
       this.isAdd = false;
       this.drawerVisible = true;
@@ -219,10 +220,12 @@ export default {
       })
         .then(res => {
           this.$message.success("状态修改成功！");
+          resolve()
         })
         .finally(_ => {
           this.loading = false;
           this.getPays();
+          resolve()
         });
     },
     cancel() {
@@ -237,12 +240,12 @@ export default {
       this.isAdd = true;
       this.drawerVisible = true;
     },
-    dicFilter(id) {
-      let payWay = this.payWay.find(item => id == item.id);
-      return payWay
-        ? this.payWay.find(item => id == item.id).dictValueDisplayName
-        : "";
-    },
+    // dicFilter(id) {
+    //   let payWay = this.payWay.find(item => id == item.id);
+    //   return payWay
+    //     ? this.payWay.find(item => id == item.id).dictValueDisplayName
+    //     : "";
+    // },
     sizeChange(num) {
       this.pageSize = num;
       this.getPays();
@@ -257,7 +260,7 @@ export default {
 }
 >>> .drawer {
   padding: 20px;
-  overflow:auto;
+  overflow: auto;
   header {
     padding-left: 0;
     span {

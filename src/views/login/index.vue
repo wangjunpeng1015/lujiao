@@ -1,10 +1,10 @@
 <template lang="pug">
   .login-container
     #login
-    div(style="margin-top: -200px")
+    div(style="margin-top: -200px;position: relative;z-index: 999")
       .title-container
         .title
-          span.title-bg 77
+          span.title-bg {{name}}
           span 支付
         .sub-title 一个以技术驱动的支付团队
       el-form.login-form#login-form(
@@ -62,6 +62,7 @@ export default {
   data() {
     return {
       captchaUrl: `http://localhost:3001/api/user/captcha?${Math.random()}`,
+      name: window.location.search.includes('n=9') ? '玖玖' : '77',
       loginForm: {
         account: "",
         password: "",

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import axios from 'axios'
 import Qs from 'qs'
 //手动转账到usdt
 export function transfer(data) {
@@ -90,10 +91,48 @@ export function settleCreate(data) {
         data
     })
 }
-//创建订单
+//创建正式订单
 export function createOrder(data) {
     return request({
         url: `/order/optimalPay`,
+        method: 'post',
+        data: Qs.stringify(data)
+    })
+}
+//创建测试订单
+export function createTestOrder(data) {
+    return request({
+        url: `/pcAccountTestOrder`,
+        method: 'post',
+        data: Qs.stringify(data)
+    })
+}
+//钱方H5通道模拟登陆
+export function getQfCookie({ username, password, udid }) {
+    return axios({
+        headers: {
+            "User-Agent": "NearMerchant/042100(iPhone;iOS13.3;Scale/3.00;Language/zh-CN)",
+            "Host": "o.qfpay.com",
+            "Connection": "keep-alive",
+            "Accept-Language": "zh-Hans-CN;q=1, en-CN;q=0.9",
+            "Content-Length": 97,
+            "Access-Control-Allow-Origin": '*',
+            "Accept-Encoding": "gzip, deflate, br"
+        },
+        method: 'post',
+        url: 'https://o.qfpay.com/mchnt/user/login',
+        data: Qs.stringify({
+            "expire_time": 864000,
+            "username": username || "15232443958",
+            "password": password || "010216",
+            "udid": udid || '7CD39D5C-482B-4DF6-8724-3B8B61FB2D1F',
+        })
+    })
+}
+//钱方H5给后端cookie
+export function setQfCookie(data) {
+    return request({
+        url: `/pcAccountTestOrder`,
         method: 'post',
         data: Qs.stringify(data)
     })

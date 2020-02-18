@@ -7,6 +7,9 @@ el-dialog(title='添加订单',:visible.sync='visible' @close="cancel")
     el-form-item(label='收款方式', prop="payWay")
       el-select(v-model='form.payWay', placeholder='请选择收款通道方式' style='width:200px' ,:disabled="loading")
         el-option(v-for='item in channels', :key='item.value', :label='item.label', :value='item.value')
+    el-form-item(label='支付方式', prop="payWayType" v-if="isQF")
+      el-select(v-model='form.payWayType', placeholder='请选择支付方式' style='width:200px' ,:disabled="loading")
+        el-option(v-for='item in payWays', :key='item.value', :label='item.label', :value='item.value')
     el-form-item(label='金额', prop="money")
       el-input(type="number", v-model='form.money' style='width:200px')
   .dialog-footer(slot='footer')
@@ -21,6 +24,7 @@ import { channelToPayWay } from "@/utils";
 import { getAllchannel } from "@/api/agent";
 import { mapGetters, mapState } from "vuex";
 import { createOrder, getMerchants } from "@/api/order";
+import { cloneDeep } from "lodash";
 export default {
   props: {
     visible: {
@@ -34,6 +38,12 @@ export default {
         return [];
       },
       type: Array
+    },
+    isQF: {
+      default() {
+        return false;
+      },
+      type: Boolean
     }
   },
   computed: {
@@ -50,6 +60,7 @@ export default {
   watch: {
     visible(val) {
       if (val) {
+        console.log(this.isQF);
         this.getMerchants();
       }
     }
@@ -60,14 +71,28 @@ export default {
       creatLoading: false,
       channel: [],
       merchants: [],
+      payWays: [
+        {
+          value: "ali",
+          label: "支付宝"
+        },
+        {
+          value: "wx",
+          label: "微信"
+        }
+      ],
       form: {
         merchantNum: "",
         payWay: "",
+        payWayType: "",
         money: ""
       },
       rules: {
         payWay: [
           { required: true, message: "请选择支付方式", trigger: "blur" }
+        ],
+        payWayType: [
+          { required: true, message: "请选择收款方式", trigger: "blur" }
         ],
         money: [{ required: true, message: "请填写订单金额", trigger: "blur" }],
         merchantNum: [
@@ -129,15 +154,17 @@ export default {
       this.$refs.form.validate(valid => {
         if (valid) {
           this.creatLoading = true;
+          let temp = cloneDeep(this.form);
+          if (!this.isQF) {
+            delete temp.payWayType;
+          }
           let merchant = this.merchants.find(
-            item => item.merchantNumber == this.form.merchantNum
+            item => item.merchantNumber == temp.merchantNum
           );
           //商户号+支付金额+商户秘钥
-          const sign = md5(
-            this.form.merchantNum + this.form.money + merchant.secretKey
-          );
+          const sign = md5(temp.merchantNum + temp.money + merchant.secretKey);
           createOrder({
-            ...this.form,
+            ...temp,
             merchantOrderNo: "default",
             sign,
             ip: returnCitySN.cip || "0.0.0.0"

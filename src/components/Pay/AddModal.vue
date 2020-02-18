@@ -6,12 +6,16 @@
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
       //钱方好近
       div(v-if="form.payWayDictId == 26")
-        el-form-item(label='mchid', prop='mchid')
-          el-input(v-model='form.contentObj.mchid' placeholder="请填写mchid(子商户号)")
-        el-form-item(label='code', prop='code')
-          el-input(v-model='form.contentObj.code' placeholder="请填写code")
-        el-form-item(label='key', prop='key')
-          el-input(v-model='form.contentObj.key' placeholder="请填写key")
+        //- el-form-item(label='mchid', prop='mchid')
+        //-   el-input(v-model='form.contentObj.mchid' placeholder="请填写mchid(子商户号)")
+        //- el-form-item(label='code', prop='code')
+        //-   el-input(v-model='form.contentObj.code' placeholder="请填写code")
+        //- el-form-item(label='key', prop='key')
+        //-   el-input(v-model='form.contentObj.key' placeholder="请填写key")
+        el-form-item(label='钱方账号', prop='account')
+          el-input(v-model='form.contentObj.account' placeholder="请填写钱方账号")
+        el-form-item(label='钱方密码', prop='pwd')
+          el-input(v-model='form.contentObj.pwd' placeholder="请填写钱方密码")
       //云靓刷
       div(v-if="form.payWayDictId == 25")
         el-form-item(label='APPID', prop='appid')
@@ -87,14 +91,18 @@
           el-input(v-model='form.contentObj.ramadhin' placeholder="请填写桌号(方便识别)")
       //支付宝银行卡
       div(v-if="form.payWayDictId == 10")
-        el-form-item(label='银行卡cardIndex', prop='cardIndex')
-          el-input(v-model='form.contentObj.cardIndex' placeholder="请填写转账银行卡cardIndex")
-        el-form-item(label='银行名称', prop='bankName')
-          el-input(v-model='form.contentObj.bankName' placeholder="请填写银行名称")
-        el-form-item(label='银行简称', prop='mark')
-          el-input(v-model='form.contentObj.mark' placeholder="请填写银行简称")
-        el-form-item(label='真实姓名', prop='name')
-          el-input(v-model='form.contentObj.name' placeholder="请填写真实姓名")
+        el-form-item(label='银行卡ID', prop='cardIndex')
+          el-input(v-model='form.contentObj.cardIndex' placeholder="请填写转账银行卡cardId")
+            template(slot="append")
+              el-link(type="primary" target="_blank" href="./#/doc/cardId") 查看如何获取cardId
+        el-form-item(label="银行卡号")
+          el-input(v-model="cardNo" @change="getBankName" placeholder="请输入卡号以获取银行代码")
+        el-form-item(label='银行代码', prop='bankName')
+          el-input(v-model='form.contentObj.bankName' :disabled="true" placeholder="填写卡号后自动获取")
+        //- el-form-item(label='银行简称', prop='mark')
+        //-   el-input(v-model='form.contentObj.mark' placeholder="请填写银行简称")
+        el-form-item(label='持卡人姓名', prop='name')
+          el-input(v-model='form.contentObj.name' placeholder="请填写持卡人姓名")
       //微信
       div(v-if="form.payWayDictId == 11")
         el-form-item(label='收款二维码')
@@ -116,10 +124,12 @@
       el-form-item(:label="form.payWayDictId == 24 ? '金额' : '单笔限额'", prop='ceiling')
         el-input(type="number" v-if="form.payWayDictId == 24" v-model='form.singleCeilingMin' :placeholder="form.payWayDictId == 24 ? '金额' : '单笔限额'" @change="n=>form.singleCeilingMax = n")
         div(v-else)
-          el-input(v-model='form.singleCeilingMin' placeholder="设置单次最小金额(以防风控)" style="width:45%")
-          |-
-          el-input(v-model='form.singleCeilingMax' placeholder="设置单次最大金额(以防风控)" style="width:45%")
-      //- el-form-item(label="开通通道商户", prop='merchantIds')
+          el-input(v-model='form.singleCeilingMin' placeholder="最小金额" style="width:45%")
+            template(slot="append") 元
+          span(style="padding: 0 10px") ~
+          el-input(v-model='form.singleCeilingMax' placeholder="最大金额" style="width:45%")
+            template(slot="append") 元
+      //- el-form-item(label="上码商户", prop='merchantIds')
       //-   el-checkbox-group(v-model='form.merchantIds')
       //-     el-checkbox(v-for="(item,i) in merchants" :key="i" :label='item.id') {{ item.account }}
       //- el-form-item(label="商户利率", prop='merchantInterestRate' v-if="isAdd")
@@ -136,6 +146,7 @@ import { updateConfigPay } from "@/api/pay";
 import { getMerchant } from "@/api/user";
 import { isEmpty } from "lodash";
 import { mapState } from "vuex";
+import axios from "axios";
 export default {
   props: ["visible", "data", "isAdd", "payWay", "account", "payWayId"],
   components: {},
@@ -145,6 +156,7 @@ export default {
   watch: {
     data: {
       handler(val) {
+        console.log(val);
         this.$set(this, "form", val);
         if (this.payWayId) {
           this.form.payWayDictId = this.payWayId;
@@ -162,6 +174,7 @@ export default {
   },
   data() {
     return {
+      cardNo: "",
       loading: false,
       form: {
         // merchantIds: [],
@@ -175,15 +188,34 @@ export default {
   mounted() {},
 
   methods: {
-    // getMerchant() {
-    //   getMerchant()
-    //     .then(res => {
-    //       this.merchants = res.data;
-    //     })
-    //     .catch(err => {
-    //       this.$message.error("获取商户失败！");
-    //     });
-    // },
+    getBankName(val) {
+      if (val.length === 16) {
+        axios
+          .get(
+            `https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardNo=${val}&cardBinCheck=true`
+          )
+          .then(res => {
+            if (!res.data.validated) {
+              this.$message.error("卡片暂时不可用, 请更换卡号");
+              return false;
+            }
+            if (res.data.stat !== "ok") {
+              this.$message.error("银行卡暂不可用, 请更换银卡哈");
+              return false;
+            }
+            this.$set(this.form.contentObj, "bankName", res.data.bank);
+          });
+      }
+    },
+    getMerchant() {
+      getMerchant()
+        .then(res => {
+          this.merchants = res.data;
+        })
+        .catch(err => {
+          this.$message.error("获取商户失败！");
+        });
+    },
     submitForm() {
       if (isEmpty(this.form.contentObj)) {
         this.$message.error("请填写支付配置内容！");
