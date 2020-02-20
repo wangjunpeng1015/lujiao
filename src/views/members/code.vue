@@ -15,7 +15,7 @@
           template(slot-scope="scope")
             span {{scope.row.level == 2 ? '二级码商' : '一级码商'}}
         el-table-column(prop='balance' show-overflow-tooltip label='当日收款', )
-        //- el-table-column(prop='createTime' show-overflow-tooltip label='创建时间',)
+        el-table-column(prop='yesterDayBalance' show-overflow-tooltip label='昨日收款',)
         el-table-column(label="是否启用账号" show-overflow-tooltip)
           template(slot-scope='scope')
             el-switch(v-model='scope.row.status',@change="changeStatus(scope.row.id)" :active-text="scope.row.status?'启用':'停用'")
