@@ -109,7 +109,6 @@ export default {
   },
   created() {
     this.getAllAcount();
-    this.getAllchannel();
   },
   mounted() {},
   methods: {

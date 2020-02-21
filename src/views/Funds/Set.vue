@@ -121,7 +121,6 @@ export default {
   },
   mounted() {
     this.getAllAcount();
-    this.getAllchannel();
   },
   methods: {
     del(id) {

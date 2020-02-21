@@ -374,6 +374,35 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
+    //USDT结算
+    {
+      path: '/usdtSettlement',
+      component: Layout,
+      meta: {
+        title: 'USDT单笔分账',
+        icon: 'iconfont iconziyuan',
+      },
+      children: [
+        {
+          path: 'index',
+          name: 'settlement',
+          component: () => import('@/views/usdtSettlement/index'),
+          meta: { title: 'USDT分账配置', icon: 'el-icon-money', roles: [1] }
+        },
+        {
+          path: 'records',
+          name: 'records',
+          component: () => import('@/views/usdtSettlement/records'),
+          meta: { title: 'USDT分账记录', icon: 'el-icon-coin', roles: [1] }
+        },
+        {
+          path: 'Introduce',
+          name: 'Introduce',
+          component: () => import('@/views/usdtSettlement/Introduce'),
+          meta: { title: 'USDT分账使用说明', icon: 'el-icon-coin', roles: [1] }
+        }
+      ]
+    },
   //结算
   {
     path: '/settlement',
@@ -397,29 +426,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  //USDT结算
-  {
-    path: '/usdtSettlement',
-    component: Layout,
-    meta: {
-      title: 'USDT单笔分账',
-      icon: 'iconfont iconziyuan',
-    },
-    children: [
-      {
-        path: 'index',
-        name: 'settlement',
-        component: () => import('@/views/usdtSettlement/index'),
-        meta: { title: 'USDT结算配置', icon: 'el-icon-money', roles: [1] }
-      },
-      {
-        path: 'records',
-        name: 'records',
-        component: () => import('@/views/usdtSettlement/records'),
-        meta: { title: 'USDT结算记录', icon: 'el-icon-coin', roles: [1] }
-      }
-    ]
-  },
+
   // 商户设置
   // {
   //   path: '/setting',

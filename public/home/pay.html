@@ -611,7 +611,8 @@
           case 25:
             //yls
             const { qrUrl } = JSON.parse(res.data.data.payContent)
-            url = `alipays://platformapi/startapp?appId=20000067&url=${qrUrl}`
+            url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/yls.html?${qrUrl.split('=')[1]}`
+            // url = `alipays://platformapi/startapp?appId=68687096`
             var aElement = document.getElementById('ylsUrl')
             aElement.setAttribute('href', url)
             window.location.href = url

@@ -138,7 +138,6 @@ export default {
   },
   mounted() {
     this.getAllAcount();
-    this.getAllchannel();
     this.getAllCoder();
   },
   methods: {
