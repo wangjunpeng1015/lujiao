@@ -4,7 +4,7 @@ div
     .container.layout-column
       .wjp-tools.layout-row__between
         div
-          el-button(v-if="(userinfo.roleId ==4 || userinfo.roleId ==1)&&!(single&&table.length<2)" type='primary' @click="addChannel" size="mini") 添加收款方式
+          el-button(v-if="(userinfo.roleId ==4 || userinfo.roleId ==1)&&!(single&&table.length<2)" v-show="table.length === 0" type='primary' @click="addChannel" size="mini") 添加收款方式
         .layout-row.buttons
           //- el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
           //-   el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')

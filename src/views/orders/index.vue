@@ -53,7 +53,7 @@
                 template(slot-scope='scope')
                   .layout-row__between
                     el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
-                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功'" @click="supplement(scope.row)") 补 单
+                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功' && userinfo.roleId == 1" @click="supplement(scope.row)") 补 单
                     el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.usdtStatus=='请商户添加码商钱包地址'" @click="transfer(scope.row)") 转账USDT
         .page.layout-row.align-center.right
             span 每页显示

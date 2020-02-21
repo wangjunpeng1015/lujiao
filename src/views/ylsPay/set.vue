@@ -47,7 +47,7 @@
       template(slot-scope="scope")
         .layout-row
           span(style="align-self:center") {{scope.row.configfailuresNum}}次
-          el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.configId, scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
+          el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.configId, scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3 || userinfo.roleId == 4") 重置并开启
     el-table-column(label="单笔收款限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
