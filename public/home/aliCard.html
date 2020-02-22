@@ -100,12 +100,14 @@
     mounted() {
       let that = this;
       let params = window.location.search.split('?')[1].split('&')[1].split('=')[1]
-      const config = this.config = JSON.parse(unescape(params))
+      var config = JSON.parse(decodeURIComponent(params))
       var selfUrl = window.location.href.replace('aliCard', 'aliCardAli')
-      var URL = 'http://39.99.196.237/home/aliCardAli.html?' + escape(JSON.stringify(config))
+      // var URL = 'http://39.99.196.237/home/aliCardAli.html?' + escape(JSON.stringify(config))
+      var URL = 'http://192.168.0.101:9528/home/aliCardAli.html?' + encodeURIComponent(JSON.stringify(config))
       var url = `alipays://platformapi/startapp?appId=20000067&url=${URL}`
       var aElement = document.getElementById('zzUrl')
       aElement.setAttribute('href', url)
+      // window.location.href = 'alipays://platformapi/startapp?appId=68687096'
       window.location.href = url
       setTimeout(() => {
         new QRCode(document.getElementById("qrcode"), {

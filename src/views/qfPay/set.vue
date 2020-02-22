@@ -36,33 +36,32 @@
           el-option(label='禁用', :value='false')
       el-form-item()
         el-button(type='primary', @click='getAllAcount' size="mini") 查 询
-  el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
-    el-table-column(label="账号" fiexed show-overflow-tooltip prop="account")
+  el-table.funds-body.wjp-table(:row-class-name="tableRowClassName" v-loading="loading" , :data="list",style='width: 100%')
+    el-table-column(label="账号" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
-
     el-table-column(label="成功率" show-overflow-tooltip prop="nowSuccessRate")
-    el-table-column(label="失败次数" show-overflow-tooltip width="150")
+    //- el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
+    el-table-column(label="失败次数" show-overflow-tooltip)
       template(slot-scope="scope")
         .layout-row
           span(style="align-self:center") {{scope.row.configfailuresNum}}次
-          el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.configId, scope.row.id)") 重置并开启
-    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
+          el-button(type="primary" plain round style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.configId, scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3 || userinfo.roleId == 4") 重置
     el-table-column(label="剩余额度" show-overflow-tooltip prop="dailyCeiling")
     el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
-    el-table-column(label="单笔收款限额" show-overflow-tooltip)
+    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
+    el-table-column(label="单笔限额" show-overflow-tooltip)
       template(slot-scope='scope')
         .layout-row
-          el-tag(
+          span(
             style="margin-left: 5px"
             v-for="(item, index) in scope.row.amountList"
-            type="success"
             size="small"
             :key="index"
           ) {{item}}
     el-table-column(label='启用状态' show-overflow-tooltip)
       template(slot-scope='scope')
-        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="操作" fixed="right" width="200")
+        el-switch(v-model='scope.row.configUsed', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
+    el-table-column(label="操作")
       template(slot-scope='scope')
         .layout-row
           //- el-button(type="primary" size="mini" @click="testOrder(scope.row)") 测试下单
@@ -141,6 +140,12 @@ export default {
     this.getAllCoder();
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+        if (!row.used) {
+          return 'warning-row';
+        }
+        return '';
+      },
     //获取全部码商
     getAllCoder() {
       getMerchants({
@@ -271,6 +276,9 @@ export default {
             item.nowSuccessRate = (item.nowSuccessRate * 100).toFixed(2) + '%'
             item.configfailuresNum = 0
             item.configId = 0
+            item.configUsed = item.used
+            item.nowEarnings = item.nowEarnings ? item.nowEarnings : '——'
+            item.yesterdayEarnings = item.yesterdayEarnings ? item.yesterdayEarnings : '——'
           })
           this.list = content;
           this.list.forEach(item => {
@@ -284,6 +292,7 @@ export default {
     },
     resetFailStart (configId, id) {
       resetFail(configId).then(res => {
+        this.useChange(id)
         this.getPayConfig(id)
         this.$message.success('重置成功')
       })
@@ -307,6 +316,10 @@ export default {
       let param = Object.assign({}, this.news, {
         account: `${this.news.account}-qf_ali`
       });
+      if (!this.news.dailyCeiling) {
+        this.$message.error('请填写收款上限')
+        return false
+      }
       addAcount(param)
         .then(res => {
           this.getAllAcount();
@@ -358,7 +371,15 @@ export default {
   }
 };
 </script>
+<style>
+ .el-table .warning-row {
+    background: #f5f7fa;
+  }
 
+  .el-table .success-row {
+    background: #f0f9eb;
+  }
+</style>
 <style scoped>
 .funds-header .el-form-item {
   margin-bottom: 0;

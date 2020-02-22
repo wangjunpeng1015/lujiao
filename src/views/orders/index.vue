@@ -23,12 +23,12 @@
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
                     //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
             //- el-table-column(prop='orderNum', label='系统订单号', show-overflow-tooltip width="100")
-            el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip)
-            el-table-column(prop='orderUserAccount', label='商户账号' show-overflow-tooltip)
-            el-table-column(prop='payConfigPayConfigAccountAccount' label='收款账号',show-overflow-tooltip)
+            el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip align="center")
+            el-table-column(prop='orderUserAccount', label='商户账号' show-overflow-tooltip align="center")
+            el-table-column(prop='payConfigPayConfigAccountAccount' label='收款账号',show-overflow-tooltip align="center")
             //- el-table-column( prop='remark' v-if="payWayId!=25"  label='系统备注',show-overflow-tooltip)
             //- el-table-column(v-if="isQF" label='原始金额' width="100" prop="amount",show-overflow-tooltip)
-            el-table-column(label='实际金额'  width="100" show-overflow-tooltip)
+            el-table-column(label='实际金额'  width="100" show-overflow-tooltip align="center")
               template(slot-scope='scope')
                 span(v-if="scope.row.payStatusDictValue =='支付成功'" style="font-weight:bold;color:green") {{ scope.row.actualAmount }}
                 span(v-else-if="scope.row.payStatusDictValue =='支付中' || scope.row.payStatusDictValue =='支付超时'" ) {{ scope.row.actualAmount }}
@@ -37,19 +37,24 @@
             //- el-table-column(label='商家备注',show-overflow-tooltip)
             //-   template(slot-scope='scope')
             //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
-            el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip)
-            el-table-column(prop='payWayType', v-if="payWayId==26" label='支付方式',show-overflow-tooltip)
+            el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip align="center")
+            el-table-column(v-if="payWayId==26" label='支付方式',show-overflow-tooltip align="center")
+              template(slot-scope="scope")
+                .layout-row(v-if="scope.row.payWayType === 'wx'" style="justify-content:center")
+                  img(:src="wxImg" height="23px")
+                .layout-row(v-if="scope.row.payWayType === 'ali'" style="justify-content:center")
+                  img(:src="alipayImg" height="23px")
             //- el-table-column(label='USDT实时转账状态',show-overflow-tooltip)
             //-   template(slot-scope="scope")
             //-     span(v-if="!scope.row.usdtStatus") 账号未开通功能
             //-     span(v-else :class="getUsdtClass(scope.row.usdtStatus)") {{ scope.row.usdtStatus}}
-            el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip)
+            el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip align="center")
               template(slot-scope='scope')
                 el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
-            el-table-column(prop='payStatusDictValue', label='状态')
+            el-table-column(prop='payStatusDictValue', label='状态' align="center")
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
-            el-table-column(prop='payStatusDictValue' width="150" label='操作' fixed="right")
+            el-table-column(prop='payStatusDictValue' width="150" label='操作' fixed="right" align="center")
                 template(slot-scope='scope')
                   .layout-row__between
                     el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
@@ -91,6 +96,8 @@ export default {
   props: ["payWayName", "payWayId", "isQF"],
   data() {
     return {
+      wxImg: require('@/assets/img/weixin.png'),
+      alipayImg: require('@/assets/img/alipay.png'),
       siv: null, //定时器
       addVisible: false,
       suppLoading: false,
@@ -337,9 +344,9 @@ export default {
             this.totalPage = totalRecords;
             this.pageSize = pageSize;
             this.currentPage = pageNo;
-            content.forEach(n => {
-              n.payWayType = n.payWayType === 'wx' ? '微信H5' : '支付宝H5'
-            })
+            // content.forEach(n => {
+            //   n.payWayType = n.payWayType === 'wx' ? '微信H5' : '支付宝H5'
+            // })
             this.tableData = content;
           } else {
             this.$message.error("获取表格数据失败！");

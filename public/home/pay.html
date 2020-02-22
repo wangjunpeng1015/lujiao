@@ -562,7 +562,7 @@
               bankName,
               cardIndex
             })
-            url = `${window.location.origin}/home/aliCard.html?orderNo=${orderNum10}&params=` + escape(params10)
+            url = `${window.location.origin}/home/aliCard.html?orderNo=${orderNum10}&params=` + encodeURIComponent(params10)
             window.location.href = url
             break
           case 11:

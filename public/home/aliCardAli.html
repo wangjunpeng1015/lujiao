@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title></title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
   <link rel="stylesheet" href="./common.css">
   <style>
     #time {
@@ -28,7 +33,7 @@
       height: 250px;
     }
 
-    #ylsUrl,
+    /* #ylsUrl,
     #jfUrl,
     #zzUrl,
     .button {
@@ -41,7 +46,7 @@
       border-radius: 0.3rem;
       margin-bottom: 1.5rem;
       text-decoration: none;
-    }
+    } */
 
     .scan-tip {
       margin: 10px auto;
@@ -56,24 +61,45 @@
       text-align: center;
       color: #fff;
     }
+    #is_ios{
+      display: block;
+    }
+    #is_android{
+      display: none;
+    }
   </style>
 </head>
 
 <body>
   <div id="app">
-    <div style="background:#fff;padding: 20px 0 ">
+    <div id="is_ios" style="background:#fff;padding: 20px 0 ">
       <img class="scan-tip" src="./alipay.png" width="30%" alt="">
       <p style="font-size:16px;font-weight:bold">温馨提示</p>
       <p style="font-size: 14px;color: #999">请耐心等待授权</p>
       <p style="margin-top: 20px">剩余授权时间:
         <span id="time"></span>秒</p>
       <div>
-        <button id="btn" class="button" disabled="true" onclick="pay()">授权中, 请稍后...</button>
+        <a id="btn" class="button button-big disabled button-fill" disabled="true" onclick="pay()">授权中, 请稍后...</a>
       </div>
+    </div>
+    <div id="is_android" style="background:#fff;padding: 20px 0 ">
+      <div class="content-padded">
+        <h4>1.先打开飞行模式</h4>
+        <img src="./fly-yd1.png" alt="" width="65%">
+        <h4 style="margin-top: 20px">2.点击“已打开飞行模式，前往支付”</h4>
+        <h4 style="margin-top: 20px">3.关闭飞行模式进行支付</h4>
+        <a xstyle="margin-top: 20px" href="#" id="btn-and" class="button-big button-round disabled button button-fill">已打开飞行模式，前往支付</a>
+        <!-- <div style="margin: 0 auto;"> -->
+        <!-- </div> -->
+      </div>
+
     </div>
   </div>
 </body>
-<!-- <script src="./polyfill.min.js"></script> -->
+<script src="./polyfill.min.js"></script>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+  <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+  <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
 <script>
   var config = {}
   function ready(callback) {
@@ -88,13 +114,53 @@
   ready(function () {
     try {
 
+      var u = navigator.userAgent;
+      var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      if (isiOS) {
+        document.getElementById('is_ios').style.display = 'block'
+        document.getElementById('is_android').style.display = 'none'
+      } else {
+        document.getElementById('is_ios').style.display = 'none'
+        document.getElementById('is_android').style.display = 'block'
+      }
+
+      document.addEventListener('h5NetworkChange', function (e) {
+      // **注意安卓下addEventListener里的e不能用JSON.stringify，这里的e在UC下不是一个有效的可序列化对象**
+        if (JSON.stringify(e.data).includes('none')) {
+          $('#btn-and').removeClass('disabled')
+        } else {
+          $('#btn-and').addClass('disabled')
+        }
+        //网络环境发生变化，可调用getNetworkType接口获取详细信息
+        AlipayJSBridge.call('getNetworkType', function (result) {
+          if (!result.networkAvailable) {
+            $('#btn-and').removeClass('disabled')
+          } else {
+            $('#btn-and').addClass('disabled')
+          }
+        });
+      }, false);
+
+      $('#btn-and').on('click', function () {
+        if ($('#btn-and').hasClass('disabled')) {
+
+          $.alert("请先打开飞行模式");
+          return false
+        }
+        $.alert('跳转后请关闭飞行模式进行支付', '提示', function () {
+          pay()
+        });
+
+      })
       window.AlipayJSBridge.call('setTitle', {
         title: '自助充值',
         subtitle: '安全支付'
       });
-      let time = 15000
+      let time = 7000
       let params = window.location.search.split('?')[1]
-      config = JSON.parse(unescape(params))
+      config = JSON.parse(decodeURIComponent(params))
+      // config = unescape(params)
       // that.url = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
 
       var t = setInterval(function () {
@@ -139,7 +205,8 @@
       BJRCB: '北京农村商业银行',
       fdb101: '富滇银行',
     }
-    var url = `alipays://platformapi/startapp?appId=20000200&actionType=toCard&sourceId=bill&ap_framework_sceneId=20000067&cardNo=请勿修改金额****&bankAccount=${unescape(config.name)}&bankName=${unescape(MAP[config.bankName])}&bankMark=${unescape(config.bankName)}&money=${unescape(config.amount)}&amount=${unescape(config.amount)}&REALLY_STARTAPP=true&startFromExternal=false&cardIndex=${unescape(config.cardIndex)}&cardNoHidden=true&ap_framework_sceneId=20000200&&cardChannel=HISTORY_CARD&orderSource=from`
+    var url = `alipays://platformapi/startapp?appId=20000200&actionType=toCard&sourceId=bill&ap_framework_sceneId=20000067&cardNo=请勿修改金额****关闭飞行模式&bankAccount=${unescape(config.name)}&bankName=${unescape(MAP[config.bankName])}&bankMark=${unescape(config.bankName)}&money=${unescape(config.amount)}&amount=${unescape(config.amount)}&REALLY_STARTAPP=true&startFromExternal=false&cardIndex=${unescape(config.cardIndex)}&cardNoHidden=true&ap_framework_sceneId=20000200&&cardChannel=HISTORY_CARD&orderSource=from`
+    alert(url)
     window.location.href = url
   }
 </script>

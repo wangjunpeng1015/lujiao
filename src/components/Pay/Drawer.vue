@@ -1,16 +1,16 @@
 <template lang="pug">
 div
-  el-drawer(title='账号配置',size="60%", @close='cancel', :visible.sync='visible', direction='rtl', custom-class='drawer', ref='drawer')
+  el-drawer(title='账号配置',size="70%", @close='cancel', :visible.sync='visible', direction='rtl', custom-class='drawer', ref='drawer')
     .container.layout-column
       .wjp-tools.layout-row__between
         div
           el-button(v-if="(userinfo.roleId ==4 || userinfo.roleId ==1)&&!(single&&table.length<2)" v-show="table.length === 0" type='primary' @click="addChannel" size="mini") 添加收款方式
-        .layout-row.buttons
+        //- .layout-row.buttons
           //- el-select(v-model='payWayDictId', placeholder='支付方式' clearable @change="getPays")
           //-   el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
-          el-select(size="mini" v-model='used', placeholder='是否启用' clearable @change="getPays")
-            el-option(label='启用', :value='true')
-            el-option(label='禁用', :value='false')
+          //- el-select(size="mini" v-model='used', placeholder='是否启用' clearable @change="getPays")
+          //-   el-option(label='启用', :value='true')
+          //-   el-option(label='禁用', :value='false')
       .wjp-content
         el-table.wjp-table(v-loading="loading" :data='table', style='width: 100%')
           //- el-table-column(fixed prop='id', label='id', width='50')
@@ -19,14 +19,26 @@ div
           //-     span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
           el-table-column(label="二维码ID" prop="id")
-          el-table-column(label="连续失败" prop="failuresNum")
-            template(slot-scope="scope")
-              .layout-row
-                span(style="align-self:center") {{scope.row.failuresNum}}次
-                el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
-          el-table-column(label='金额'  show-overflow-tooltip)
+          //- el-table-column(label="连续失败" prop="failuresNum")
+          //-   template(slot-scope="scope")
+          //-     .layout-row
+          //-       span(style="align-self:center") {{scope.row.failuresNum}}次
+          //-       el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
+          el-table-column(label='单笔限额'  show-overflow-tooltip)
             template(slot-scope='scope')
               span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
+          el-table-column(v-if="form.payWayDictId === 25" label="APPID" show-overflow-tooltip)
+            template(slot-scope="scope")
+              span {{form.contentObj.appid}}
+          el-table-column(v-if="form.payWayDictId === 25" label="appsecret" show-overflow-tooltip)
+            template(slot-scope="scope")
+              span {{form.contentObj.appsecret}}
+          el-table-column(v-if="form.payWayDictId === 26" label="账号" show-overflow-tooltip)
+            template(slot-scope="scope")
+              span {{form.contentObj.account}}
+          el-table-column(v-if="form.payWayDictId === 26" label="密码" show-overflow-tooltip)
+            template(slot-scope="scope")
+              span {{form.contentObj.pwd}}
           //- el-table-column(prop='remark', label='备注'  show-overflow-tooltip)
           //- el-table-column(label='编辑' v-if="userinfo.roleId == 4 || userinfo.roleId === 1")
             template(slot-scope='scope')
@@ -36,21 +48,21 @@ div
           //-     el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
           el-table-column( label="操作")
             template(slot-scope='scope')
-              el-button(type="primary" v-if="userinfo.roleId == 4 || userinfo.roleId === 1" @click="edit(scope.row)" size='mini') 编辑
-
-              el-button(type="danger" @click="del(scope.row.id)" size='mini' v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 删 除
-        .page.layout-row.align-center.right
-          span 每页显示
-          el-pagination.statistics(
-          background
-          prev-text="上一页"
-          next-text="下一页"
-          @size-change="sizeChange"
-          @current-change="getPays"
-          :current-page.sync="currentPage"
-          :page-size="pageSize"
-          layout="sizes, prev, pager, next,total"
-          :total="totalPage")
+              .layout-row
+                el-button(type="primary" v-if="userinfo.roleId == 4 || userinfo.roleId === 1" @click="edit(scope.row)" size='mini') 编辑
+                el-button(type="danger" @click="del(scope.row.id)" size='mini' v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 删 除
+        //- .page.layout-row.align-center.right
+        //-   span 每页显示
+        //-   el-pagination.statistics(
+        //-   background
+        //-   prev-text="上一页"
+        //-   next-text="下一页"
+        //-   @size-change="sizeChange"
+        //-   @current-change="getPays"
+        //-   :current-page.sync="currentPage"
+        //-   :page-size="pageSize"
+        //-   layout="sizes, prev, pager, next,total"
+        //-   :total="totalPage")
   AddModal(@finish="getPays" :isAdd="isAdd" :visible.sync="drawerVisible" :data="form" :payWayId="payWayId" :account="account")
 </template>
 
@@ -130,7 +142,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+
+  },
   methods: {
     resetFailStart (id) {
       resetFail(id).then(res => {
@@ -175,6 +189,24 @@ export default {
           this.pageSize = pageSize;
           this.currentPage = pageNo;
           this.table = content;
+
+          let form = cloneDeep(content[0]);
+          let contentObj = decrypt(form.content, form.payKey);
+          //当面付
+          this.form = {
+            id: form.id,
+            payWayDictId: form.payWayDictId,
+            // merchantIds: form.merchants,
+            used: form.used,
+            remark: form.remark,
+            singleCeilingMin: form.singleCeilingMin,
+            singleCeilingMax: form.singleCeilingMax,
+            qrCodeAdd: form.qrCodeAdd,
+            forNight: form.forNight,
+            ceiling: form.ceiling,
+            contentObj
+          };
+
           if (this.single) {
             this.$emit("update:visible", false);
             if (!this.table.length) {
@@ -190,7 +222,7 @@ export default {
         });
     },
     del(id) {
-      this.$confirm("确定删除当前通道?", "提示", {
+      this.$confirm("确定删除当前配置?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
