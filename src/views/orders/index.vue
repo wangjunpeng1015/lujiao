@@ -38,7 +38,7 @@
             //-   template(slot-scope='scope')
             //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip align="center")
-            el-table-column(v-if="payWayId==26" label='支付方式',show-overflow-tooltip align="center")
+            el-table-column(v-if="payWayId==26 || payWayId==25" label='支付方式',show-overflow-tooltip align="center")
               template(slot-scope="scope")
                 .layout-row(v-if="scope.row.payWayType === 'wx'" style="justify-content:center")
                   img(:src="wxImg" height="23px")
@@ -58,7 +58,7 @@
                 template(slot-scope='scope')
                   .layout-row__between
                     el-button(v-if="userinfo.roleId ==1 && scope.row.payStatusDictValue=='支付超时'" type="danger" size="mini" @click="del(scope.row.id)") 删 除
-                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功' && userinfo.roleId == 1" @click="supplement(scope.row)") 补 单
+                    el-button(type="primary" size="mini" v-if="scope.row.payStatusDictValue!=='支付成功' && (userinfo.roleId == 1 || userinfo.roleId == 3)" @click="supplement(scope.row)") 补 单
                     el-button(type="primary" size="mini" v-if="userinfo.roleId ==4 && scope.row.usdtStatus=='请商户添加码商钱包地址'" @click="transfer(scope.row)") 转账USDT
         .page.layout-row.align-center.right
             span 每页显示

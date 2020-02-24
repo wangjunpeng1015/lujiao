@@ -49,12 +49,12 @@
         .layout-column
           div 成功率
           div.num {{(amountData.today.successRate * 100).toFixed(2)}}%
-  el-divider(content-position="left") 昨日通道数据
-  el-table(:data="payWayList" :stripe="true" border)
-    el-table-column(label="通道名称" prop="name")
-    el-table-column(label="订单金额" prop="amount")
-    el-table-column(label="订单数量" prop="orders")
-    el-table-column(label="成功率" prop="successRate")
+  //- el-divider(content-position="left") 昨日通道数据
+  //- el-table(:data="payWayList" :stripe="true" border)
+  //-   el-table-column(label="通道名称" prop="name")
+  //-   el-table-column(label="订单金额" prop="amount")
+  //-   el-table-column(label="订单数量" prop="orders")
+  //-   el-table-column(label="成功率" prop="successRate")
   el-divider(content-position="left")
     el-select(v-model="dayNum" size="mini" @change="getBody")
       el-option(label="昨日数据" :value="1")

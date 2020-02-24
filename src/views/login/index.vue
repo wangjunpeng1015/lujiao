@@ -6,7 +6,7 @@
         .title
           span.title-bg {{name}}
           span 支付
-        .sub-title 一个以技术驱动的支付团队
+        .sub-title 优质通道提供商
       el-form.login-form(ref="loginForm" :model="loginForm" :rules="loginRulels" auto-complete="on")
         el-form-item(prop="account")
           span.svg-container

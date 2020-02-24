@@ -78,8 +78,18 @@ export const asyncRoutes = [
         name: 'set',
         component: () => import('@/views/ylsPay/set'),
         meta: {
-          title: '通道配置',
-          icon: 'el-icon-s-tools',
+          title: '支付宝通道配置',
+          icon: 'iconfont iconzhifubao1',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'vxset',
+        name: 'vxset',
+        component: () => import('@/views/ylsPay/vxset'),
+        meta: {
+          title: '微信通道配置',
+          icon: 'iconfont iconweixin1',
           roles: [1, 3, 4],
         }
       },
@@ -162,7 +172,7 @@ export const asyncRoutes = [
     name: 'aliScan',
     meta: {
       title: '支付宝扫码通道',
-      icon: 'iconfont iconerweima',
+      icon: 'iconfont iconzhifubao1',
     },
     children: [
       {
@@ -181,6 +191,38 @@ export const asyncRoutes = [
         component: () => import('@/views/aliScan/Orders'),
         meta: {
           title: '支付宝扫码订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
+  // 微信扫码
+  {
+    path: '/wechatScan',
+    component: Layout,
+    redirect: '/wechatScan/orders',
+    name: 'wechatScan',
+    meta: {
+      title: '微信扫码通道',
+      icon: 'iconfont iconweixin1',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/wechatScan/set'),
+        meta: {
+          title: '通道配置',
+          icon: 'el-icon-s-tools',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/wechatScan/Orders'),
+        meta: {
+          title: '微信扫码订单',
           icon: 'el-icon-s-order',
         }
       }

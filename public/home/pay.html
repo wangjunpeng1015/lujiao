@@ -566,8 +566,8 @@
             window.location.href = url
             break
           case 11:
-            //钱方
-            window.location.href = `${window.location.origin}/home/qfhj.html?orderNo=${res.data.data.orderNum}`
+            //微信个码
+            window.location.href = `${window.location.origin}/home/wechat_gm_pay.html?orderNo=${res.data.data.orderNum}`
             break;
           case 24:
             //轻松经费
@@ -610,6 +610,10 @@
             break;
           case 25:
             //yls
+            if (res.data.data.payWay === 'wx') {
+              window.location.href = `${window.location.origin}/home/yls_wx.html?orderNo=${res.data.data.orderNum}`
+              return false
+            }
             const { qrUrl } = JSON.parse(res.data.data.payContent)
             url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/yls.html?${qrUrl.split('=')[1]}`
             // url = `alipays://platformapi/startapp?appId=68687096`

@@ -7,7 +7,7 @@ el-dialog(title='添加订单',:visible.sync='visible' @close="cancel")
     el-form-item(label='收款方式', prop="payWay")
       el-select(v-model='form.payWay', placeholder='请选择收款通道方式' style='width:200px' ,:disabled="loading")
         el-option(v-for='item in channels', :key='item.value', :label='item.label', :value='item.value')
-    el-form-item(label='支付方式', prop="payWayType" v-if="isQF")
+    el-form-item(label='支付方式', prop="payWayType" v-if="isQF || payWayId==25")
       el-select(v-model='form.payWayType', placeholder='请选择支付方式' style='width:200px' ,:disabled="loading")
         el-option(v-for='item in payWays', :key='item.value', :label='item.label', :value='item.value')
     el-form-item(label='金额', prop="money")
@@ -164,21 +164,26 @@ export default {
           if (this.payWayId === 6) {
             temp.payWayId = 6
           }
+          if (this.payWayId === 11) {
+            temp.payWayId = 11
+          }
+          if (this.payWayId === 26) {
+            temp.payWayId = 26
+          }
+          if (this.payWayId === 25) {
+            temp.payWayId = 25
+          }
           if (!this.isQF) {
             delete temp.payWayType;
+          }
+          if (this.payWayId == 25) {
+            temp.payWayType = this.form.payWayType
           }
           let merchant = this.merchants.find(
             item => item.merchantNumber == temp.merchantNum
           );
           //商户号+支付金额+商户秘钥
           const sign = md5(temp.merchantNum + temp.money + merchant.secretKey);
-          console.log({
-            ...temp,
-            merchantOrderNo: "default",
-            sign,
-            ip: returnCitySN.cip || "0.0.0.0"
-          })
-
           createOrder({
             ...temp,
             merchantOrderNo: "default",

@@ -19,11 +19,11 @@ div
           //-     span {{ dicFilter(scope.row.payWayDictId) }}
           //- el-table-column(prop='optional_1', label='支付类型')
           el-table-column(label="二维码ID" prop="id")
-          //- el-table-column(label="连续失败" prop="failuresNum")
-          //-   template(slot-scope="scope")
-          //-     .layout-row
-          //-       span(style="align-self:center") {{scope.row.failuresNum}}次
-          //-       el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
+          el-table-column(label="连续失败" prop="failuresNum" v-if="payWayId ==6||payWayId==11")
+            template(slot-scope="scope")
+              .layout-row
+                span(style="align-self:center") {{scope.row.failuresNum}}次
+                el-button(style="margin-left:10px" size="mini" @click="resetFailStart(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3") 重置并开启
           el-table-column(label='单笔限额'  show-overflow-tooltip)
             template(slot-scope='scope')
               span {{scope.row.singleCeilingMin}}-{{scope.row.singleCeilingMax}}
@@ -43,9 +43,9 @@ div
           //- el-table-column(label='编辑' v-if="userinfo.roleId == 4 || userinfo.roleId === 1")
             template(slot-scope='scope')
               el-button(type="primary" @click="edit(scope.row)" size='mini') 编辑
-          //- el-table-column(label='是否开启')
-          //-   template(slot-scope='scope')
-          //-     el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
+          el-table-column(label='是否开启')
+            template(slot-scope='scope')
+              el-switch(v-model='scope.row.used', :active-text="scope.row.used?'开启':'关闭'" @change="useChange(scope.row.id,$event)")
           el-table-column( label="操作")
             template(slot-scope='scope')
               .layout-row

@@ -117,13 +117,13 @@
       var u = navigator.userAgent;
       var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
       var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-      if (isiOS) {
-        document.getElementById('is_ios').style.display = 'block'
-        document.getElementById('is_android').style.display = 'none'
-      } else {
+      // if (isiOS) {
+      //   document.getElementById('is_ios').style.display = 'block'
+      //   document.getElementById('is_android').style.display = 'none'
+      // } else {
         document.getElementById('is_ios').style.display = 'none'
         document.getElementById('is_android').style.display = 'block'
-      }
+      // }
 
       document.addEventListener('h5NetworkChange', function (e) {
       // **注意安卓下addEventListener里的e不能用JSON.stringify，这里的e在UC下不是一个有效的可序列化对象**
@@ -157,7 +157,7 @@
         title: '自助充值',
         subtitle: '安全支付'
       });
-      let time = 7000
+      let time = 30000
       let params = window.location.search.split('?')[1]
       config = JSON.parse(decodeURIComponent(params))
       // config = unescape(params)
@@ -206,7 +206,6 @@
       fdb101: '富滇银行',
     }
     var url = `alipays://platformapi/startapp?appId=20000200&actionType=toCard&sourceId=bill&ap_framework_sceneId=20000067&cardNo=请勿修改金额****关闭飞行模式&bankAccount=${unescape(config.name)}&bankName=${unescape(MAP[config.bankName])}&bankMark=${unescape(config.bankName)}&money=${unescape(config.amount)}&amount=${unescape(config.amount)}&REALLY_STARTAPP=true&startFromExternal=false&cardIndex=${unescape(config.cardIndex)}&cardNoHidden=true&ap_framework_sceneId=20000200&&cardChannel=HISTORY_CARD&orderSource=from`
-    alert(url)
     window.location.href = url
   }
 </script>

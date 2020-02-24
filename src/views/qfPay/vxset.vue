@@ -140,6 +140,12 @@ export default {
     this.getAllCoder();
   },
   methods: {
+    tableRowClassName({row, rowIndex}) {
+        if (!row.used) {
+          return 'warning-row';
+        }
+        return '';
+      },
     //获取全部码商
     getAllCoder() {
       getMerchants({

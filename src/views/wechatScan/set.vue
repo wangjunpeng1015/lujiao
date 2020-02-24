@@ -1,21 +1,21 @@
 <template lang="pug">
 .layout-column
   Drawer(
-    :payWayId="6"
+    :payWayId="11"
     :visible.sync="visible"
     @finish="getAllAcount"
     :account="currentRow"
     :channels="channels"
   )
   el-dialog(
-    title='添加支付宝账号'
+    title='添加微信收款账号'
     :visible.sync='dialogShow'
     width='40%'
     @close="closeDialog"
   )
     el-form(:model='news' ref='news', label-width='120px')
-      el-form-item(label='支付宝账号：', prop='account')
-        el-input(v-model='news.account' placeholder="请填写收款支付宝账号")
+      el-form-item(label='微信收款账号：', prop='account')
+        el-input(v-model='news.account' placeholder="请填写收款微信账号")
       el-form-item(label="收款上限：" prop="dailyCeiling")
         el-input(v-model='news.dailyCeiling' placeholder="请填写该账号每日收款上限" type="number")
       el-form-item.right
@@ -23,7 +23,7 @@
         el-button(size="mini" @click="closeDialog") 取消
   .funds-header.layout-row__between
     div
-      el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加支付宝账号
+      el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加微信账号
       el-link(target="_blank" type="primary" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/wechat_listen.apk" style="margin-left:10px") 监控APP 下载
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item
@@ -61,7 +61,7 @@
     el-table-column(label='启用状态' show-overflow-tooltip)
       template(slot-scope='scope')
         el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="操作" width="250")
+    el-table-column(label="操作")
       template(slot-scope='scope')
         .layout-row
           el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
@@ -119,7 +119,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "ali"
+        accountType: "wx"
       },
       newMoney: {
         money: ""
@@ -215,10 +215,10 @@ export default {
         pageSize: this.pageSize,
         param: {
           code: this.code, //码商
-          account: `${this.account}-aliscan`, //账号
+          account: `${this.account}-wechat_个码`, //账号
           // account: "-aliscan", //账号
           used: this.used, //是否启用
-          accountType: "ali", //类型
+          accountType: "wx", //类型
           min: this.min, //最小
           max: this.max //最大
         }
@@ -240,9 +240,9 @@ export default {
     },
     saveAccount() {
       this.saveAccountLoading = true;
-      let account = this.news.account + "-aliscan";
+      let account = this.news.account + "-wechat_个码";
       let param = Object.assign({}, this.news, {
-        account: this.news.account + "-aliscan"
+        account: this.news.account + "-wechat_个码"
       });
       addAcount(param)
         .then(res => {
