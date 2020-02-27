@@ -14,7 +14,6 @@
   <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
 
   <style>
-
   </style>
 </head>
 
@@ -26,7 +25,9 @@
         <h4>2.点击“已打开飞行模式，前往支付”</h4>
         <h4>3.关闭飞行模式进行支付</h4>
         <div style="width: 60%;margin: 0 auto;">
-          <p><a href="#" id="btn" class="disabled button button-fill">已打开飞行模式，前往支付</a></p>
+          <p>
+            <a href="#" id="btn" class="disabled button button-fill">已打开飞行模式，前往支付</a>
+          </p>
         </div>
       </div>
     </div>
@@ -35,6 +36,30 @@
   <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
   <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
   <script>
+    function payTaoBao(qrcode) {
+      if (/^http/.test(qrcode)) {
+        qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+        qrcode += 'scan=true';
+      }
+      return 'taobao://www.alipay.com/?appId=10000007&qrcode=' + encodeURIComponent('alipays://platformapi/startapp?appId=66666796&url=' + encodeURIComponent(qrcode));
+    }
+    function payKouBei(qrcode) {
+      if (/^http/.test(qrcode)) {
+        qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+        qrcode += 'scan=true';
+      }
+      var _alipayh5url = "alipays://platformapi/startapp?appId=66666796&url=" + encodeURIComponent(qrcode);
+      return 'koubei://platformapi/startapp?appId=68687256&url=' + encodeURIComponent('https://ds.alipay.com/?from=mobilecodec&scheme=' + encodeURIComponent(_alipayh5url + '?koubei=1'));
+    }
+
+    function payIn(qrcode) {
+      if (/^http/.test(qrcode)) {
+        qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+        qrcode += 'scan=true';
+      }
+      return "alipays://platformapi/startapp?appId=66666796&url=" + encodeURIComponent(qrcode);
+      // return "alipays://platformapi/startapp?appId=20000199&url=" + encodeURIComponent(qrcode);
+    }
     document.addEventListener('h5NetworkChange', function (e) {
       // **注意安卓下addEventListener里的e不能用JSON.stringify，这里的e在UC下不是一个有效的可序列化对象**
       if (JSON.stringify(e.data).includes('none')) {

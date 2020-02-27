@@ -24,7 +24,7 @@
   .funds-header.layout-row__between
     div
       el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加微信账号
-      el-link(target="_blank" type="primary" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/wechat_listen.apk" style="margin-left:10px") 监控APP 下载
+      //- el-link(target="_blank" type="primary" href="https://lx-assets-public-001.oss-cn-zhangjiakou.aliyuncs.com/wechat_listen.apk" style="margin-left:10px") 监控APP 下载
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item
         el-select(v-model='code', placeholder='码商账号' filterable clearable @change="getAllAcount")
@@ -239,6 +239,10 @@ export default {
         });
     },
     saveAccount() {
+      if (!this.news.dailyCeiling) {
+        this.$message.error('请填写收款上限')
+        return false
+      }
       this.saveAccountLoading = true;
       let account = this.news.account + "-wechat_个码";
       let param = Object.assign({}, this.news, {

@@ -21,7 +21,7 @@
     }
 
     #app {
-      padding-top: 2rem;
+      padding-top: 0.75rem;
       height: 100vh;
       background: #fafafa;
       text-align: center;
@@ -177,15 +177,20 @@
     #pre_create {
       display: none;
     }
-    #ylsUrl, #jfUrl, #zzUrl{
+    #ylsUrl, #jfUrl, #zzUrl, .urlButton{
       background: #00a7ef;
       color: #fff;
       display: block;
       width: 70%;
+      font-size: 12px;
       margin: 0.5rem auto;
-      padding: 0.5rem;
+      padding: 0.5rem 0 ;
       border-radius: 0.3rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .layout-row__between{
+      display: flex;
+      justify-content: space-between;
     }
   </style>
 </head>
@@ -273,15 +278,27 @@
     </div>
     <!-- 原生 -->
     <div v-show="isNative" class="not-native" style="padding-top:0">
-      <img class="scan-tip" src="./zfb.png" alt="">
-      <a id="ylsUrl" href="" style="">打开支付宝支付</a>
+      <!-- <a id="ylsUrl" href="" style="">打开支付宝支付</a> -->
+      <p>订单号：{{orderData.orderNum}}</p>
+      <p>订单金额：<span class="red">{{orderData.payMoney}}</span>元</p>
+      <a class="urlButton" id="inURL" href="" style="font-size:14px">启动支付(方式二)</a>
+      <div class="layout-row__between">
+        <a class="urlButton" id="tbURL" href="" style="font-size:14px">启动支付(需安装淘宝)</a>
+      </div>
+      <!-- <div class="layout-row__between">
+        <a class="urlButton" id="kbURL" href="">启动支付(需安装口碑)</a>
+        <a class="urlButton" href="http://m.koubei.com/download?deliveryChannel=koubei_pc" style="background:red;margin-left:10px">未安装点次下载[淘宝]</a>
+      </div> -->
+      <!-- <a class="urlButton" id="inURL" href="" style="font-size:14px">启动支付(方式二)</a> -->
       <div id="qrcode"></div>
       <p class="center" style="margin-top:1rem">1.截屏保存当前页面</p>
       <p class="center" style="margin-bottom: 1rem">2.打开支付宝扫一扫,选择二维码</p>
       <!-- <p style="margin-top:5px">如果截图 提示 </p> -->
       <p style="margin-top:10px">
-        <span class="scan-tip red" style="font-weight:bold">如果截图 提示 请在支付宝里面打开的 关闭支付宝后 重新打开截图扫一扫
-        </span>
+        <p class="red" style="font-weight:bold">如遇下图提示：请换个方式支付 或</p>
+        <p class="red" style="font-weight:bold">截屏当前页面 打开支付宝扫一扫支付</p>
+
+        <img src="./huangye.png" alt="">
       </p>
       <!-- <p class="red" style="font-weight:bold">请关闭支付宝后重新打开截图扫一扫</p> -->
       <!--            <h3 class="scan-tip" style="margin-top:5px">请使用给支付宝进行付款</h3>-->
@@ -325,6 +342,27 @@
     }
     return flag;
   }
+  function payTaoBao (qrcode) {
+    return 'taobao://www.alipay.com/?appId=10000007&qrcode='+encodeURIComponent('alipays://platformapi/startapp?appId=66666796&url='+encodeURIComponent(qrcode));
+  }
+  function payKouBei (qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
+    }
+    var _alipayh5url = "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
+    return 'koubei://platformapi/startapp?appId=68687256&url='+encodeURIComponent('https://ds.alipay.com/?from=mobilecodec&scheme='+encodeURIComponent(_alipayh5url+'?koubei=1'));
+  }
+
+  function payIn (qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
+    }
+    return "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
+    // return "alipays://platformapi/startapp?appId=20000199&url=" + encodeURIComponent(qrcode);
+  }
+
   const orderState = () => {
     return new Promise((resolve, reject) => {
       axios({
@@ -615,12 +653,20 @@
               return false
             }
             const { qrUrl } = JSON.parse(res.data.data.payContent)
-            url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/yls.html?${qrUrl.split('=')[1]}`
+            url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/yls.html?${qrUrl.split('=')[1]}&scan=true`
             // url = `alipays://platformapi/startapp?appId=68687096`
-            var aElement = document.getElementById('ylsUrl')
-            aElement.setAttribute('href', url)
-            window.location.href = url
+            // 淘宝
+            var tbElement = document.getElementById('tbURL')
+            tbElement.setAttribute('href', payTaoBao(qrUrl))
+            // 口碑
+            // var kbElement = document.getElementById('kbURL')
+            // kbElement.setAttribute('href', payKouBei(qrUrl))
+            // 方式三：in
+            var threeElement = document.getElementById('inURL')
+            threeElement.setAttribute('href', url)
             init()
+            window.location.href = payTaoBao(qrUrl)
+            // window.location.href = url
             break;
           case 26:
             //钱方

@@ -25,24 +25,28 @@
 
     #qrcode {
       margin: 10px auto;
-      width: 250px;
-      height: 250px;
+      width: 200px;
+      height: 200px;
     }
 
     #ylsUrl,
     #jfUrl,
     #zzUrl,
-    .button {
+    .button, .urlButton {
       background: #00a7ef;
       color: #fff;
       display: block;
       width: 70%;
-      margin: 0.5rem auto;
+      font-size: 12px;
+      margin: 0 auto;
       padding: 0.5rem;
       border-radius: 0.3rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.75rem;
     }
-
+    .layout-row__between{
+      display: flex;
+      justify-content: space-between;
+    }
     .scan-tip {
       margin: 10px auto;
     }
@@ -60,24 +64,46 @@
 </head>
 
 <body>
-  <div id="app" v-cloak>
+  <div id="app" v-cloak style="padding-top:0">
     <div>
-      <img src="./zfb.png" width="40px" alt="">
-      <h2 class="red">￥<span id="money">{{ orderData.payMoney }}</span></h2>
-      <button class="mini copy-link" data-clipboard-target="#money">点击复制金额{{orderData.payMoney}}</button>
+        <img class="scan-tip" src="./zfb.png" width="30%" alt="">
+      <p>请支付
+          <span class="red" id="money" style="font-weight:bold;font-size:18px">{{orderData.payMoney}}</span>元
+          修改金额，不会到账！
+        </p>
+        <p class="red" style="font-weight:bold">请勿添加好友，直接转账即可。暂不支持花呗支付</p>
+      <!-- <div class="layout-row__between" style="margin-top:10px;padding: 0 20px">
+          <a class="urlButton" id="tbURL" href="">启动支付(需安装淘宝)</a>
+          <a class="urlButton" id="kbURL" href="" style="margin-left:10px">启动支付(需安装口碑)</a>
+        </div> -->
+        <!-- <div class="layout-row__between" style="padding: 0 20px">
+          <a class="urlButton" id="kbURL" href="">启动支付(需安装口碑)</a>
+          <a class="urlButton" href="http://m.koubei.com/download?deliveryChannel=koubei_pc" style="background:red;margin-left:10px">未安装点次下载[口碑]</a>
+        </div> -->
+        <!-- <div class="layout-row__between" style="padding: 0 20px">
+
+          <a class="urlButton" id="inURL" href="">启动支付(方式三)</a>
+          <a class="urlButton copy-link" style="margin-left:10px" data-clipboard-target="#money" href="javascript:void(0)">点击复制金额{{orderData.payMoney}}</a>
+        </div> -->
+      <!-- <a class="urlButton" id="tbURL" href="">点我启动支付(需安装淘宝)</a>
+      <a class="urlButton" id="kbURL" href="">点我启动支付(需安装口碑)</a>
+      <a class="urlButton" id="inURL" href="">点我启动支付(方式三)</a> -->
+      <p>请截屏后打开支付宝扫一扫转账支付</p>
       <div id='qrcode'></div>
       <div class="center font-13">
-        <p>订单号：
+        <!-- <p>订单号：
           <span class="red">{{orderData.orderNum}}</span>
-        </p>
-        <div class="paytext">支付时请不要修改金额，否则无法到账</div>
-        <p>请将二维码保存相册</p>
+        </p> -->
+        <div class="paytext">支付宝打开后请点击“转账”按钮</div>
+        <!-- <div class="paytext">如以无法打开有效页面，请截屏后打开支付宝扫一扫转账支付</div> -->
+        <img src="./aliscan2.png" width="80%" alt="">
+        <!-- <p>请将二维码保存相册</p>
         <p>并进行扫码支付</p>
         <p>请按金额支付
           <span class="red" style="font-weight:bold;font-size:18px">{{orderData.payMoney}}元</span>
         </p>
         <p class="red">请按上面金额支付，否则会不到账!!!</p>
-        <p class="red">重复支付不会到账</p>
+        <p class="red">重复支付不会到账</p> -->
       </div>
     </div>
   </div>
@@ -93,6 +119,22 @@
 <script type='text/javascript' src='./aes.js' charset='utf-8'></script>
 <script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
 <script>
+  function payTaoBao (qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
+    }
+    return 'taobao://www.alipay.com/?appId=10000007&qrcode='+encodeURIComponent('alipays://platformapi/startapp?appId=66666796&url='+encodeURIComponent(qrcode));
+  }
+  function payKouBei (qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
+    }
+    var _alipayh5url = "alipays://platformapi/startapp?appId=66666796&url=" + encodeURIComponent(qrcode);
+    return 'koubei://platformapi/startapp?appId=68687256&url='+encodeURIComponent('https://ds.alipay.com/?from=mobilecodec&scheme='+encodeURIComponent(_alipayh5url+'?koubei=1'));
+  }
+
   const orderState = () => {
     return new Promise((resolve, reject) => {
       axios({
@@ -182,11 +224,22 @@
                 } else {
                   this.showcode = true
                   const { qrUrl } = JSON.parse(data.payContent)
+                  // var qrUrl = 'https://qr.alipay.com/a7x17652t3xxgknrsyepa99'
+                  // var qrUrl = 'https://qr.alipay.com/a7x14690pdwmykzo3jr3hd2'
+                  // var tbElement = document.getElementById('tbURL')
+                  // tbElement.setAttribute('href', payTaoBao(qrUrl))
+                  // 口碑
+                  // var kbElement = document.getElementById('kbURL')
+                  // kbElement.setAttribute('href', payKouBei(qrUrl))
+                  // window.location.href = url
+                  // 方式三：in
+                  // var threeElement = document.getElementById('inURL')
+                  // threeElement.setAttribute('href', payIn(qrUrl))
                   setTimeout(() => {
                     new QRCode(document.getElementById("qrcode"), {
                       text: qrUrl,
-                      width: 250,
-                      height: 250,
+                      width: 200,
+                      height: 200,
                       colorDark: "#000000",
                       colorLight: "#ffffff",
                     });

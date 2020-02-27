@@ -203,7 +203,7 @@ export const asyncRoutes = [
     redirect: '/wechatScan/orders',
     name: 'wechatScan',
     meta: {
-      title: '微信扫码通道',
+      title: '微信赞赏码码通道',
       icon: 'iconfont iconweixin1',
     },
     children: [
@@ -222,7 +222,7 @@ export const asyncRoutes = [
         name: 'orders',
         component: () => import('@/views/wechatScan/Orders'),
         meta: {
-          title: '微信扫码订单',
+          title: '微信赞赏码订单',
           icon: 'el-icon-s-order',
         }
       }

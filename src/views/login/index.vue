@@ -4,22 +4,21 @@
     div(style="margin-top: -200px;position: relative;z-index: 999")
       .title-container
         .title
-          span.title-bg {{name}}
+          span.title-bg {{partener}}
           span 支付
-        .sub-title 优质通道提供商
+        .sub-title(v-show="partener!=='聚财宝'") 优质通道提供商
       el-form.login-form(ref="loginForm" :model="loginForm" :rules="loginRulels" auto-complete="on")
         el-form-item(prop="account")
           span.svg-container
             svg-icon(icon-class="user")
           el-input(
             ref="account"
-            v-model="loginForm.account"
+            v-model.trim="loginForm.account"
             placeholder="请输入账号"
             name="account"
             type="text"
             tabindex="1"
             auto-complete="on"
-            @keyup.enter.native.native="handleLogin"
           )
         el-form-item(prop="password")
           span.svg-container
@@ -27,13 +26,12 @@
           el-input(
             :key="passwordType"
             ref="password"
-            v-model="loginForm.password"
+            v-model.trim="loginForm.password"
             :type="passwordType"
             placeholder="请输入密码"
             name="password"
             tabindex="2"
             auto-complete="on"
-            @keyup.enter.native.native="handleLogin"
           )
           span.show-pwd(@click="showPwd")
             svg-icon(:icon-class="passwordType === 'password' ? 'eye' : 'eye-open'")
@@ -52,7 +50,7 @@ export default {
   name: "Login",
   data() {
     return {
-      name: window.location.search.includes('n=9') ? '玖玖' : '77',
+      name: window.location.search.includes('n=9') ? '聚财宝' : '77',
       loginForm: {
         account: "",
         password: ""
@@ -65,6 +63,19 @@ export default {
       passwordType: "password",
       redirect: undefined
     };
+  },
+  computed: {
+    partener () {
+      let name = ''
+      if (window.location.search.includes('n=9') ) {
+        name = '玖玖'
+      } else if (window.location.search.includes('n=8')) {
+        name = '聚财宝'
+      } else {
+        name = '77'
+      }
+      return name
+    }
   },
   watch: {
     $route: {

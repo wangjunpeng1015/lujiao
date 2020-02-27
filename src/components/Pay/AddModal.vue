@@ -111,7 +111,7 @@
         el-form-item(v-if="!isEmpty(form.contentObj)")
           .layout-row__between.align-center
             .layout-row.align-center
-              img.img(:src="form.contentObj.url")
+              img.img(:src="form.contentObj.url || form.contentObj.qrUrl")
       //云闪付
       div(v-if="form.payWayDictId == 17")
         el-form-item(label='收款二维码')
@@ -267,16 +267,19 @@ export default {
       reader.onload = function() {
         qrcode.decode(_self.getObjectURL(raw.file));
         qrcode.callback = function(qrUrl) {
+          let data = {}
           if (qrUrl === "error decoding QR Code") {
-            _self.$message.error("未能识别支付二维码！");
+            data.url = reader.result
+            data.qrUrl = null
+            // _self.$message.error("未能识别支付二维码！");
           } else {
-            let data = {
+            data = {
               //   money: 0,
               url: reader.result,
               qrUrl
             };
-            _self.$set(_self.form, "contentObj", data);
           }
+          _self.$set(_self.form, "contentObj", data);
         };
       };
     },

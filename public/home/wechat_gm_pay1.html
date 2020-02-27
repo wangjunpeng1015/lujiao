@@ -18,7 +18,7 @@
 
         #app {
             height: 100vh;
-            background-color:#fff;
+            background-color: rgba(0, 0, 0, 0.1);
         }
 
         .logo {
@@ -41,11 +41,11 @@
     <div id="app" v-cloak>
         <img class="logo" src="./wxpay.png" alt="">
         <p class="scan-tip">订单号：<span>{{orderNo}}</span></p>
-        <p>请务必选择或输入金额<span class="red" style="font-weight:bold">{{orderData.payMoney}}元</span>支付</p>
+        <p>订单金额：<span class="red" style="font-weight:bold">{{orderData.payMoney}} 元</span></p>
+        <p>请务必输入金额<span class="red" style="font-weight:bold">{{orderData.payMoney}}元</span>支付</p>
         <p class="red" style="font-weight:bold;margin-bottom: 20px">擅自修改金额支付，如不到账，概不负责</p>
         <van-loading size="200px" color="#4fc08d" v-show="isLoading"></van-loading>
-        <!-- <div v-show='showcode && !isLoading' id="qrcode"></div> -->
-        <img v-show='showcode && !isLoading' width="250px" :src="url"></img>
+        <div v-show='showcode && !isLoading' id="qrcode"></div>
         <div v-show='!showcode' classs="temp-qrcode"></div>
         <div class="remainseconds scan-tip">
             <span>[支付有效时间]</span>
@@ -110,7 +110,6 @@
                 overlay: true,
                 time: 0,
                 showTip: false,
-                url: ''
             }
         },
         computed: {
@@ -151,33 +150,27 @@
                         if (res.data.data) {
                             let data = res.data.data;
                             if (this.first) {
-                              console.log(JSON.parse(data.payContent))
                                 this.orderData = data
                                 this.countDown()
                                 this.first = false;
                                 this.showcode = true;
-
+                                const { qrUrl } = JSON.parse(data.payContent)
                                 if (this.orderData.payWay === 'ali') {
-                                  const { qrUrl } = JSON.parse(data.payContent)
                                   var url = `alipays://platformapi/startapp?appId=20000067&url=${qrUrl}`
                                   var aElement = document.getElementById('jump-url')
                                   aElement.setAttribute('href', url)
                                   window.location.href = url
-                                  setTimeout(() => {
-                                      new QRCode(document.getElementById("qrcode"), {
-                                          text: qrUrl,
-                                          width: 200,
-                                          height: 200,
-                                          colorDark: "#000000",
-                                          colorLight: "#ffffff",
-                                      });
-                                      this.isLoading = false
-                                  }, 1000)
-                                } else {
-                                  const { url } = JSON.parse(data.payContent)
-                                  this.url = url
-                                  this.isLoading = false
                                 }
+                                setTimeout(() => {
+                                    new QRCode(document.getElementById("qrcode"), {
+                                        text: qrUrl,
+                                        width: 200,
+                                        height: 200,
+                                        colorDark: "#000000",
+                                        colorLight: "#ffffff",
+                                    });
+                                    this.isLoading = false
+                                }, 1000)
                             }
                         } else {
                             this.isLoading = false
@@ -223,9 +216,9 @@
                     if (this.diffTime <= 0) {
                         clearInterval(this.dSiv)
                         this.showcode = false;
-                        // vant.Dialog.alert({
-                        //     message: '订单超时，请勿支付！'
-                        // })
+                        vant.Dialog.alert({
+                            message: '订单超时，请勿支付！'
+                        })
                     }
                 }, 1000);
             },

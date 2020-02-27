@@ -312,15 +312,15 @@ export default {
       })
     },
     saveAccount() {
+      if (!this.news.dailyCeiling) {
+        this.$message.error('请填写收款上限')
+        return false
+      }
       this.saveAccountLoading = true;
       let account = this.news.account + "-yls";
       let param = Object.assign({}, this.news, {
         account: this.news.account + "-yls"
       });
-      if (!this.news.dailyCeiling) {
-        this.$message.error('请填写收款上限')
-        return false
-      }
       addAcount(param)
         .then(res => {
           this.getAllAcount();
