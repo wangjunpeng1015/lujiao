@@ -173,6 +173,9 @@ export default {
           if (this.payWayId === 25) {
             temp.payWayId = 25
           }
+          if (this.payWayId === 10) {
+            temp.payWayId = 10
+          }
           if (!this.isQF) {
             delete temp.payWayType;
           }
@@ -184,11 +187,12 @@ export default {
           );
           //商户号+支付金额+商户秘钥
           const sign = md5(temp.merchantNum + temp.money + merchant.secretKey);
+          console.log(new Date())
           createOrder({
             ...temp,
             merchantOrderNo: "default",
             sign,
-            ip: returnCitySN.cip || "0.0.0.0"
+            ip: "0.0.0.0"
           })
             .then(res => {
               this.$message.success("订单创建成功！");

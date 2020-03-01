@@ -48,7 +48,74 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
+  {
+    path: '/doc',
+    component: Layout,
+    redirect: '/doc/index',
+    name: 'doc',
+    hidden: true,
+    meta: {
+      title: '帮助文档',
+      icon: 'iconfont iconbangzhuwendang-sel',
+      roles: [1, 2, 3, 4]
+    },
+    children: [
+      {
+        path: 'fundsDoc',
+        name: 'fundsDoc',
+        component: () => import('@/views/doc/funds'),
+        meta: { title: '开通经费帮助', icon: 'el-icon-document', roles: [1, 3, 4] }
+      },
+      // {
+      //   path: 'proxyDoc',
+      //   name: 'proxyDoc',
+      //   component: () => import('@/views/doc/proxy'),
+      //   meta: { title: '后台使用帮助', icon: 'el-icon-document', roles: [1, 3, 4] }
+      // },
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/doc/index'),
+        meta: { title: '商户API文档', icon: 'iconfont iconapi', roles: [1, 2, 3, 4] }
+      },
+      {
+        path: 'aliPid',
+        name: 'aliPid',
+        component: () => import('@/views/doc/aliPid'),
+        meta: { title: '获取支付宝PID', icon: 'el-icon-document', roles: [1, 2, 3, 4] }
+      },
+      {
+        path: 'udid',
+        name: 'udid',
+        component: () => import('@/views/doc/udid'),
+        meta: { title: '获取手机UDID', icon: 'el-icon-document', roles: [1, 2, 3, 4] }
+      },
+      {
+        path: 'cardId',
+        name: 'cardId',
+        component: () => import('@/views/doc/cardId'),
+        meta: { title: '获取银行卡ID', icon: 'el-icon-document', roles: [1, 3, 4] }
+      },
+      // {
+      //   path: 'smdd',
+      //   name: 'smdd',
+      //   component: () => import('@/views/doc/smdd'),
+      //   meta: { title: '开通扫码点单', icon: 'el-icon-document', roles: [1, 3, 4] }
+      // },
+      {
+        path: 'f2f',
+        name: 'f2f',
+        component: () => import('@/views/doc/f2f'),
+        meta: { title: '开通当面付', icon: 'el-icon-document', roles: [1, 3, 4] }
+      },
+      {
+        path: 'f2fkey',
+        name: 'f2fkey',
+        component: () => import('@/views/doc/f2fkey'),
+        meta: { title: '获取当面付参数', icon: 'el-icon-document', roles: [1, 3, 4] }
+      },
+    ]
+  },
   {
     path: '/',
     component: Layout,
@@ -62,6 +129,37 @@ export const constantRoutes = [
   },
 ]
 export const asyncRoutes = [
+  // {
+  //   path: '/qbPay',
+  //   component: Layout,
+  //   redirect: '/qbPay/orders',
+  //   name: 'qbPay',
+  //   meta: {
+  //     title: '糗百支付宝通道',
+  //     icon: 'iconfont iconshangjia',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'set',
+  //       name: 'set',
+  //       component: () => import('@/views/qbPay/set'),
+  //       meta: {
+  //         title: '支付宝通道配置',
+  //         icon: 'iconfont iconzhifubao1',
+  //         roles: [1, 3, 4],
+  //       }
+  //     },
+  //     {
+  //       path: 'orders',
+  //       name: 'orders',
+  //       component: () => import('@/views/qbPay/Orders'),
+  //       meta: {
+  //         title: '糗百支付宝订单',
+  //         icon: 'el-icon-s-order',
+  //       }
+  //     }
+  //   ]
+  // },
   // 云靓刷
   {
     path: '/ylsPay',
@@ -203,7 +301,7 @@ export const asyncRoutes = [
     redirect: '/wechatScan/orders',
     name: 'wechatScan',
     meta: {
-      title: '微信赞赏码码通道',
+      title: '微信扫码通道',
       icon: 'iconfont iconweixin1',
     },
     children: [
@@ -222,7 +320,7 @@ export const asyncRoutes = [
         name: 'orders',
         component: () => import('@/views/wechatScan/Orders'),
         meta: {
-          title: '微信赞赏码订单',
+          title: '微信扫码订单',
           icon: 'el-icon-s-order',
         }
       }

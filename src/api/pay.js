@@ -17,6 +17,14 @@ export function getPays(data) {
         data
     })
 }
+// 修改额度
+export function setPayEd (data) {
+  return request({
+    url: '/pcAccount/reset',
+    method: 'post',
+    data: Qs.stringify(data)
+})
+}
 //账号启用禁用支付方式
 export function updateUse(data) {
     return request({

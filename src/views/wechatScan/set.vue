@@ -37,35 +37,23 @@
           el-option(label='禁用', :value='false')
       el-form-item()
         el-button(type='primary', @click='getAllAcount' size="mini") 查 询
-  el-table.funds-body.wjp-table(v-loading="loading" , :data="list",style='width: 100%')
-    el-table-column(label="账号" show-overflow-tooltip prop="account")
+  el-table.funds-body.wjp-table(:row-class-name="tableRowClassName" v-loading="loading" , :data="list",style='width: 100%')
+    el-table-column(label="账号" width="150" :fixed="true" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
-    el-table-column(label="实时成功率" show-overflow-tooltip prop="nowSuccessRate")
-    el-table-column(label="当日剩余额度" show-overflow-tooltip prop="dailyCeiling")
-    //- el-table-column(label="连续失败" show-overflow-tooltip prop="failureOrderNum")
-      template
-        span 请在配置中查看
-    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
-    //- el-table-column(label="所属代理" show-overflow-tooltip prop="proxyAccount")
+    el-table-column(label="成功率" show-overflow-tooltip prop="nowSuccessRate")
+    el-table-column(label="剩余额度" show-overflow-tooltip prop="dailyCeiling")
     el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
-    el-table-column(label="单笔收款限额" show-overflow-tooltip)
-      template(slot-scope='scope')
-        .layout-row
-          el-tag(
-            style="margin-left: 5px"
-            v-for="(item, index) in scope.row.amountList"
-            type="success"
-            size="small"
-            :key="index"
-          ) {{item}}
+    el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     el-table-column(label='启用状态' show-overflow-tooltip)
       template(slot-scope='scope')
-        el-switch(v-model='scope.row.used', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
-    el-table-column(label="操作")
+        el-switch(v-model='scope.row.configUsed', :active-text="scope.row.used?'启用':'禁用'" @change="useChange(scope.row.id,$event)")
+    el-table-column(label="操作" fixed="right" width="250")
       template(slot-scope='scope')
         .layout-row
+          //- el-button(type="primary" size="mini" @click="testOrder(scope.row)") 测试下单
           el-button(type="primary" size="mini" @click="openSet(scope.row)") 配置
-          el-button(type="danger" size="mini" @click="del(scope.row.id)" v-if="userinfo.roleId == 1 || userinfo.roleId == 3" ) 删除
+          el-button(type="primary" size="mini" @click="setED(scope.row)") 修改额度
+          el-button(type="danger" size="mini" @click="del(scope.row.id)" v-if="userinfo.roleId === 1") 删除
   .page.layout-row.align-center.right(style="margin-top:20px")
     span 每页显示
     el-pagination.statistics(
@@ -88,7 +76,8 @@ import {
   delAcount,
   updateUse,
   updateConfigPay,
-  addAcount
+  addAcount,
+  setPayEd
 } from "@/api/pay";
 import addOrder from "@/views/personalCode/addOrder";
 import { getAllchannel } from "@/api/agent";
@@ -138,6 +127,29 @@ export default {
     this.getAllCoder();
   },
   methods: {
+    setED(row) {
+      this.$prompt("请输入当日限额", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputType: "number"
+      }).then(({ value }) => {
+        setPayEd({
+          id: row.id,
+          amount: value
+        }).then(res => {
+          if (res.success) {
+            this.$message.success("修改额度成功");
+            this.getAllAcount();
+          }
+        });
+      });
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (!row.used) {
+        return "warning-row";
+      }
+      return "";
+    },
     //获取全部码商
     getAllCoder() {
       getMerchants({
@@ -229,7 +241,12 @@ export default {
           this.pageSize = pageSize;
           this.currentPage = pageNo;
           content.forEach(item => {
+            item.configUsed = item.used;
             item.nowSuccessRate = (item.nowSuccessRate * 100).toFixed(2) + '%'
+            item.nowEarnings = item.nowEarnings ? item.nowEarnings : "——";
+            item.yesterdayEarnings = item.yesterdayEarnings
+              ? item.yesterdayEarnings
+              : "——";
           })
           this.list = content;
         })
@@ -267,7 +284,7 @@ export default {
         account: "",
         city: "defualt",
         dailyCeiling: "",
-        accountType: "ali"
+        accountType: "wx"
       };
       this.dialogShow = false;
       this.visible = false;
@@ -300,7 +317,15 @@ export default {
   }
 };
 </script>
+<style>
+.el-table .warning-row {
+  background: #f5f7fa;
+}
 
+.el-table .success-row {
+  background: #f0f9eb;
+}
+</style>
 <style scoped>
 .funds-header .el-form-item {
   margin-bottom: 0;

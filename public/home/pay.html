@@ -1,688 +1,306 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title></title>
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-  <link rel="shortcut icon" href="/favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <link rel="stylesheet" href="./vant.index.css">
+  <link rel="stylesheet" href="./css/common.css">
+  <title>安全支付中心</title>
   <style>
-    [v-cloak] {
+    .loading{
+      display: block;
+    }
+    #in-wx, .loaded, .timeout, #scan, .wx-success, .ali-success, #success, #count-down{
       display: none;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-    }
-
-    #app {
-      padding-top: 0.75rem;
-      height: 100vh;
-      background: #fafafa;
-      text-align: center;
-      box-sizing: border-box;
-    }
-
-    .blue {
-      margin-top: .625rem;
-      color: #0062cc;
-    }
-
-    .red {
-      color: red;
-    }
-
-    .effective-tip {
-      font-size: 24px;
-    }
-
-    .help {
-      margin-top: .3125rem
-      /* 5/16 */
-      ;
-      line-height: 25px;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    button {
-      color: #FFF;
-      background-color: #409EFF;
-      border-color: #409EFF;
-      display: inline-block;
-      line-height: 1;
-      white-space: nowrap;
-      cursor: pointer;
-      border: 1px solid #DCDFE6;
-      -webkit-appearance: none;
-      text-align: center;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      outline: 0;
-      margin: 0;
-      -webkit-transition: .1s;
-      transition: .1s;
-      font-weight: 500;
-      padding: .75rem
-      /* 12/16 */
-      .75rem;
-      font-size: 22px;
-      border-radius: 4px;
-    }
-
-    button.mini {
-      font-size: 14px;
-      padding: .45rem .45rem;
-    }
-
-    .left {
-      text-align: left;
-      width: 8.125rem;
-      margin: 0 auto;
-    }
-
-    .center {
-      text-align: center;
-    }
-
-    .scan-tip {
-      margin: 10px auto;
-    }
-
-    #qrcode {
-      margin: 0 auto;
-      width: 12.5rem;
-      height: 12.5rem;
-    }
-
-    .success {
-      font-size: 1.5rem;
-      margin: 5rem 0;
-      color: green;
-    }
-
-    .mini-img {
-      display: block;
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    .loading .van-loading__spinner {
-      width: 100%;
-      height: 100%;
-      position: fixed;
-      top: 4rem;
-      left: calc(50% - 4rem);
-
-    }
-
-    .bold {
-      font-size: 1.25rem;
-      font-weight: bolder;
-    }
-
-    img {
-
-      /* margin: 0.3125rem auto; */
-      width: 12.5rem;
-      height: 12.5rem;
-    }
-
-    .remainseconds {
-      margin-left: .625rem;
-    }
-
-    .layout-row {
-      margin: .625rem 0;
-      align-items: center;
-      justify-content: center;
-      display: flex;
-      flex-direction: row;
-    }
-
-    .van-button--info {
-      background-color: #009de9;
-    }
-
-    .not-native {
-      padding: 3rem 1.25rem;
-    }
-
-    .not-native img {
-      height: auto;
-      ;
-    }
-
-    .not-native h3 {
-      margin: 1.25rem 0;
-    }
-
-    .not-native button {
-      border-radius: 0.48rem;
-      font-size: 1.25rem;
-      width: 100%;
-    }
-
-    .van-popup {
-      box-sizing: border-box;
-      padding: .625rem 2.25rem;
-      text-align: left;
-    }
-
-    #pre_create {
+    #yls, #qf, #qf-ali, #qf-wx, #ali-scan, #wx-scan, #ali-fly{
       display: none;
-    }
-    #ylsUrl, #jfUrl, #zzUrl, .urlButton{
-      background: #00a7ef;
-      color: #fff;
-      display: block;
-      width: 70%;
-      font-size: 12px;
-      margin: 0.5rem auto;
-      padding: 0.5rem 0 ;
-      border-radius: 0.3rem;
-      margin-bottom: 0.75rem;
-    }
-    .layout-row__between{
-      display: flex;
-      justify-content: space-between;
+      padding: 10px;
     }
   </style>
 </head>
 
 <body>
-  <div id="pre_create" class='center'>
-      <a id="jfUrl" href="">打开支付宝支付</a>
-    <div id="qrcode1" style="margin: 10px auto;width:200px"></div>
-    <h5>如果未提示跳转支付宝，请截图保存二维码</h5>
-    <h5 >再打开支付宝扫一扫选择二维码支付</h5>
-    <h4 class="red">首次支付会提示进行授权，请放心授权。</h4>
-    <h4 class="red">我们仅获取您的昵称进行判断支付状态</h4>
-
-    <img style="width:50%;height:auto;margin:0 auto" src="./yd1.jpg" alt="" />
+  <div class="loading">
+    <img src="./img/loading.gif" alt="">
+    <p class="bold center">支付加载中，请稍后...</p>
   </div>
-  <div id="app" v-cloak>
-
-    <!-- 授权弹窗 -->
-    <!-- <van-popup :round="true" :close-on-click-overlay="false" position="bottom" v-model="authoVisible">
-            <div class="layout-row" style="justify-content: left;">
-                <img style="width: 1.875rem;height: 1.875rem;" src="./alipay.png" alt="">
-                <span>&nbsp;申请</span>
-            </div>
-            <h3>申请获得以下权限</h3>
-            <p style="color:#666;font-size: .75rem">·获得你的公开信息（昵称，头像等）</p>
-            <div class="layout-row">
-                <van-button type="info" @click="goAutho">前往授权</van-button>
-            </div>
-        </van-popup> -->
-    <van-overlay :show="overlay">
-      <van-loading class="loading" size="8rem" type="spinner" color="#1989fa" />
-    </van-overlay>
-    <div v-show="!isNative">
-      <h3 class="red" v-if="orderData.state == '支付中'">￥{{orderData.payMoney ||0}}</h3>
-      <div class="order">订单号：{{getUserParam('orderNo')}}</div>
-      <!-- <div class="effective-tip red">【二维码仅本次有效】</div> -->
-      <!-- <div class="effective-tip red">修改金额不到账,概不负责！！！</div> -->
-      <!-- <div v-if="orderData && orderData.state == '支付中'" class="effective-tip red">
-                请一定确认转账金额( {{orderData.payMoney ||0}} )！！！</div> -->
-      <div class="success" v-if="orderData.state == '支付成功'">
-        支付成功！
-      </div>
-      <div v-else>
-        <div v-if="diffTime>0">
-          <div class="layout-row center">
-            <img class="mini-img" :src="payWayImg" alt="">
-            <div class="remainseconds">
-              <span>[支付有效时间]</span>
-              <span class="red" v-html="stateHtml"></span>
-            </div>
-          </div>
-          <div v-if="showcode" class="button">
-            <div class="scan-tip" v-if="orderData.payWayDictId ==24">
-              请在姓名栏
-              <span class="red">务必</span>输入
-              <div class="layout-row">
-                <p class="red bold" id="remark">{{ orderData.remark }} </p>
-                <button class="mini copy-link" data-clipboard-target="#remark">复制</button>
-              </div>
-              <button class="scan-tip copy-link" data-clipboard-target="#remark">打开支付宝支付</button>
-              <div class="red center" style="background:#ffa500">支付成功后，请勿加入班级，否则可能无法到账！！</div>
-
-              <div class="layout-row">
-                <img />
-                <img style="height: auto;display: block" src="./qs.png" alt="">
-                <img style="height: auto;display: block" src="./payed.jpg" alt="">
-              </div>
-
-              <img style="width: 80%;height: auto; margin: 1rem auto 0; display: block" src="./not-join.jpg" alt="">
-            </div>
-            <button v-else class="scan-tip" @click="goPay">点击支付</button>
-          </div>
-          <div class="scan-tip red left" v-if="orderData.payWay !='支付宝'">
-            1.长按二维码保存</br>
-            2.打开{{orderData.payWay}}扫码
-          </div>
-          <!-- <div v-else class="scan-tip red">长按二维码识别支付</div> -->
-        </div>
-        <div v-else>
-          <img src='./overdue.png' />
-        </div>
-
-      </div>
-      <!-- <div class="help">任何问题请联系客服</div> -->
-    </div>
-    <!-- 原生 -->
-    <div v-show="isNative" class="not-native" style="padding-top:0">
-      <!-- <a id="ylsUrl" href="" style="">打开支付宝支付</a> -->
-      <p>订单号：{{orderData.orderNum}}</p>
-      <p>订单金额：<span class="red">{{orderData.payMoney}}</span>元</p>
-      <a class="urlButton" id="inURL" href="" style="font-size:14px">启动支付(方式二)</a>
-      <div class="layout-row__between">
-        <a class="urlButton" id="tbURL" href="" style="font-size:14px">启动支付(需安装淘宝)</a>
-      </div>
-      <!-- <div class="layout-row__between">
-        <a class="urlButton" id="kbURL" href="">启动支付(需安装口碑)</a>
-        <a class="urlButton" href="http://m.koubei.com/download?deliveryChannel=koubei_pc" style="background:red;margin-left:10px">未安装点次下载[淘宝]</a>
-      </div> -->
-      <!-- <a class="urlButton" id="inURL" href="" style="font-size:14px">启动支付(方式二)</a> -->
-      <div id="qrcode"></div>
-      <p class="center" style="margin-top:1rem">1.截屏保存当前页面</p>
-      <p class="center" style="margin-bottom: 1rem">2.打开支付宝扫一扫,选择二维码</p>
-      <!-- <p style="margin-top:5px">如果截图 提示 </p> -->
-      <p style="margin-top:10px">
-        <p class="red" style="font-weight:bold">如遇下图提示：请换个方式支付 或</p>
-        <p class="red" style="font-weight:bold">截屏当前页面 打开支付宝扫一扫支付</p>
-
-        <img src="./huangye.png" alt="">
+  <div class="loaded">
+    <!-- 超时 -->
+    <div class="timeout">
+      <p class="center">
+        <img src="./img/timeout.png" alt="">
       </p>
-      <!-- <p class="red" style="font-weight:bold">请关闭支付宝后重新打开截图扫一扫</p> -->
-      <!--            <h3 class="scan-tip" style="margin-top:5px">请使用给支付宝进行付款</h3>-->
-      <!--            <van-button type="info" @click="goPay">使用支付宝APP付款</van-button>-->
-      <!-- <van-button type="info" @click="goPay">点击付款</van-button> -->
-
+    </div>
+    <!-- 成功 -->
+    <div id="success" class="center" style="margin-top: 30px">
+      <img src="./img/wx-success.png" width="50%" class="wx-success" alt="">
+      <img src="./img/ali-success.png" width="50%" class="ali-success" alt="">
+    </div>
+    <!-- 云靓刷 -->
+    <div id="yls" class="center">
+      <img class="pay-logo" src="./img/zfb.png" alt="">
+      <p>订单号：<span id="yls-order"></span></p>
+      <p>订单金额：<span class="red bold" id="yls-money">0</span>元</p>
+      <a class="urlButton" id="yls-tb" href="">启动支付-淘宝跳转(建议)</a>
+      <a class="urlButton" id="yls-ali" href="">打开支付宝支付</a>
+    </div>
+    <!-- 钱方 -->
+    <div id="qf" class="center">
+      <div id="qf-ali">
+        <img class="pay-logo" src="./img/zfb.png" alt="">
+        <p>订单号：<span id="qf-order"></span></p>
+        <p>订单金额：<span class="red bold" id="qf-money">0</span>元</p>
+        <a class="urlButton" id="qf-alipay" href="">打开支付宝支付</a>
+      </div>
+      <div id="qf-wx">
+        <img class="pay-logo" src="./img/wxpay.png" alt="">
+        <p>订单号：<span id="qf-wx-order"></span></p>
+        <p>订单金额：<span class="red bold" id="qf-wx-money">0</span>元</p>
+        <div id="qf-wx-qrcode"></div>
+      </div>
+    </div>
+    <!-- 支付宝扫码 -->
+    <div id="ali-scan" class="center">
+        <img class="pay-logo" src="./img/zfb.png" alt="">
+        <p>订单号：<span id="ali-scan-order"></span></p>
+        <p>订单金额：<span class="red bold" id="ali-scan-money">0</span>元</p>
+        <div id="ali-scan-qrcode"></div>
+    </div>
+    <!-- 微信扫码 -->
+    <div id="wx-scan" class="center">
+        <img class="pay-logo" src="./img/wxpay.png" alt="">
+        <p>订单号：<span id="wx-scan-order"></span></p>
+        <p>订单金额：<span class="red bold" id="wx-scan-money">0</span>元</p>
+        <div id="wx-scan-qrcode"></div>
+    </div>
+    <!-- 支付宝转卡 -->
+    <div id="ali-fly" class="center">
+        <img class="pay-logo" src="./img/zfb.png" alt="">
+        <p>订单号：<span id="ali-fly-order"></span></p>
+        <p>订单金额：<span class="red bold" id="ali-fly-money">0</span>元</p>
+        <a class="urlButton" id="fly-ali" href="">打开支付宝支付</a>
+        <div id="ali-fly-qrcode"></div>
     </div>
     <!-- 倒计时 -->
-    <van-count-down ref="cdown" :time="time" v-show="showTip" :auto-start="false" @finish="finish">
-      <template v-slot="timeData">
-        <span class="item">当前排队用户较多，请等待</span>
-        <span class="item red">{{ timeData.seconds }}秒</span>
-      </template>
-    </van-count-down>
-
+    <div id="count-down">0分0秒</div>
+    <div class="content">
+      <p>当前订单状态：<span class="bold" id="order-state" style="font-size: 18px">支付中</span></p>
+      <p class="bold red">* 付款后20秒即可到账，未到账请联系客服处理</p>
+      <div id="scan">
+          <p class="bold red">* 【推荐】用另一部有<span class="app"></span>的手机或平板扫码付款</p>
+          <p id="in-wx" class="bold red" style="color: green">* 【推荐】如果您正处于微信APP当中，请长按识别二维码付款即可</p>
+          <p class="grew" style="color:#333">【方法2】打开<span class="app"></span>将保存的二维码发至任意好友后点开截图长按识别此二维码即可付款</p>
+          <p class="grew">【方法3】截图保存二维码之相册，打开<span class="app"></span>扫一扫，从相册识别截图并付款</p>
+      </div>
+    </div>
   </div>
-
 </body>
-<script src="./polyfill.min.js"></script>
-<script src="./vue.min.js"></script>
-<script src="./clipboard.min.js"></script>
-<script src="./axios.min.js"></script>
-<script src="./vant.js"></script>
-<script src="./dayjs.min.js"></script>
+<script src="./js/utils.js"></script>
 <script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
-<script type='text/javascript' src='./utils.js' charset='utf-8'></script>
-<script type='text/javascript' src='./aes.js' charset='utf-8'></script>
-<script type='text/javascript' src='./payWay.js' charset='utf-8'></script>
+<script src="./dayjs.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 <script>
-  function IsPC() {
-    var userAgentInfo = navigator.userAgent;
-    var Agents = ["Android", "iPhone",
-      "SymbianOS", "Windows Phone",
-      "iPad", "iPod"];
-    var flag = true;
-    for (var v = 0; v < Agents.length; v++) {
-      if (userAgentInfo.indexOf(Agents[v]) > 0) {
-        flag = false;
-        break;
-      }
-    }
-    return flag;
-  }
-  function payTaoBao (qrcode) {
-    return 'taobao://www.alipay.com/?appId=10000007&qrcode='+encodeURIComponent('alipays://platformapi/startapp?appId=66666796&url='+encodeURIComponent(qrcode));
-  }
-  function payKouBei (qrcode) {
-    if (/^http/.test(qrcode)) {
-      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
-      qrcode += 'scan=true';
-    }
-    var _alipayh5url = "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
-    return 'koubei://platformapi/startapp?appId=68687256&url='+encodeURIComponent('https://ds.alipay.com/?from=mobilecodec&scheme='+encodeURIComponent(_alipayh5url+'?koubei=1'));
-  }
+  var BASEURL = '39.98.84.232'
+  var diffTime = 0
+  var dSiv = null
+  var orderInterval = null
+  var method = '支付宝'
 
-  function payIn (qrcode) {
-    if (/^http/.test(qrcode)) {
-      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
-      qrcode += 'scan=true';
-    }
-    return "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
-    // return "alipays://platformapi/startapp?appId=20000199&url=" + encodeURIComponent(qrcode);
-  }
+  orderInterval = setInterval(function () {
+    checkOrder()
+  }, 5000)
 
-  const orderState = () => {
-    return new Promise((resolve, reject) => {
-      axios({
-        method: "POST",
-        url: frontUrl + '/backend/order/findOrderNum',
-        data: {
-          orderNum: getUserParam("orderNo"),
-        },
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  }
-  const init = () => {
-    Vue.use(vant.ImagePreview);
-    Vue.use(vant.CountDown);
-    Vue.use(vant.Loading);
-    Vue.use(vant.Button);
-    Vue.use(vant.Popup);
-    let payVM = new Vue({
-      el: '#app',
-      data() {
-        return {
-          showYD: false,
-          orderNo: '',
-          diffTime: 0,
-          orderData: {
-          },
-          showcode: true,
-          stateHtml: '0分 0秒',
-          first: true,
-          siv: null,
-          dSiv: null,
-          overlay: true,
-          time: 0,
-          showTip: false,
+  $(document).ready(function () {
+    $.ajax({
+      url: 'http://' + BASEURL + ':8092/backend/order/findOrderNum',
+      type: 'post',
+      headers:{'Content-Type':'application/json;charset=utf8'},
+      data: JSON.stringify({
+        orderNum: getUserParam("orderNo")
+      }),
+      success: function (data) {
+        $('.loading').hide()
+        $('.loaded').show()
+        if (data.message === '订单支付超时' || data.message === '订单不存在！') {
+          $('.timeout').show()
+          return false
         }
-      },
-      computed: {
-        payWayImg() {
-          let img
-          switch (this.orderData.payWay) {
-            case '支付宝':
-              img = './alipay.png'
-              break;
-            case '微信':
-              img = './weixin.png'
-              break;
-            case '云闪付':
-              img = './ysf.png'
-              break;
-            default:
-              break;
-          }
-          return img
-        },
-        isNative() {
-          return this.orderData.payWayDictId == 5 || this.orderData.payWayDictId == 25
-        }
-      },
-      created() {
-
-      },
-      mounted() {
-        const _self = this;
-        this.$nextTick(() => {
-          const clipboard = new ClipboardJS(".copy-link");
-          clipboard.on("success", function (e) {
-            vant.Dialog.alert({
-              message: '姓名已复制, 请直接到付款页面粘贴付款即可'
-            }).then(res => {
-              _self.goPay()
-            })
-            e.clearSelection();
-          });
-          clipboard.on("error", function (e) {
-            vant.Dialog.alert({
-              message: '复制失败，请手动复制'
-            })
-          });
-        })
-        this.orderState()
-        // this.siv = setInterval(() => {
-        //     this.orderState()
-        // }, 3000);
-      },
-      methods: {
-        getUserParam(key) {
-          return getUserParam(key)
-        },
-        orderState() {
-          orderState().then(res => {
-            if (res.data.code == 200) {
-              if (res.data.data) {
-                let data = res.data.data;
-                if (this.first) {
-                  this.orderData = data
-                  this.countDown()
-                  this.first = false;
-                  if (data.payWayDictId == 8 || data.payWayDictId == 9 || data.payWayDictId == 10) {
-                    this.showcode = false
-                  } else {
-                    this.showcode = true
-                    const { qrUrl } = JSON.parse(data.payContent)
-                    setTimeout(() => {
-                      new QRCode(document.getElementById("qrcode"), {
-                        text: qrUrl,
-                        width: 200,
-                        height: 200,
-                        colorDark: "#000000",
-                        colorLight: "#ffffff",
-                      });
-                    }, 1000)
-                  }
-                }
-              } else {
-                if (res.data.message === "订单支付成功") {
-                  vant.Dialog.alert({
-                    message: '订单支付成功'
-                  })
-                  clearInterval(this.siv)
-                  clearInterval(this.dSiv)
-                  this.orderData.state = '支付成功'
-                  this.stateHtml = '支付成功！'
-                } else {
-                  throw (res.data.message)
-                }
-              }
-            } else {
-              throw (res.data.message)
-            }
-          }).catch(err => {
-            clearInterval(this.siv)
-            clearInterval(this.dSiv)
-            vant.Dialog.alert({
-              message: err
-            })
-          }).finally(_ => {
-            this.overlay = false;
-          })
-        },
-        countDown() {
-          let endTime = dayjs(this.orderData.createTime)
-          endTime = endTime.add(this.orderData.orderTimeOut || 6, 'm');
-          this.dSiv = setInterval(() => {
-            this.diffTime = dayjs(endTime).diff(dayjs(), 'second');
-            //分钟
-            let minutes = Math.floor(this.diffTime / 60);
-            let seconds = this.diffTime % 60;
-            this.stateHtml = `${minutes}分 ${seconds}秒`
-            if (this.diffTime <= 0) {
-              // clearInterval(this.siv)
-              clearInterval(this.dSiv)
-              this.orderState()
-            }
-          }, 1000);
-        },
-        finish() {
-          this.$refs.cdown.pause();
-          this.time = 0
-        },
-        randomNum(minNum, maxNum) {
-          return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
-        },
-        goPay() {
-          //飞行转卡
-          if (this.orderData.payWayDictId == 10) {
-            if (!this.showTip) {
-              this.showTip = true;
-              this.time = this.randomNum(15, 20) * 1000;
-              console.log(this.time)
-              setTimeout(() => {
-                this.$refs.cdown.start();
-              }, 100)
-              return;
-            } else {
-              if (this.time != 0) {
-                vant.Dialog.alert({
-                  message: `当前人数较多！还有${this.time / 1000}秒`
-                })
-                return;
-              }
-            }
-          }
-          ddPayWay[this.orderData.payWayDictId](this.orderData)
-        }
-      },
-    })
-  }
-  let flag = false
-  orderState().then(res => {
-    if (res.data.code == 200) {
-      if (res.data.message === '订单支付超时') {
-        vant.Dialog.alert({
-          message: '订单支付超时, 请重新下单'
-        })
-        return false
-      }
-      if (res.data.data) {
-        let url = ''
-        switch (res.data.data.payWayDictId) {
-          case 5:
-            //当面付
-            url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/face.html?orderNo=${getUserParam('orderNo')}`;
-            window.location.href = url
+        var res = data.data
+        if (!data.message) {
+          var type = res.payWayDictId
+          var content = JSON.parse(res.payContent)
+          method = res.payWay === 'ali' ? '支付宝' : '微信';
+          $('#count-down').show()
+          $('#order-state').css({color: 'rgba(255,87,34,1'})
+          countDown(res.createTime, res.orderTimeOut)
+          switch (type) {
+            // 支付宝扫码
+            case 6:
+            $('#ali-scan').show()
+            $('#scan').show()
+            $('.app').text('支付宝')
+            $('#ali-scan-money').text(res.payMoney)
+            $('#ali-scan-order').text(res.orderNum)
+            new QRCode(document.getElementById("ali-scan-qrcode"), {
+              text: content.qrUrl,
+              width: 200,
+              height: 200,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+            });
             break;
-          case 6:
-            url = `${window.location.origin}/home/aliscan.html??orderNo=${getUserParam('orderNo')}`
-            window.location.href = url
-            break;
-          case 8:
-            //转账码
-            const { orderNum, payMoney } = res.data.data
-            const { pId } = JSON.parse(res.data.data.payContent)
-            const params = JSON.stringify({
-              amount: payMoney,
-              remark: orderNum,
-              pId
+            // 宝转卡
+            case 10:
+            $('#ali-fly').show()
+            $('#scan').show()
+            $('.app').text('支付宝')
+            $('#ali-fly-money').text(res.payMoney)
+            $('#ali-fly-order').text(res.orderNum)
+            var params = JSON.stringify({
+              amount: res.payMoney,
+              remark: res.orderNum,
+              name: content.name,
+              bankName: content.bankName,
+              cardIndex: content.cardIndex
             })
-            url = `${window.location.origin}/home/zhuanzhang.html?` + escape(params)
-
-            window.location.href = url
-            break;
-          case 10:
-          // 宝转卡
-            var orderNum10 = res.data.data.orderNum
-            var payMoney10 = res.data.data.payMoney
-            const { name, bankName, cardIndex } = JSON.parse(res.data.data.payContent)
-            var params10 = JSON.stringify({
-              amount: payMoney10,
-              remark: orderNum10,
-              name,
-              bankName,
-              cardIndex
-            })
-            url = `${window.location.origin}/home/aliCard.html?orderNo=${orderNum10}&params=` + encodeURIComponent(params10)
-            window.location.href = url
+            params = encodeURIComponent(params)
+            var config = JSON.parse(decodeURIComponent(params))
+            var URL = 'http://' + BASEURL + '/home/aliCardAli.html?' + encodeURIComponent(JSON.stringify(config))
+            $('#fly-ali').attr('href', URL)
+            new QRCode(document.getElementById("ali-fly-qrcode"), {
+              text: URL,
+              width: 200,
+              height: 200,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+            });
             break
-          case 11:
-            //微信个码
-            window.location.href = `${window.location.origin}/home/wechat_gm_pay.html?orderNo=${res.data.data.orderNum}`
-            break;
-          case 24:
-            //轻松经费
-            if (IsPC()) {
-              window.location.href = `./pc_jf.html?orderNo=${getUserParam('orderNo')}`
-              return false
-            }
-            if (window.AlipayJSBridge) {
-              if (!JSON.parse(getUserParam('autho'))) {
-                window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019112069268641&scope=auth_user&redirect_uri=http%3A%2F%2F39.99.196.237%3A8097%2Fbackend%2ForderPay&order_number=${getUserParam('orderNo')}`
-              } else {
-                if (JSON.parse(getUserParam('isOk'))) {
-                  init()
-                } else {
-                  vant.Dialog.alert({
-                    message: decodeURIComponent(getUserParam('status'))
-                  }).then(res => {
-                    // window.location.href = window.location.origin + window.location.pathname + '?orderNo=' + getUserParam('orderNo')
-                  })
-                }
-              }
+            // 微信扫码
+            case 11:
+            $('#wx-scan').show()
+            $('#scan').show()
+            $('.app').text('微信')
+            $('#in-wx').show()
+            $('#wx-scan-money').text(res.payMoney)
+            $('#wx-scan-order').text(res.orderNum)
+            new QRCode(document.getElementById("wx-scan-qrcode"), {
+              text: content.qrUrl,
+              width: 200,
+              height: 200,
+              colorDark: "#000000",
+              colorLight: "#ffffff",
+            });
+            break
+            // 云靓刷
+            case 25:
+            $('#yls').show()
+            $('#yls-money').text(res.payMoney)
+            $('#yls-order').text(res.orderNum)
+            $('#yls-tb').attr('href', payTaoBao(content.qrUrl))
+            $('#yls-ali').attr('href', payIn(content.qrUrl))
+            break
+            // 钱方
+            case 26:
+            $('#qf').show()
+            if (res.payWay === 'ali') {
+              $('#qf-ali').show()
+              $('#qf-money').text(res.payMoney)
+              $('#qf-order').text(res.orderNum)
+              $('#qf-alipay').attr('href', content.qrUrl)
+              window.location.href = content.qrUrl
             } else {
-              url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/pay.html?orderNo=${getUserParam('orderNo')}`;
-              var aElement = document.getElementById('jfUrl')
-              aElement.setAttribute('href', url)
-              document.getElementById('pre_create').style.display = 'block'
-              const { qrUrl } = JSON.parse(res.data.data.payContent)
-              new QRCode(document.getElementById("qrcode1"), {
-                text: qrUrl,
+              $('#scan').show()
+              $('.app').text('微信')
+              $('#qf-wx').show()
+              $('#qf-wx-money').text(res.payMoney)
+              $('#qf-wx-order').text(res.orderNum)
+              new QRCode(document.getElementById("qf-wx-qrcode"), {
+                text: content.qrUrl,
                 width: 200,
                 height: 200,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
               });
-              setTimeout(function () {
-                window.location.href = url
-              }, 1000)
             }
-            //轻松经费
-            break;
-          case 25:
-            //yls
-            if (res.data.data.payWay === 'wx') {
-              window.location.href = `${window.location.origin}/home/yls_wx.html?orderNo=${res.data.data.orderNum}`
-              return false
-            }
-            const { qrUrl } = JSON.parse(res.data.data.payContent)
-            url = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/yls.html?${qrUrl.split('=')[1]}&scan=true`
-            // url = `alipays://platformapi/startapp?appId=68687096`
-            // 淘宝
-            var tbElement = document.getElementById('tbURL')
-            tbElement.setAttribute('href', payTaoBao(qrUrl))
-            // 口碑
-            // var kbElement = document.getElementById('kbURL')
-            // kbElement.setAttribute('href', payKouBei(qrUrl))
-            // 方式三：in
-            var threeElement = document.getElementById('inURL')
-            threeElement.setAttribute('href', url)
-            init()
-            window.location.href = payTaoBao(qrUrl)
-            // window.location.href = url
-            break;
-          case 26:
-            //钱方
-            window.location.href = `${window.location.origin}/home/qfhj.html?orderNo=${res.data.data.orderNum}`
-            break;
-          default:
-            break;
+            break
+          }
         }
       }
+    })
+  });
+
+  function payTaoBao(qrcode) {
+    return 'taobao://www.alipay.com/?appId=10000007&qrcode=' + encodeURIComponent('alipays://platformapi/startapp?appId=66666796&url=' + encodeURIComponent(qrcode));
+  }
+
+  function payKouBei(qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
     }
-  })
+    var _alipayh5url = "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
+    return 'koubei://platformapi/startapp?appId=68687256&url=' + encodeURIComponent('https://ds.alipay.com/?from=mobilecodec&scheme=' + encodeURIComponent(_alipayh5url + '?koubei=1'));
+  }
 
+  function payIn(qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
+    }
+    return "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
+  }
 
+  function countDown(createTime, orderTimeOut) {
+    let endTime = dayjs(createTime)
+    endTime = endTime.add(orderTimeOut || 6, 'm');
+    dSiv = setInterval(function () {
+      diffTime = dayjs(endTime).diff(dayjs(), 'second');
+      let minutes = Math.floor(diffTime / 60);
+      let seconds = diffTime % 60;
+      $('#count-down').text(minutes + '分' + seconds + '秒')
+      if (diffTime <= 0) {
+        clearInterval(dSiv)
+      }
+    }, 1000);
+  }
 
-
-
+  function checkOrder () {
+    $.ajax({
+      url: 'http://' + BASEURL + ':8092/backend/order/findOrderNum',
+      type: 'post',
+      headers:{'Content-Type':'application/json;charset=utf8'},
+      data: JSON.stringify({
+        orderNum: getUserParam("orderNo")
+      }),
+      success: function (data) {
+        if (data.message === '订单支付超时' || data.message === '订单不存在！') {
+          clearInterval(orderInterval)
+          $('#order-state').text('支付超时，请勿继续支付').css({color: 'red'})
+          window.alert('订单支付超时, 继续支付无效，请重新下单')
+          return false
+        }
+        if (data.message === '订单支付成功') {
+          clearInterval(orderInterval)
+          $('#yls').hide()
+          $('#qf').hide()
+          $('#count-down').hide()
+          $('#success').show()
+          if (method === '支付宝') {
+            $('.ali-success').show()
+          } else {
+            $('.wx-success').show()
+          }
+          $('#order-state').text('支付成功').css({color: 'green'})
+          return false
+        }
+        $('#order-state').text('支付中').css({color: 'rgba(255,87,34,1'})
+      }
+    })
+  }
 </script>
 
 </html>
