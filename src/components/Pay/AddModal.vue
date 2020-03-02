@@ -14,8 +14,10 @@
         //-   el-input(v-model='form.contentObj.key' placeholder="请填写key")
         el-form-item(label='钱方账号', prop='account')
           el-input(v-model='form.contentObj.account' placeholder="请填写钱方账号")
-        el-form-item(label='钱方密码', prop='pwd')
-          el-input(v-model='form.contentObj.pwd' placeholder="请填写钱方密码")
+        el-form-item(label='收银员编号', prop='opuid')
+          el-input(v-model='form.contentObj.opuid' placeholder="请填写收银员编号")
+        el-form-item(label='收银员密码', prop='pwd')
+          el-input(v-model='form.contentObj.pwd' placeholder="请填写收银员密码")
       //云靓刷
       div(v-if="form.payWayDictId == 25")
         el-form-item(label='APPID', prop='appid')

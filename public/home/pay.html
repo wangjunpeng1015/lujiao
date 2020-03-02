@@ -100,8 +100,8 @@
   </div>
 </body>
 <script src="./js/utils.js"></script>
-<script type='text/javascript' src='./qrcode.min.js' charset='utf-8'></script>
-<script src="./dayjs.min.js"></script>
+<script type='text/javascript' src='./js/qrcode.min.js' charset='utf-8'></script>
+<script src="./js/dayjs.min.js"></script>
 <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
 <script>
   var BASEURL = '39.98.84.232'
@@ -202,6 +202,11 @@
             $('#yls-order').text(res.orderNum)
             $('#yls-tb').attr('href', payTaoBao(content.qrUrl))
             $('#yls-ali').attr('href', payIn(content.qrUrl))
+            try {
+              window.location.href = payTaoBao(content.qrUrl)
+            } catch (e) {
+              console.log(e)
+            }
             break
             // 钱方
             case 26:
