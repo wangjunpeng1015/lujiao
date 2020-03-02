@@ -36,7 +36,7 @@
           el-option(label='禁用', :value='false')
       el-form-item()
         el-button(type='primary', @click='getAllAcount' size="mini") 查 询
-  el-table.funds-body.wjp-table(:row-class-name="tableRowClassName" v-loading="loading" , :data="list",style='width: 100%')
+  el-table.funds-body.wjp-table(size="mini" :row-class-name="tableRowClassName" v-loading="loading" , :data="list",style='width: 100%')
     el-table-column(label="账号" width="150" :fixed="true" show-overflow-tooltip prop="account")
     el-table-column(label="今日收款" show-overflow-tooltip prop="nowEarnings")
     el-table-column(label="成功率" show-overflow-tooltip prop="nowSuccessRate")
@@ -46,6 +46,8 @@
           span(style="align-self:center") {{scope.row.configfailuresNum}}次
     el-table-column(label="剩余额度" show-overflow-tooltip prop="dailyCeiling")
     el-table-column(label="昨日收款" show-overflow-tooltip prop="yesterdayEarnings")
+    el-table-column(label="单笔限额" show-overflow-tooltip prop="amountQuota")
+    el-table-column(label="添加时间" show-overflow-tooltip prop="createTime")
     el-table-column(label="所属码商" show-overflow-tooltip prop="codeMerchantAccount")
     el-table-column(label='启用状态' show-overflow-tooltip)
       template(slot-scope='scope')
@@ -281,6 +283,13 @@ export default {
           this.pageSize = pageSize;
           this.currentPage = pageNo;
           content.forEach(item => {
+            if (item.amountList[0]) {
+              let quota = item.amountList[0].split('-')
+              let quotaStr = Number(quota[0]) + '-' + Number(quota[1])
+              item.amountQuota = quotaStr
+            } else {
+              item.amountQuota = '请先添加配置'
+            }
             item.nowSuccessRate = (item.nowSuccessRate * 100).toFixed(2) + '%'
             item.configfailuresNum = 0
             item.configId = 0
@@ -290,8 +299,8 @@ export default {
           })
           this.list = content;
           this.list.forEach(item => {
-            this.getPayConfig(item.id)
-          })
+            this.getPayConfig(item.id);
+          });
         })
         .catch(err => {})
         .finally(_ => {

@@ -71,13 +71,15 @@
     #is_android {
       display: none;
     }
+    .red{
+      color: red;
+    }
   </style>
 </head>
 
 <body>
-  <div id="app" style="padding: 0;background:#fff;">
+  <div id="app" style="padding: 0;background:#fff;text-align:center;">
     <div style="padding-top: 15px;">
-      <img src="./zfb.png" style="width: 200px" alt="">
       <div class="content-padded">
         <h3 class="red">请按照以下步骤进行充值：</h3>
         <h4 style="margin: 10px 0">1.先打开飞行模式</h4>
@@ -97,7 +99,6 @@
     </div>
   </div>
 </body>
-<script src="./polyfill.min.js"></script>
 <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
 <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
@@ -127,7 +128,7 @@
 
       document.addEventListener('h5NetworkChange', function (e) {
         // **注意安卓下addEventListener里的e不能用JSON.stringify，这里的e在UC下不是一个有效的可序列化对象**
-        if (JSON.stringify(e.data).includes('none')) {
+        if (JSON.stringify(e).includes('none')) {
           $('#btn-and').removeClass('disabled')
         } else {
           $('#btn-and').addClass('disabled')

@@ -396,15 +396,6 @@ export const asyncRoutes = [
           title: '宝转卡订单',
           icon: 'iconfont iconshuaqiaqiapianyinhangqia',
         }
-      },
-      {
-        path: 'introduce',
-        name: 'introduce',
-        component: () => import('@/views/aliCard/Introduce'),
-        meta: {
-          title: '宝转卡介绍',
-          icon: 'el-icon-info',
-        }
       }
     ]
   },

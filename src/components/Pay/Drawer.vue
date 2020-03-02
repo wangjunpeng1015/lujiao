@@ -36,6 +36,9 @@ div
           el-table-column(v-if="form.payWayDictId === 26" label="账号" show-overflow-tooltip)
             template(slot-scope="scope")
               span {{form.contentObj.account}}
+          el-table-column(v-if="form.payWayDictId === 26" label="收银员ID" show-overflow-tooltip)
+            template(slot-scope="scope")
+              span {{form.contentObj.opuid}}
           el-table-column(v-if="form.payWayDictId === 26" label="密码" show-overflow-tooltip)
             template(slot-scope="scope")
               span {{form.contentObj.pwd}}

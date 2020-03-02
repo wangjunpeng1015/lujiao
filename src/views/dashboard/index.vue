@@ -49,30 +49,68 @@
         .layout-column
           div 成功率
           div.num {{(amountData.today.successRate * 100).toFixed(2)}}%
+  el-divider(content-position="left")
+    el-select(v-model="dayNum" size="mini" @change="getBody")
+      el-option(label="昨日数据" :value="1")
+      el-option(label="今日实时数据" :value="0")
+  el-divider(content-position="left")
+    span 代理数据
+  .layout-row__between
+    el-card(shadow="hover" v-for="item in proxyList" :key="item.name")
+      div(slot="header")
+        .layout-row__between
+          .money(style="margin-left:0") {{item.name}}
+      .card-item.layout-row__between
+        .layout-column
+          div 总订单
+          div.num {{item.orders}} 笔
+        .layout-column
+          div 成功金额
+          div.num {{item.amount}} 元
+        .layout-column
+          div 成功率
+          div.num {{item.successRate}}
+  el-divider(content-position="left")
+    span 商户数据
+  .layout-row__between(style="margin-top:20px")
+    el-card(shadow="hover" v-for="item in merchantList" :key="item.name")
+      div(slot="header")
+        .layout-row__between
+          .money(style="margin-left:0") {{item.name}}
+      .card-item.layout-row__between
+        .layout-column
+          div 总订单
+          div.num {{item.orders}} 笔
+        .layout-column
+          div 成功金额
+          div.num {{item.amount}} 元
+        .layout-column
+          div 成功率
+          div.num {{item.successRate}}
   //- el-divider(content-position="left") 昨日通道数据
   //- el-table(:data="payWayList" :stripe="true" border)
   //-   el-table-column(label="通道名称" prop="name")
   //-   el-table-column(label="订单金额" prop="amount")
   //-   el-table-column(label="订单数量" prop="orders")
   //-   el-table-column(label="成功率" prop="successRate")
-  el-divider(content-position="left")
-    el-select(v-model="dayNum" size="mini" @change="getBody")
-      el-option(label="昨日数据" :value="1")
-      el-option(label="今日实时数据" :value="0")
-  el-collapse(v-model="activeNames")
-    el-collapse-item(title='代理数据', name='1' v-if="userinfo.roleId===1")
-      el-table(:data="proxyList" :stripe="true" border)
-        el-table-column(label="代理名称" prop="name")
-        el-table-column(label="金额" prop="amount")
-        el-table-column(label="订单数量" prop="orders")
-        el-table-column(label="成功率" prop="successRate")
-    el-collapse-item(title='商户数据', name='2' v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
-      el-table(:data="merchantList" :stripe="true" border)
-        el-table-column(label="商户名称" prop="name")
-        el-table-column(label="金额" prop="amount")
-        el-table-column(label="订单数量" prop="orders")
-        el-table-column(label="成功率" prop="successRate")
-  SettleModal(:visible.sync="visible")
+  //- el-divider(content-position="left")
+  //-   el-select(v-model="dayNum" size="mini" @change="getBody")
+  //-     el-option(label="昨日数据" :value="1")
+  //-     el-option(label="今日实时数据" :value="0")
+  //- el-collapse(v-model="activeNames")
+  //-   el-collapse-item(title='代理数据', name='1' v-if="userinfo.roleId===1")
+  //-     el-table(:data="proxyList" :stripe="true" border)
+  //-       el-table-column(label="代理名称" prop="name")
+  //-       el-table-column(label="金额" prop="amount")
+  //-       el-table-column(label="订单数量" prop="orders")
+  //-       el-table-column(label="成功率" prop="successRate")
+  //-   el-collapse-item(title='商户数据', name='2' v-if="userinfo.roleId === 3 || userinfo.roleId ===1")
+  //-     el-table(:data="merchantList" :stripe="true" border)
+  //-       el-table-column(label="商户名称" prop="name")
+  //-       el-table-column(label="金额" prop="amount")
+  //-       el-table-column(label="订单数量" prop="orders")
+  //-       el-table-column(label="成功率" prop="successRate")
+  //- SettleModal(:visible.sync="visible")
 </template>
 
 <script>
@@ -269,7 +307,9 @@ export default {
     width: 70px;
   }
   >>> .el-card {
-    background: repeating-linear-gradient(to right, #4d83be, #334e9b);
+    // background-color: repeating-linear-gradient(to right, #4d83be, #334e9b);
+    background-image:  url('../../assets/img/dashboard-bg.png');
+    background-size: cover;
     color: #fff;
     .el-card__header {
       border-bottom: none;

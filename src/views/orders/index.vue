@@ -15,7 +15,7 @@
         el-date-picker( size="mini" v-model='time',clearable, unlink-panels, type='daterange', range-separator='至', start-placeholder='开始日期', end-placeholder='结束日期'  value-format="yyyy-MM-dd" style="width:250px;")
         el-button( size="mini" type='primary' @click="getTableData" :disabled="loading") 搜 索
     .wjp-content.flex.layout-column
-        el-table.wjp-table(v-loading="loading" :data='tableData', style='width: 100%')
+        el-table.wjp-table(size="mini" v-loading="loading" :data='tableData', style='width: 100%')
             el-table-column(type='expand')
               template(slot-scope='props')
                 el-form.demo-table-expand(label-position='left', inline='')
@@ -113,7 +113,7 @@ export default {
       tableData: [],
       totalPage: 0, //总条数
       currentPage: 1, //当前页
-      pageSize: 10 //当前页显示数量
+      pageSize: 20 //当前页显示数量
     };
   },
   watch: {
