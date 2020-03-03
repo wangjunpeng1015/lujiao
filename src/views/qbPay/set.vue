@@ -1,7 +1,7 @@
 <template lang="pug">
 .layout-column
   Drawer(
-    :payWayId="26"
+    :payWayId="28"
     :visible.sync="visible"
     @finish="getAllAcount"
     :account="currentRow"
@@ -260,7 +260,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           code: this.code, //码商
-          account: `${this.account}-qf_ali`, //账号
+          account: `${this.account}-糗百红包`, //账号
           used: this.used, //是否启用
           accountType: "ali", //类型
           min: this.min, //最小
@@ -314,7 +314,7 @@ export default {
     saveAccount() {
       this.saveAccountLoading = true;
       let param = Object.assign({}, this.news, {
-        account: `${this.news.account}-qf_ali`
+        account: `${this.news.account}-糗百红包`
       });
       if (!this.news.dailyCeiling) {
         this.$message.error('请填写收款上限')

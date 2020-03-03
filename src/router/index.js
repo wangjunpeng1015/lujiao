@@ -129,37 +129,37 @@ export const constantRoutes = [
   },
 ]
 export const asyncRoutes = [
-  // {
-  //   path: '/qbPay',
-  //   component: Layout,
-  //   redirect: '/qbPay/orders',
-  //   name: 'qbPay',
-  //   meta: {
-  //     title: '糗百支付宝通道',
-  //     icon: 'iconfont iconshangjia',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'set',
-  //       name: 'set',
-  //       component: () => import('@/views/qbPay/set'),
-  //       meta: {
-  //         title: '支付宝通道配置',
-  //         icon: 'iconfont iconzhifubao1',
-  //         roles: [1, 3, 4],
-  //       }
-  //     },
-  //     {
-  //       path: 'orders',
-  //       name: 'orders',
-  //       component: () => import('@/views/qbPay/Orders'),
-  //       meta: {
-  //         title: '糗百支付宝订单',
-  //         icon: 'el-icon-s-order',
-  //       }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/qbPay',
+    component: Layout,
+    redirect: '/qbPay/orders',
+    name: 'qbPay',
+    meta: {
+      title: '糗百红包通道',
+      icon: 'iconfont iconshangjia',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/qbPay/set'),
+        meta: {
+          title: '支付宝通道配置',
+          icon: 'iconfont iconzhifubao1',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/qbPay/Orders'),
+        meta: {
+          title: '糗百红包订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
   // 云靓刷
   {
     path: '/ylsPay',

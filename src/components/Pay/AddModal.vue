@@ -4,6 +4,12 @@
       //- el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
       //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //- 糗事百科
+      div(v-if="form.payWayDictId == 28")
+        el-form-item(label='糗百账号', prop='account')
+          el-input(v-model='form.contentObj.account' placeholder="请填写糗百账号")
+        el-form-item(label='糗百密码', prop='pwd')
+          el-input(v-model='form.contentObj.pwd' placeholder="请填写收糗百密码")
       //钱方好近
       div(v-if="form.payWayDictId == 26")
         //- el-form-item(label='mchid', prop='mchid')
