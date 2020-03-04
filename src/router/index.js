@@ -130,12 +130,43 @@ export const constantRoutes = [
 ]
 export const asyncRoutes = [
   {
+    path: '/tjPay',
+    component: Layout,
+    redirect: '/tjPay/orders',
+    name: 'tjPay',
+    meta: {
+      title: '探街微信红包通道',
+      icon: 'iconfont iconshangjia',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/tjPay/set'),
+        meta: {
+          title: '微信通道配置',
+          icon: 'iconfont iconzhifubao1',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/tjPay/Orders'),
+        meta: {
+          title: '探街微信红包订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
+  {
     path: '/qbPay',
     component: Layout,
     redirect: '/qbPay/orders',
     name: 'qbPay',
     meta: {
-      title: '糗百红包通道',
+      title: '糗百支付宝红包通道',
       icon: 'iconfont iconshangjia',
     },
     children: [

@@ -4,6 +4,10 @@
       //- el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
       //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //- 探街微信h5
+      div(v-if="form.payWayDictId == 30")
+        el-form-item(label='QQ openid', prop='qq_openid')
+          el-input(v-model='form.contentObj.qq_openid' placeholder="请填写探街账号绑定的QQ openid")
       //- 糗事百科
       div(v-if="form.payWayDictId == 28")
         el-form-item(label='糗百账号', prop='account')

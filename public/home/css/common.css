@@ -34,6 +34,17 @@ a{
   border-radius: 0.3rem;
   margin-bottom: 0.75rem;
 }
+.wxButton{
+  background: #44ae36;
+  color: #fff;
+  display: block;
+  width: 70%;
+  font-size: 16px;
+  margin: 0.5rem auto;
+  padding: 0.5rem 0;
+  border-radius: 0.3rem;
+  margin-bottom: 0.75rem;
+}
 #qrcode, #qf-wx-qrcode, #ali-scan-qrcode, #wx-scan-qrcode, #ali-fly-qrcode, #qf-ali-qrcode {
   margin: 0 auto;
   position: relative;

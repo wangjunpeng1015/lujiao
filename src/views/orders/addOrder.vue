@@ -161,24 +161,28 @@ export default {
         if (valid) {
           this.creatLoading = true;
           let temp = cloneDeep(this.form);
-          if (this.payWayId === 6) {
-            temp.payWayId = 6
-          }
-          if (this.payWayId === 11) {
-            temp.payWayId = 11
-          }
-          if (this.payWayId === 26) {
-            temp.payWayId = 26
-          }
-          if (this.payWayId === 25) {
-            temp.payWayId = 25
-          }
-          if (this.payWayId === 10) {
-            temp.payWayId = 10
-          }
-          if (this.payWayId == 28) {
-            temp.payWayId = 28
-          }
+          temp.payWayId = this.payWayId
+          // if (this.payWayId === 6) {
+          //   temp.payWayId = 6
+          // }
+          // if (this.payWayId === 11) {
+          //   temp.payWayId = 11
+          // }
+          // if (this.payWayId === 26) {
+          //   temp.payWayId = 26
+          // }
+          // if (this.payWayId === 25) {
+          //   temp.payWayId = 25
+          // }
+          // if (this.payWayId === 10) {
+          //   temp.payWayId = 10
+          // }
+          // if (this.payWayId == 28) {
+          //   temp.payWayId = 28
+          // }
+          // if (this.payWayId == 28) {
+          //   temp.payWayId = 28
+          // }
           if (!this.isQF) {
             delete temp.payWayType;
           }

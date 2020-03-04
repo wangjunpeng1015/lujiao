@@ -21,22 +21,15 @@
                 el-form.demo-table-expand(label-position='left', inline='')
                   el-form-item(label='支付地址')
                     el-link(type="primary" ,:href="getPayUrl(props.row)" target="_blank") {{ getPayUrl(props.row) }}
-                    //- a(href="alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=0.01&userId=2088502115132635&memo=备注") aaaaa
-            //- el-table-column(prop='orderNum', label='系统订单号', show-overflow-tooltip width="100")
             el-table-column(prop='merchantOrderNo', label='商家订单号', show-overflow-tooltip align="center")
             el-table-column(prop='orderUserAccount', label='商户账号' show-overflow-tooltip align="center")
-            el-table-column(prop='payConfigPayConfigAccountAccount' label='收款账号',show-overflow-tooltip align="center")
+            el-table-column(v-if="payWayId != 30" prop='payConfigPayConfigAccountAccount' label='收款账号',show-overflow-tooltip align="center")
+            el-table-column(v-if="payWayId == 30" prop='payConfigPayConfigAccountAccount' label='发包账号',show-overflow-tooltip align="center")
             el-table-column( prop='payConfigRemark' v-if="payWayId==11"  label='收款备注',show-overflow-tooltip)
-            //- el-table-column(v-if="isQF" label='原始金额' width="100" prop="amount",show-overflow-tooltip)
             el-table-column(label='实际金额'  width="100" show-overflow-tooltip align="center")
               template(slot-scope='scope')
                 span(v-if="scope.row.payStatusDictValue =='支付成功'" style="font-weight:bold;color:green") {{ scope.row.actualAmount }}
                 span(v-else-if="scope.row.payStatusDictValue =='支付中' || scope.row.payStatusDictValue =='支付超时'" ) {{ scope.row.actualAmount }}
-            //- el-table-column(v-if="!isQF" prop='payWayDictValue', label='支付方式',show-overflow-tooltip)
-            //- el-table-column(prop='payConfigRemark', label='通道备注',show-overflow-tooltip)
-            //- el-table-column(label='商家备注',show-overflow-tooltip)
-            //-   template(slot-scope='scope')
-            //-     span(class="red" style="font-size:20px;font-weight:bold")  {{ scope.row.merchantRemark }}
             el-table-column(prop='createTime', label='创建时间',show-overflow-tooltip align="center")
             el-table-column(label='支付方式',show-overflow-tooltip align="center")
               template(slot-scope="scope")
@@ -51,9 +44,16 @@
             el-table-column(prop='callBackStatus', label='商户回调状态',show-overflow-tooltip align="center")
               template(slot-scope='scope')
                 el-switch(v-model='scope.row.callBackStatus',@change="changeStatus(scope.row.id)" :disabled="scope.row.callBackStatus" :active-text="scope.row.callBackStatus?'成功':'失败'")
-            el-table-column(prop='payStatusDictValue', label='状态' align="center")
+            el-table-column(v-if="payWayId != 30" prop='payStatusDictValue', label='状态' align="center")
                 template(slot-scope='scope')
                   span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
+            el-table-column(v-if="payWayId == 30" prop='payStatusDictValue', label='支付状态' align="center")
+                template(slot-scope='scope')
+                  span(:class='getClass(scope.row.payStatusDictValue)') {{ scope.row.payStatusDictValue }}
+            el-table-column(v-if="payWayId == 30" prop='payStatusDictValue', label='红包领取状态' align="center")
+                template(slot-scope='scope')
+                  span(v-if="scope.row.redPacketStatus" style="color:red") 红包已领取
+                  span(v-else style="color:red") 红包未领取
             el-table-column(prop='payStatusDictValue' width="150" label='操作' fixed="right" align="center")
                 template(slot-scope='scope')
                   .layout-row__between
