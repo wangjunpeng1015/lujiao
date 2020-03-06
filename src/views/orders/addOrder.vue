@@ -195,6 +195,9 @@ export default {
           );
           //商户号+支付金额+商户秘钥
           const sign = md5(temp.merchantNum + temp.money + merchant.secretKey);
+          if (this.payWayId == 31) {
+
+          }
           createOrder({
             ...temp,
             merchantOrderNo: "default",

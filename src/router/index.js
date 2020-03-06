@@ -130,12 +130,43 @@ export const constantRoutes = [
 ]
 export const asyncRoutes = [
   {
+    path: '/wmPay',
+    component: Layout,
+    redirect: '/wmPay/orders',
+    name: 'wmPay',
+    meta: {
+      title: 'WM原生通道(ali个码)',
+      icon: 'iconfont iconshangjia',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/wmPay/set'),
+        meta: {
+          title: '通道配置',
+          icon: 'iconfont iconzhifubao1',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/wmPay/Orders'),
+        meta: {
+          title: 'WM个码原生订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
+  {
     path: '/tjPay',
     component: Layout,
     redirect: '/tjPay/orders',
     name: 'tjPay',
     meta: {
-      title: '探街微信红包通道',
+      title: 'TJ微信原生通道(wx个码)',
       icon: 'iconfont iconshangjia',
     },
     children: [
@@ -154,7 +185,7 @@ export const asyncRoutes = [
         name: 'orders',
         component: () => import('@/views/tjPay/Orders'),
         meta: {
-          title: '探街微信红包订单',
+          title: 'TJ微信红包订单',
           icon: 'el-icon-s-order',
         }
       }
@@ -166,7 +197,7 @@ export const asyncRoutes = [
     redirect: '/qbPay/orders',
     name: 'qbPay',
     meta: {
-      title: '糗百支付宝红包通道',
+      title: 'QB红包通道(ali个码)',
       icon: 'iconfont iconshangjia',
     },
     children: [
@@ -185,7 +216,38 @@ export const asyncRoutes = [
         name: 'orders',
         component: () => import('@/views/qbPay/Orders'),
         meta: {
-          title: '糗百红包订单',
+          title: 'QB红包订单',
+          icon: 'el-icon-s-order',
+        }
+      }
+    ]
+  },
+  {
+    path: '/aliWeb',
+    component: Layout,
+    redirect: '/aliWeb/orders',
+    name: 'aliWeb',
+    meta: {
+      title: '支付宝手机网站支付',
+      icon: 'iconfont iconshangjia',
+    },
+    children: [
+      {
+        path: 'set',
+        name: 'set',
+        component: () => import('@/views/aliWeb/set'),
+        meta: {
+          title: '通道配置',
+          icon: 'iconfont iconzhifubao1',
+          roles: [1, 3, 4],
+        }
+      },
+      {
+        path: 'orders',
+        name: 'orders',
+        component: () => import('@/views/aliWeb/Orders'),
+        meta: {
+          title: '支付宝手机网站订单',
           icon: 'el-icon-s-order',
         }
       }

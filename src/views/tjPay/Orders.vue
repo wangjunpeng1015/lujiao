@@ -1,5 +1,5 @@
 <template lang="pug">
-Orders(payWayName="探街微信红包订单" ,:payWayId="30" )
+Orders(payWayName="TJ微信红包订单" ,:payWayId="30" )
 </template>
 
 <script>

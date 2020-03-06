@@ -8,28 +8,28 @@
     :channels="channels"
   )
   el-dialog(
-    title='添加糗百账号'
+    title='添加QB账号'
     :visible.sync='dialogShow'
     width='40%'
     @close="closeDialog"
     :close-on-click-modal="false"
   )
     el-form(:model='news' ref='news', label-width='120px')
-      el-form-item(label='糗百账号：', prop='account')
-        el-input(v-model='news.account' placeholder="请填写收款糗百账号")
+      el-form-item(label='QB账号：', prop='account')
+        el-input(v-model='news.account' placeholder="请填写收款QB账号")
       el-form-item(label="收款上限：" prop="dailyCeiling")
         el-input(v-model='news.dailyCeiling' placeholder="请填写该账号每日收款上限" type="number")
       el-form-item.right
         el-button(type="primary" size="mini" @click="saveAccount" v-loading="saveAccountLoading") 保存
         el-button(size="mini" @click="closeDialog") 取消
   .funds-header.layout-row__between
-    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加糗百账号
+    el-button(v-if="userinfo.roleId == 4||userinfo.roleId == 1" type="primary" size="mini" @click="dialogShow = true") 添加QB账号
     el-form(label-width='120px' :inline="true" size="mini")
       el-form-item
         el-select(v-model='code', placeholder='码商账号' filterable clearable @change="getAllAcount")
           el-option(v-for="(item,i) in coder" :key="i" :label='item.account', :value='item.id')
       el-form-item
-        el-input(v-model='account' placeholder="请输入糗百账号")
+        el-input(v-model='account' placeholder="请输入QB账号")
       el-form-item
         el-select(v-model='used', placeholder='是否启用' clearable @change="getAllAcount")
           el-option(label='启用', :value='true')
@@ -260,7 +260,7 @@ export default {
         pageSize: this.pageSize,
         param: {
           code: this.code, //码商
-          account: `${this.account}-糗百红包`, //账号
+          account: `${this.account}-QB红包`, //账号
           used: this.used, //是否启用
           accountType: "ali", //类型
           min: this.min, //最小
@@ -314,7 +314,7 @@ export default {
     saveAccount() {
       this.saveAccountLoading = true;
       let param = Object.assign({}, this.news, {
-        account: `${this.news.account}-糗百红包`
+        account: `${this.news.account}-QB红包`
       });
       if (!this.news.dailyCeiling) {
         this.$message.error('请填写收款上限')

@@ -4,6 +4,16 @@
       //- el-form-item(label='选择开启通道', prop='payWayDictId' v-if="isAdd")
       //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
+      //- 手机网站支付
+      div(v-if="form.payWayDictId == 31")
+        el-form-item(label='appid', prop='name')
+          el-input(v-model='form.contentObj.appId' placeholder="请填写appId")
+        el-form-item(label='应用私钥', prop='privateKey')
+          el-input(v-model='form.contentObj.privateKey' type="textarea" :rows="4" placeholder="请填写应用私钥")
+        el-form-item(label='应用公钥', prop='publicKey')
+          el-input(v-model='form.contentObj.publicKey' type="textarea" :rows="4" placeholder="请填写应用公钥")
+        el-form-item(label='阿里公钥', prop='alipayPublicKey')
+          el-input(v-model='form.contentObj.alipayPublicKey' type="textarea" :rows="4" placeholder="RSA")
       //- 探街微信h5
       div(v-if="form.payWayDictId == 30")
         el-form-item(label='QQ openid', prop='qq_openid')
