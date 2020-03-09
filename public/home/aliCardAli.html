@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+  <link rel="stylesheet" href="./common.css">
+  <style>
+    #time {
+      font-size: 16px;
+      color: red;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #fff;
+    }
+
+    .zfb {
+      width: 60%;
+    }
+
+    #qrcode {
+      margin: 10px auto;
+      width: 250px;
+      height: 250px;
+    }
+
+    /* #ylsUrl,
+    #jfUrl,
+    #zzUrl,
+    .button {
+      background: #ccc;
+      color: #fff;
+      display: block;
+      width: 70%;
+      margin: 0.5rem auto;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+    } */
+
+    .scan-tip {
+      margin: 10px auto;
+    }
+
+    .paytext {
+      font-weight: bold;
+      font-size: 16px;
+      margin: 5px auto;
+      line-height: 20px;
+      background: #ff5e64;
+      text-align: center;
+      color: #fff;
+    }
+
+    #is_ios {
+      display: block;
+    }
+
+    #is_android {
+      display: none;
+    }
+    .red{
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" style="padding: 0;background:#fff;text-align:center;">
+    <div style="padding-top: 15px;">
+      <div class="content-padded">
+        <h3 class="red">请按照以下步骤进行充值：</h3>
+        <h4 style="margin: 10px 0">1.先打开飞行模式</h4>
+        <div id="is_android">
+          <img style="margin:0 auto" src="./img/android-fly.png" alt="" width="65%">
+        </div>
+        <div id="is_ios">
+          <img src="./img/ios-fly.png" alt="" width="65%">
+        </div>
+        <h4 style="margin: 10px 0">2.点击“已打开飞行模式，前往支付”</h4>
+        <h4 style="margin: 10px 0">3.关闭飞行模式进行支付</h4>
+        <a style="margin: 10px 0" href="#" id="btn-and" class="button-big button-round disabled button button-fill">已打开飞行模式，前往支付</a>
+        <!-- <div style="margin: 0 auto;"> -->
+        <!-- </div> -->
+      </div>
+
+    </div>
+  </div>
+</body>
+<script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+<script>
+  var config = {}
+  function ready(callback) {
+    // 如果jsbridge已经注入则直接调用
+    if (window.AlipayJSBridge) {
+      callback && callback();
+    } else {
+      // 如果没有注入则监听注入的事件
+      document.addEventListener('AlipayJSBridgeReady', callback, false);
+    }
+  }
+  ready(function () {
+    try {
+      var u = navigator.userAgent;
+      var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+      var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      if (isiOS) {
+        document.getElementById('is_ios').style.display = 'block'
+        document.getElementById('is_android').style.display = 'none'
+      } else {
+        document.getElementById('is_ios').style.display = 'none'
+        document.getElementById('is_android').style.display = 'block'
+      }
+
+      document.addEventListener('h5NetworkChange', function (e) {
+        // **注意安卓下addEventListener里的e不能用JSON.stringify，这里的e在UC下不是一个有效的可序列化对象**
+        if (JSON.stringify(e).includes('none')) {
+          $('#btn-and').removeClass('disabled')
+        } else {
+          $('#btn-and').addClass('disabled')
+        }
+        //网络环境发生变化，可调用getNetworkType接口获取详细信息
+        AlipayJSBridge.call('getNetworkType', function (result) {
+          if (!result.networkAvailable) {
+            $('#btn-and').removeClass('disabled')
+          } else {
+            $('#btn-and').addClass('disabled')
+          }
+        });
+      }, false);
+
+      $('#btn-and').on('click', function () {
+        if ($('#btn-and').hasClass('disabled')) {
+
+          $.alert("请先打开飞行模式");
+          return false
+        }
+        $.alert('跳转后请关闭飞行模式进行支付', '提示', function () {
+          pay()
+        });
+
+      })
+      window.AlipayJSBridge.call('setTitle', {
+        title: '自助充值',
+        subtitle: '安全支付'
+      });
+      let time = 10000
+      let params = window.location.search.split('?')[1]
+      config = JSON.parse(decodeURIComponent(params))
+      // config = unescape(params)
+      // that.url = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
+      // if (isiOS) {
+      //   pay()
+      // }
+      var t = setInterval(function () {
+        if (time > 0) {
+          time = time - 1000
+          document.getElementById('time').innerText = time / 1000
+        } else {
+          clearInterval(t)
+          document.getElementById('btn').innerText = '支付'
+          document.getElementById('btn').style.background = '#00a7ef'
+          document.getElementById('btn').removeAttribute('disabled')
+        }
+      }, 1000)
+    } catch (e) {
+      alert(e)
+    }
+  })
+
+  function pay() {
+    var MAP = { "CDB": "国家开发银行", "ICBC": "中国工商银行", "ABC": "中国农业银行", "BOC": "中国银行", "CCB": "中国建设银行", "PSBC": "中国邮政储蓄银行", "COMM": "交通银行", "CMB": "招商银行", "SPDB": "上海浦东发展银行", "CIB": "兴业银行", "HXBANK": "华夏银行", "GDB": "广东发展银行", "CMBC": "中国民生银行", "CITIC": "中信银行", "CEB": "中国光大银行", "EGBANK": "恒丰银行", "CZBANK": "浙商银行", "BOHAIB": "渤海银行", "SPABANK": "平安银行", "SHRCB": "上海农村商业银行", "YXCCB": "玉溪市商业银行", "YDRCB": "尧都农商行", "BJBANK": "北京银行", "SHBANK": "上海银行", "JSBANK": "江苏银行", "HZCB": "杭州银行", "NJCB": "南京银行", "NBBANK": "宁波银行", "HSBANK": "徽商银行", "CSCB": "长沙银行", "CDCB": "成都银行", "CQBANK": "重庆银行", "DLB": "大连银行", "NCB": "南昌银行", "FJHXBC": "福建海峡银行", "HKB": "汉口银行", "WZCB": "温州银行", "QDCCB": "青岛银行", "TZCB": "台州银行", "JXBANK": "嘉兴银行", "CSRCB": "常熟农村商业银行", "NHB": "南海农村信用联社", "CZRCB": "常州农村信用联社", "H3CB": "内蒙古银行", "SXCB": "绍兴银行", "SDEB": "顺德农商银行", "WJRCB": "吴江农商银行", "ZBCB": "齐商银行", "GYCB": "贵阳市商业银行", "ZYCBANK": "遵义市商业银行", "HZCCB": "湖州市商业银行", "DAQINGB": "龙江银行", "JINCHB": "晋城银行JCBANK", "ZJTLCB": "浙江泰隆商业银行", "GDRCC": "广东省农村信用社联合社", "DRCBCL": "东莞农村商业银行", "MTBANK": "浙江民泰商业银行", "GCB": "广州银行", "LYCB": "辽阳市商业银行", "JSRCU": "江苏省农村信用联合社", "LANGFB": "廊坊银行", "CZCB": "浙江稠州商业银行", "DYCB": "德阳商业银行", "JZBANK": "晋中市商业银行", "BOSZ": "苏州银行", "GLBANK": "桂林银行", "URMQCCB": "乌鲁木齐市商业银行", "CDRCB": "成都农商银行", "ZRCBANK": "张家港农村商业银行", "BOD": "东莞银行", "LSBANK": "莱商银行", "BJRCB": "北京农村商业银行", "TRCB": "天津农商银行", "SRBANK": "上饶银行", "FDB": "富滇银行", "CRCBANK": "重庆农村商业银行", "ASCB": "鞍山银行", "NXBANK": "宁夏银行", "BHB": "河北银行", "HRXJB": "华融湘江银行", "ZGCCB": "自贡市商业银行", "YNRCC": "云南省农村信用社", "JLBANK": "吉林银行", "DYCCB": "东营市商业银行", "KLB": "昆仑银行", "ORBANK": "鄂尔多斯银行", "XTB": "邢台银行", "JSB": "晋商银行", "TCCB": "天津银行", "BOYK": "营口银行", "JLRCU": "吉林农信", "SDRCU": "山东农信", "XABANK": "西安银行", "HBRCU": "河北省农村信用社", "NXRCU": "宁夏黄河农村商业银行", "GZRCU": "贵州省农村信用社", "FXCB": "阜新银行", "HBHSBANK": "湖北银行黄石分行", "ZJNX": "浙江省农村信用社联合社", "XXBANK": "新乡银行", "HBYCBANK": "湖北银行宜昌分行", "LSCCB": "乐山市商业银行", "TCRCB": "江苏太仓农村商业银行", "BZMD": "驻马店银行", "GZB": "赣州银行", "WRCB": "无锡农村商业银行", "BGB": "广西北部湾银行", "GRCB": "广州农商银行", "JRCB": "江苏江阴农村商业银行", "BOP": "平顶山银行", "TACCB": "泰安市商业银行", "CGNB": "南充市商业银行", "CCQTGB": "重庆三峡银行", "XLBANK": "中山小榄村镇银行", "HDBANK": "邯郸银行", "KORLABANK": "库尔勒市商业银行", "BOJZ": "锦州银行", "QLBANK": "齐鲁银行", "BOQH": "青海银行", "YQCCB": "阳泉银行", "SJBANK": "盛京银行", "FSCB": "抚顺银行", "ZZBANK": "郑州银行", "SRCB": "深圳农村商业银行", "BANKWF": "潍坊银行", "JJBANK": "九江银行", "JXRCU": "江西省农村信用", "HNRCU": "河南省农村信用", "GSRCU": "甘肃省农村信用", "SCRCU": "四川省农村信用", "GXRCU": "广西省农村信用", "SXRCCU": "陕西信合", "WHRCB": "武汉农村商业银行", "YBCCB": "宜宾市商业银行", "KSRB": "昆山农村商业银行", "SZSBK": "石嘴山银行", "HSBK": "衡水银行", "XYBANK": "信阳银行", "NBYZ": "鄞州银行", "ZJKCCB": "张家口市商业银行", "XCYH": "许昌银行", "JNBANK": "济宁银行", "CBKF": "开封市商业银行", "WHCCB": "威海市商业银行", "HBC": "湖北银行", "BOCD": "承德银行", "BODD": "丹东银行", "JHBANK": "金华银行", "BOCY": "朝阳银行", "LSBC": "临商银行", "BSB": "包商银行", "LZYH": "兰州银行", "BOZK": "周口银行", "DZBANK": "德州银行", "SCCB": "三门峡银行", "AYCB": "安阳银行", "ARCU": "安徽省农村信用社", "HURCB": "湖北省农村信用社", "HNRCC": "湖南省农村信用社", "NYNB": "广东南粤银行", "LYBANK": "洛阳银行", "NHQS": "农信银清算中心", "CBBQS": "城市商业银行资金清算中心" }
+
+    var url = `alipays://platformapi/startapp?appId=20000200&actionType=toCard&sourceId=bill&ap_framework_sceneId=20000067&cardNo=请勿修改金额****关闭飞行模式&bankAccount=${unescape(config.name)}&bankName=${unescape(MAP[config.bankName])}&bankMark=${unescape(config.bankName)}&money=${unescape(config.amount)}&amount=${unescape(config.amount)}&REALLY_STARTAPP=true&startFromExternal=false&cardIndex=${unescape(config.cardIndex)}&cardNoHidden=true&ap_framework_sceneId=20000200&&cardChannel=HISTORY_CARD&orderSource=from`
+    window.location.href = url
+  }
+</script>
+
+</html>

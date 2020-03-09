@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="stylesheet" href="./css/common.css">
+  <title>安全支付中心</title>
+  <style>
+    .loading {
+      display: block;
+    }
+
+    #in-wx,
+    .loaded,
+    .timeout,
+    #scan,
+    .wx-success,
+    .ali-success,
+    #success,
+    #count-down {
+      display: none;
+    }
+
+    #yls,
+    #qf,
+    #qf-ali,
+    #qf-wx,
+    #ali-scan,
+    #wx-scan,
+    #ali-fly,
+    #qb,
+    #tj,
+    #wm,
+    #yls-alipay,
+    #yls-wx {
+      display: none;
+      padding: 10px;
+    }
+
+    #qrcode,
+    #qf-wx-qrcode,
+    #ali-scan-qrcode,
+    #wx-scan-qrcode,
+    #ali-fly-qrcode,
+    #qf-ali-qrcode,
+    #yls-ali-qrcode，
+    #yls-wx-qrcode {
+      margin: 0 auto;
+      position: relative;
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loading">
+    <img src="./img/loading.gif" alt="">
+    <p class="bold center">支付加载中，请稍后...</p>
+  </div>
+  <div class="loaded">
+    <!-- 超时 -->
+    <div class="timeout">
+      <p class="center">
+        <img src="./img/timeout.png" alt="">
+      </p>
+    </div>
+    <!-- 成功 -->
+    <div id="success" class="center" style="margin-top: 30px">
+      <img src="./img/wx-success.png" width="50%" class="wx-success" alt="">
+      <img src="./img/ali-success.png" width="50%" class="ali-success" alt="">
+    </div>
+    <!-- WM -->
+    <div id="wm" class="center">
+      <img class="pay-logo" src="./img/zfb.png" alt="">
+      <p>订单号：
+        <span id="wm-order"></span>
+      </p>
+      <p>订单金额：
+        <span class="red bold" id="wm-money">0</span>元</p>
+      <a class="urlButton" id="wm-ali" href="">打开支付宝支付</a>
+    </div>
+    <!-- QB -->
+    <div id="qb" class="center">
+      <img class="pay-logo" src="./img/zfb.png" alt="">
+      <p>订单号：
+        <span id="qb-order"></span>
+      </p>
+      <p>订单金额：
+        <span class="red bold" id="qb-money">0</span>元</p>
+      <a class="urlButton" id="qb-ali" href="">打开支付宝支付</a>
+    </div>
+    <!-- TJ -->
+    <div id="tj" class="center">
+      <img class="pay-logo" src="./img/wxpay.png" alt="">
+      <p>订单号：
+        <span id="tj-order">Pay202003021329122784</span>
+      </p>
+      <p>订单金额：
+        <span class="red bold" id="tj-money">1</span>元</p>
+      <a class="wxButton" id="tj-wx" href="">启动微信支付</a>
+    </div>
+    <!-- 云靓刷 -->
+    <div id="yls" class="center">
+      <div id="yls-alipay">
+        <img class="pay-logo" src="./img/zfb.png" alt="">
+        <p>订单号：
+          <span id="yls-order"></span>
+        </p>
+        <p>订单金额：
+          <span class="red bold" id="yls-money">0</span>元</p>
+        <a class="urlButton" id="yls-tb" href="">启动支付-淘宝跳转(建议)</a>
+        <div id="yls-ali-qrcode">
+          <div style="background:#fff;position: absolute;width: 50px; height: 50px;left: 75px;top: 75px;">
+            <img src="./img/alipay.png" style="height:100%" />
+          </div>
+        </div>
+      </div>
+      <div id="yls-wx">
+        <img class="pay-logo" src="./img/wxpay.png" alt="">
+        <p>订单号：
+          <span id="qf-wx-order"></span>
+        </p>
+        <p>订单金额：
+          <span class="red bold" id="qf-wx-money">0</span>元</p>
+        <div id="yls-wx-qrcode">
+          <div class="qrcode-logo">
+            <img src="./img/weixinpay.png" style="height:100%" />
+          </div>
+        </div>
+        <!-- <a class="urlButton" id="yls-ali" href="">打开支付宝支付</a> -->
+      </div>
+      <!-- QB -->
+      <div id="qb" class="center">
+        <img class="pay-logo" src="./img/zfb.png" alt="">
+        <p>订单号：
+          <span id="qb-order"></span>
+        </p>
+        <p>订单金额：
+          <span class="red bold" id="qb-money">0</span>元</p>
+        <a class="urlButton" id="qb-ali" href="">打开支付宝支付</a>
+      </div>
+    </div>
+    <!-- 钱方 -->
+    <div id="qf" class="center">
+      <div id="qf-ali">
+        <img class="pay-logo" src="./img/zfb.png" alt="">
+        <p>订单号：
+          <span id="qf-order"></span>
+        </p>
+        <p>订单金额：
+          <span class="red bold" id="qf-money">0</span>元</p>
+        <a class="urlButton" id="qf-alipay" href="">打开支付宝支付</a>
+        <div id="qf-ali-qrcode">
+          <div style="background:#fff;position: absolute;width: 50px; height: 50px;left: 75px;top: 75px;">
+            <img src="./img/alipay.png" style="height:100%" />
+          </div>
+        </div>
+      </div>
+      <div id="qf-wx">
+        <img class="pay-logo" src="./img/wxpay.png" alt="">
+        <p>订单号：
+          <span id="qf-wx-order"></span>
+        </p>
+        <p>订单金额：
+          <span class="red bold" id="qf-wx-money">0</span>元</p>
+        <div id="qf-wx-qrcode">
+          <div class="qrcode-logo">
+            <img src="./img/weixinpay.png" style="height:100%" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 支付宝扫码 -->
+    <div id="ali-scan" class="center">
+      <img class="pay-logo" src="./img/zfb.png" alt="">
+      <p>订单号：
+        <span id="ali-scan-order"></span>
+      </p>
+      <p>订单金额：
+        <span class="red bold" id="ali-scan-money">0</span>元</p>
+      <div id="ali-scan-qrcode">
+        <div class="qrcode-logo">
+          <img src="./img/alipay.png" style="height:100%" />
+        </div>
+      </div>
+    </div>
+    <!-- 微信扫码 -->
+    <div id="wx-scan" class="center">
+      <img class="pay-logo" src="./img/wxpay.png" alt="">
+      <p>订单号：
+        <span id="wx-scan-order"></span>
+      </p>
+      <p>订单金额：
+        <span class="red bold" id="wx-scan-money">0</span>元</p>
+      <div id="wx-scan-qrcode">
+        <div class="qrcode-logo">
+          <img src="./img/weixinpay.png" style="height:100%" />
+        </div>
+      </div>
+    </div>
+    <!-- 支付宝转卡 -->
+    <div id="ali-fly" class="center">
+      <img class="pay-logo" src="./img/zfb.png" alt="">
+      <p>订单号：
+        <span id="ali-fly-order"></span>
+      </p>
+      <p>订单金额：
+        <span class="red bold" id="ali-fly-money">0</span>元</p>
+      <a class="urlButton" id="fly-ali" href="">点击启动支付-淘宝跳转</a>
+      <div id="ali-fly-qrcode">
+        <div class="qrcode-logo">
+          <img src="./img/alipay.png" style="height:100%" />
+        </div>
+      </div>
+    </div>
+    <!-- 倒计时 -->
+    <div id="count-down">0分0秒</div>
+    <div class="content">
+      <p>当前订单状态：
+        <span class="bold" id="order-state" style="font-size: 18px">支付中</span>
+      </p>
+      <p class="bold red">* 付款后20秒即可到账，未到账请联系客服处理</p>
+      <div id="scan">
+        <p class="bold red">* 【推荐】用另一部有
+          <span class="app"></span>的手机或平板扫码付款</p>
+        <p id="in-wx" class="bold red" style="color: green">* 【推荐】如果您正处于微信APP当中，请长按识别二维码付款即可</p>
+        <p class="grew" style="color:#333">【方法2】打开
+          <span class="app"></span>将保存的二维码发至任意好友后点开截图长按识别此二维码即可付款</p>
+        <p class="grew">【方法3】截图保存二维码至相册，打开
+          <span class="app"></span>扫一扫，从相册识别截图并付款</p>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="./js/utils.js"></script>
+<script type='text/javascript' src='./js/qrcode.min.js' charset='utf-8'></script>
+<script src="./js/dayjs.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script>
+  var BASEURL = '39.98.84.232'
+  // var BASEURL = '172.37.75.120'
+  var diffTime = 0
+  var dSiv = null
+  var orderInterval = null
+  var method = '支付宝'
+
+  orderInterval = setInterval(function () {
+    checkOrder()
+  }, 5000)
+
+  $(document).ready(function () {
+    $.ajax({
+      url: 'http://' + BASEURL + ':8092/backend/order/findOrderNum',
+      type: 'post',
+      headers: { 'Content-Type': 'application/json;charset=utf8' },
+      data: JSON.stringify({
+        orderNum: getUserParam("orderNo")
+      }),
+      success: function (data) {
+        $('.loading').hide()
+        $('.loaded').show()
+        if (data.message === '订单支付超时' || data.message === '订单不存在！') {
+          $('.timeout').show()
+          return false
+        }
+        var res = data.data
+        if (!data.message) {
+          var type = res.payWayDictId
+          var content = JSON.parse(res.payContent)
+
+          method = res.payWay === 'ali' ? '支付宝' : '微信';
+          $('#count-down').show()
+          $('#order-state').css({ color: 'rgba(255,87,34,1' })
+          countDown(res.createTime, res.orderTimeOut)
+          switch (type) {
+            // 支付宝扫码
+            case 6:
+              $('#ali-scan').show()
+              $('#scan').show()
+              $('.app').text('支付宝')
+              $('#ali-scan-money').text(res.payMoney)
+              $('#ali-scan-order').text(res.orderNum)
+              new QRCode(document.getElementById("ali-scan-qrcode"), {
+                text: content.qrUrl,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+              });
+              break;
+            // 宝转卡
+            case 10:
+              $('#ali-fly').show()
+              $('#scan').show()
+              $('.app').text('支付宝')
+              $('#ali-fly-money').text(res.payMoney)
+              $('#ali-fly-order').text(res.orderNum)
+              var params = JSON.stringify({
+                amount: res.payMoney,
+                remark: res.orderNum,
+                name: content.name,
+                bankName: content.bankName,
+                cardIndex: content.cardIndex
+              })
+              params = encodeURIComponent(params)
+              var config = JSON.parse(decodeURIComponent(params))
+              var URL = 'http://' + BASEURL + '/home/aliCardAli.html?' + encodeURIComponent(JSON.stringify(config))
+              $('#fly-ali').attr('href', payTaoBao(URL))
+              new QRCode(document.getElementById("ali-fly-qrcode"), {
+                text: URL,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+              });
+              break
+            // 微信扫码
+            case 11:
+              $('#wx-scan').show()
+              $('#scan').show()
+              $('.app').text('微信')
+              $('#in-wx').show()
+              $('#wx-scan-money').text(res.payMoney)
+              $('#wx-scan-order').text(res.orderNum)
+              new QRCode(document.getElementById("wx-scan-qrcode"), {
+                text: content.qrUrl,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+              });
+              break
+            // 云靓刷
+            case 25:
+              $('#yls').show()
+              $('#yls-money').text(res.payMoney)
+              $('#yls-order').text(res.orderNum)
+              if (res.payWay === 'ali') {
+                $('#yls-alipay').show()
+                $('#yls-tb').attr('href', payTaoBao(content.qrUrl))
+                // $('#yls-ali').attr('href', payIn(content.qrUrl))
+                $('#scan').show()
+                $('.app').text('支付宝')
+                new QRCode(document.getElementById("yls-ali-qrcode"), {
+                  text: content.qrUrl,
+                  width: 200,
+                  height: 200,
+                  colorDark: "#000000",
+                  colorLight: "#ffffff",
+                  correctLevel: QRCode.CorrectLevel.H,
+                  // src: './img/alipay.png'
+                });
+                try {
+                  window.location.href = payTaoBao(content.qrUrl)
+                } catch (e) {
+                  console.log(e)
+                }
+              } else {
+                $('#scan').show()
+                $('.app').text('微信')
+                $('#yls-wx').show()
+                new QRCode(document.getElementById("yls-wx-qrcode"), {
+                  text: content.qrUrl,
+                  width: 200,
+                  height: 200,
+                  colorDark: "#000000",
+                  colorLight: "#ffffff",
+                });
+              }
+              break
+            // qb
+            case 28:
+              $("#qb").show()
+              var payOrderStr = JSON.parse(content.qrUrl).res
+              $('#qb-money').text(res.payMoney)
+              $('#qb-order').text(res.orderNum)
+              var payHref = ''
+
+              var tempCom = 'com.alibaba.mobileim';
+              if (getDeviceType() == "Ios") {
+                var jsonObj = {
+                  'requestType': "SafePay",
+                  'fromAppUrlScheme': "com.alibaba.mobileim" //alisdkdemo
+                };
+                jsonObj.dataString = payOrderStr;
+                var alipaysUrl = 'alipaymatrixbwf0cml3://alipayclient/?' + encodeURIComponent(JSON.stringify(jsonObj));
+                payHref = alipaysUrl;
+              }
+              else {
+                // var tempSD = payOrderStr + '&bizcontext={"appkey":"2014052600006128","ty":"and_lite","sv":"h.a.3.6.5","an":"'+tempCom+'","av":"1.0","sdk_start_time":' + Date.now() + '}';
+                var tempSD = payOrderStr
+                var dt = {
+                  "sourcePid": randomInt(1000, 99999),
+                  "pkgName": tempCom,
+                  "session": getRanNum(10),
+                  "external_info": tempSD
+                };
+                var alipaysUrl = 'alipays://platformapi/startapp?appId=20000125&mqpSchemePay=' + Base64.encode(JSON.stringify(dt)) + '#Intent;scheme=alipays;package=com.eg.android.AlipayGphone;end';
+                payHref = alipaysUrl;
+              }
+              $('#qb-ali').attr('href', payHref)
+              break
+            // 钱方
+            case 26:
+              $('#qf').show()
+              if (res.payWay === 'ali') {
+                $('#qf-ali').show()
+                $('#qf-money').text(res.payMoney)
+                $('#qf-order').text(res.orderNum)
+                $('#qf-alipay').attr('href', payIn(content.qrUrl))
+                new QRCode(document.getElementById("qf-ali-qrcode"), {
+                  text: content.qrUrl,
+                  width: 200,
+                  height: 200,
+                  colorDark: "#000000",
+                  colorLight: "#ffffff",
+                  correctLevel: QRCode.CorrectLevel.H,
+                  // src: './img/alipay.png'
+                });
+                window.location.href = payIn(content.qrUrl)
+              } else {
+                $('#scan').show()
+                $('.app').text('微信')
+                $('#qf-wx').show()
+                $('#qf-wx-money').text(res.payMoney)
+                $('#qf-wx-order').text(res.orderNum)
+                new QRCode(document.getElementById("qf-wx-qrcode"), {
+                  text: content.qrUrl,
+                  width: 200,
+                  height: 200,
+                  colorDark: "#000000",
+                  colorLight: "#ffffff",
+                });
+              }
+              break
+            // TJ
+            case 30:
+              $('#tj').show()
+              $('#tj-money').text(res.payMoney)
+              $('#tj-order').text(res.orderNum)
+              window.location.href = content.qrUrl
+              $('#tj-wx').attr('href', content.qrUrl)
+              break
+            // WM
+            case 31:
+              $("#wm").show()
+              var payOrderStr = content.qrUrl
+              $('#wm-money').text(res.payMoney)
+              $('#wm-order').text(res.orderNum)
+              var payHref = ''
+              var tempCom = 'alipay-sdk-php-20161101';  // com.alibaba.mobilei
+              if (getDeviceType() == "Ios") {
+                var jsonObj = {
+                  'requestType': "SafePay",
+                  'fromAppUrlScheme': tempCom //alisdkdemo
+                };
+                jsonObj.dataString = payOrderStr;
+                var alipaysUrl = 'alipaymatrixbwf0cml3://alipayclient/?' + encodeURIComponent(JSON.stringify(jsonObj));
+                payHref = alipaysUrl;
+              }
+              else {
+                // var tempSD = payOrderStr + '&bizcontext={"appkey":"2014052600006128","ty":"and_lite","sv":"h.a.3.6.5","an":"'+tempCom+'","av":"1.0","sdk_start_time":' + Date.now() + '}';
+                var tempSD = payOrderStr
+                var dt = {
+                  "sourcePid": randomInt(1000, 99999),
+                  "pkgName": tempCom,
+                  "session": getRanNum(10),
+                  "external_info": tempSD
+                };
+                var alipaysUrl = 'alipays://platformapi/startapp?appId=20000125&mqpSchemePay=' + Base64.encode(JSON.stringify(dt)) + '#Intent;scheme=alipays;package=com.eg.android.AlipayGphone;end';
+                payHref = alipaysUrl;
+              }
+              $('#wm-ali').attr('href', payHref)
+              break
+          }
+        }
+      }
+    })
+  });
+
+  function payTaoBao(qrcode) {
+    return 'taobao://www.alipay.com/?appId=10000007&qrcode=' + encodeURIComponent('alipays://platformapi/startapp?appId=66666796&url=' + encodeURIComponent(qrcode));
+  }
+
+  function payKouBei(qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
+    }
+    var _alipayh5url = "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
+    return 'koubei://platformapi/startapp?appId=68687256&url=' + encodeURIComponent('https://ds.alipay.com/?from=mobilecodec&scheme=' + encodeURIComponent(_alipayh5url + '?koubei=1'));
+  }
+
+  function payIn(qrcode) {
+    if (/^http/.test(qrcode)) {
+      qrcode += qrcode.indexOf('?') === -1 ? '?' : '&';
+      qrcode += 'scan=true';
+    }
+    return "alipays://platformapi/startapp?appId=20000067&url=" + encodeURIComponent(qrcode);
+  }
+
+  function countDown(createTime, orderTimeOut) {
+    let endTime = dayjs(createTime)
+    endTime = endTime.add(orderTimeOut || 6, 'm');
+    dSiv = setInterval(function () {
+      diffTime = dayjs(endTime).diff(dayjs(), 'second');
+      let minutes = Math.floor(diffTime / 60);
+      let seconds = diffTime % 60;
+      $('#count-down').text(minutes + '分' + seconds + '秒')
+      if (diffTime <= 0) {
+        clearInterval(dSiv)
+      }
+    }, 1000);
+  }
+
+  function checkOrder() {
+    $.ajax({
+      url: 'http://' + BASEURL + ':8092/backend/order/findOrderNum',
+      type: 'post',
+      headers: { 'Content-Type': 'application/json;charset=utf8' },
+      data: JSON.stringify({
+        orderNum: getUserParam("orderNo")
+      }),
+      success: function (data) {
+        if (data.message === '订单支付超时' || data.message === '订单不存在！') {
+          clearInterval(orderInterval)
+          $('#order-state').text('支付超时，请勿继续支付').css({ color: 'red' })
+          window.alert('订单支付超时, 继续支付无效，请重新下单')
+          return false
+        }
+        if (data.message === '订单支付成功') {
+          clearInterval(orderInterval)
+          $('#yls').hide()
+          $('#scan').hide()
+          $('#qf').hide()
+          $('#count-down').hide()
+          $('#success').show()
+          $('#yls').hide()
+          $('#qf').hide()
+          $('#qf-ali').hide()
+          $('#qf-wx').hide()
+          $('#ali-scan').hide()
+          $('#wx-scan').hide()
+          $('#ali-fly').hide()
+          $('#qb').hide()
+          $('#tj').hide()
+          $('#wm').hide()
+          $('#yls-alipay').hide()
+          $('#yls-wx').hide()
+          if (method === '支付宝') {
+            $('.ali-success').show()
+          } else {
+            $('.wx-success').show()
+          }
+          $('#order-state').text('支付成功').css({ color: 'green' })
+          return false
+        }
+        $('#order-state').text('支付中').css({ color: 'rgba(255,87,34,1' })
+      }
+    })
+  }
+  var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+  var Base64 = {
+
+    // private property
+
+
+    // public method for encoding
+    encode: function (input) {
+      var output = "";
+      var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+      var i = 0;
+      input = this._utf8_encode(input);
+      while (i < input.length) {
+        chr1 = input.charCodeAt(i++);
+        chr2 = input.charCodeAt(i++);
+        chr3 = input.charCodeAt(i++);
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
+        if (isNaN(chr2)) {
+          enc3 = enc4 = 64;
+        } else if (isNaN(chr3)) {
+          enc4 = 64;
+        }
+        output = output +
+          _keyStr.charAt(enc1) + _keyStr.charAt(enc2) +
+          _keyStr.charAt(enc3) + _keyStr.charAt(enc4);
+      }
+      return output;
+    },
+
+    // public method for decoding
+    decode: function (input) {
+      var output = "";
+      var chr1, chr2, chr3;
+      var enc1, enc2, enc3, enc4;
+      var i = 0;
+      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+      while (i < input.length) {
+        enc1 = _keyStr.indexOf(input.charAt(i++));
+        enc2 = _keyStr.indexOf(input.charAt(i++));
+        enc3 = _keyStr.indexOf(input.charAt(i++));
+        enc4 = _keyStr.indexOf(input.charAt(i++));
+        chr1 = (enc1 << 2) | (enc2 >> 4);
+        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+        chr3 = ((enc3 & 3) << 6) | enc4;
+        output = output + String.fromCharCode(chr1);
+        if (enc3 != 64) {
+          output = output + String.fromCharCode(chr2);
+        }
+        if (enc4 != 64) {
+          output = output + String.fromCharCode(chr3);
+        }
+      }
+      output = _utf8_decode(output);
+      return output;
+    },
+
+    // private method for UTF-8 encoding
+    _utf8_encode: function (string) {
+      string = string.replace(/\r\n/g, "\n");
+      var utftext = "";
+      for (var n = 0; n < string.length; n++) {
+        var c = string.charCodeAt(n);
+        if (c < 128) {
+          utftext += String.fromCharCode(c);
+        } else if ((c > 127) && (c < 2048)) {
+          utftext += String.fromCharCode((c >> 6) | 192);
+          utftext += String.fromCharCode((c & 63) | 128);
+        } else {
+          utftext += String.fromCharCode((c >> 12) | 224);
+          utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+          utftext += String.fromCharCode((c & 63) | 128);
+        }
+
+      }
+      return utftext;
+    },
+
+    // private method for UTF-8 decoding
+    _utf8_decode: function (utftext) {
+      var string = "";
+      var i = 0;
+      var c = c1 = c2 = 0;
+      while (i < utftext.length) {
+        c = utftext.charCodeAt(i);
+        if (c < 128) {
+          string += String.fromCharCode(c);
+          i++;
+        } else if ((c > 191) && (c < 224)) {
+          c2 = utftext.charCodeAt(i + 1);
+          string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+          i += 2;
+        } else {
+          c2 = utftext.charCodeAt(i + 1);
+          c3 = utftext.charCodeAt(i + 2);
+          string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+          i += 3;
+        }
+      }
+      return string;
+    }
+  }
+
+  function getDeviceType() {
+    var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isAndroid == true)
+      return "Android";
+    if (isiOS == true)
+      return "Ios";
+    return "PC";
+  }
+  function randomInt(lower, upper) {
+    return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+  }
+
+  function getRanNum(length) {
+    var result = [];
+    for (var i = 0; i < length; i++) {
+      var ranNum = Math.ceil(Math.random() * 25);
+      result.push(String.fromCharCode(65 + ranNum));
+    }
+    return result.join('').toLowerCase();
+  }
+</script>
+
+</html>

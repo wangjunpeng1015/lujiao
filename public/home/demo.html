@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>收银台</title>
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+  <link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+
+  <style>
+    .pay-icon {
+      position: relative;
+      top: 4px;
+    }
+
+    .none {
+      display: none;
+    }
+    .item-title{
+      width: 45%!important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-group">
+    <div class="page page-current">
+      <header class="bar bar-nav">
+        <img src="./logo 2.png" alt="" class="pull-left" style="height: 44px">
+        <!-- <a class="icon icon-left pull-left"></a> -->
+        <!-- <a class="icon icon-refresh pull-right"></a> -->
+        <h1 class="title">支付收银台</h1>
+      </header>
+      <div class="list-block" style="margin-bottom: 0">
+        <ul>
+          <li>
+            <div class="item-content">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner" style="padding-bottom: 0">
+                <div class="item-title label">充值金额</div>
+                <div class="item-input">
+                  <input id="amount_val" type="number" value="1" placeholder="请输入或选择充值金额">
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="item-content">
+          <p onclick="chooseAmount(1)">
+            <a href="#" class="button button-round">1元</a>
+          </p>
+          <p onclick="chooseAmount(50)">
+            <a href="#" class="button button-round">50元</a>
+          </p>
+          <p onclick="chooseAmount(200)">
+            <a href="#" class="button button-round">200元</a>
+          </p>
+          <p onclick="chooseAmount(500)">
+            <a href="#" class="button button-round">500元</a>
+          </p>
+          <p onclick="chooseAmount(1000)">
+            <a href="#" class="button button-round">1000元</a>
+          </p>
+        </div>
+      </div>
+      <div class="popup popup-about">
+        <h5 class="content-padded">订单已创建</h5>
+        <h5 class="content-padded">
+          <a href="" id="pay-link">点击支付</a>
+        </h5>
+      </div>
+      <h5 class="content-padded">在线支付</h5>
+      <div class="list-block" style="margin:0">
+        <ul>
+          <li>
+            <div class="item-content item-link" onclick="pay(31, 'ali')">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title label">
+                  <img class="pay-icon" src="./img/alipay.png" height="18" alt="">
+                  <span>WM支付宝原生</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-link" onclick="pay(30, 'wx')">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title label">
+                  <img class="pay-icon" src="./img/weixin.png" alt="" height="18">
+                  <span>TJ微信原生</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-link wx-methods">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title label">
+                  <img class="pay-icon" src="./img/alipay.png" alt="" height="18">
+                  <span>QB支付宝原生</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-link wx-methods" onclick="pay(25, 'ali', 'ali')">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title label">
+                  <img class="pay-icon" src="./img/alipay.png" alt="" height="18">
+                  <span>云靓刷支付宝</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-link wx-methods" onclick="pay(25, 'wx', 'wx')">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title label">
+                  <img class="pay-icon" src="./img/weixin.png" alt="" height="18">
+                  <span>云靓刷微信</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-link wx-methods" onclick="pay(26, 'ali', 'ali')">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title label">
+                  <img class="pay-icon" src="./img/alipay.png" alt="" height="18">
+                  <span>钱方支付宝</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-link wx-methods" onclick="pay(26, 'wx', 'wx')">
+              <div class="item-media">
+                <i class="icon icon-form-name"></i>
+              </div>
+              <div class="item-inner">
+                <div class="item-title label">
+                  <img class="pay-icon" src="./img/weixin.png" alt="" height="18">
+                  <span>钱方微信</span>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+              <div class="item-content item-link wx-methods" onclick="pay(6, 'ali')">
+                <div class="item-media">
+                  <i class="icon icon-form-name"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title label">
+                    <img class="pay-icon" src="./img/alipay.png" alt="" height="18">
+                    <span>支付宝扫码</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="item-content item-link wx-methods" onclick="pay(11, 'wx')">
+                <div class="item-media">
+                  <i class="icon icon-form-name"></i>
+                </div>
+                <div class="item-inner">
+                  <div class="item-title label">
+                    <img class="pay-icon" src="./img/weixin.png" alt="" height="18">
+                    <span>微信扫码</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+        </ul>
+      </div>
+
+    </div>
+    <input type="text" id="orderNo" style="position: absolute;right: 1000px;top: 1000px;" />
+  </div>
+  <script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
+  <script type='text/javascript' src='//g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+  <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+  <script type='text/javascript' src='//g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+  <!-- <script type="text/javascript" src="//path-to/bower_components/crypto-js/crypto-js.js"></script> -->
+  <!-- <script type='text/javascript' src='https://cdn.bootcss.com/crypto-js/3.1.9-1/aes.min.js' charset='utf-8'></script> -->
+  <script type='text/javascript' src='./js/md5.js' charset='utf-8'></script>
+  <script type='text/javascript' src='./js/utils.js' charset='utf-8'></script>
+  <script src="./js/demo1.js"></script>
+</body>
+
+</html>

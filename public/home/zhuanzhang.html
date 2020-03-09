@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title></title>
+  <link rel="stylesheet" href="./common.css">
+  <style>
+    [v-cloak] {
+      display: none;
+    }
+    body{
+      margin:0;
+      padding: 0;
+    }
+    .zfb {
+      width: 60%;
+    }
+
+    #qrcode {
+      margin: 10px auto;
+      width: 250px;
+      height: 250px;
+    }
+    #ylsUrl, #jfUrl, #zzUrl, .button{
+      background: #00a7ef;
+      color: #fff;
+      display: block;
+      width: 70%;
+      margin: 0.5rem auto;
+      padding: 0.5rem;
+      border-radius: 0.3rem;
+      margin-bottom: 1.5rem;
+    }
+    .scan-tip {
+      margin: 10px auto;
+    }
+    .paytext {
+      font-weight: bold;
+      font-size: 16px;
+      margin: 5px auto;
+      line-height: 20px;
+      background: #ff5e64;
+      text-align: center;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <div v-show="!isAli">
+      <a id="zzUrl" href="">打开支付宝支付</a>
+      <h2 class="red">￥{{ config.amount }}</h2>
+      <div id='qrcode'></div>
+      <div class="center font-13">
+        <p>订单号：
+          <span class="red">{{config.remark}}</span>
+        </p>
+        <div class="paytext">支付时请不要修改金额以及备注，否则无法到账</div>
+        <p>请将二维码保存相册</p>
+        <p>并进行扫码支付</p>
+        <p>请按金额支付
+          <span class="red">{{config.amount}}元</span>
+        </p>
+        <p class="red">请按上面金额支付，否则会不到账!!!</p>
+        <p class="red">二维码仅本次使用</p>
+        <p class="red">重复支付不会到账</p>
+      </div>
+    </div>
+    <div v-show="isAli" style="background:#fff;padding: 20px 0 ">
+      <img class="scan-tip" src="./alipay.png" width="30%" alt="">
+      <p style="font-size:16px;font-weight:bold">温馨提示</p>
+      <p style="font-size: 14px;color: #999">请耐心等待授权</p>
+      <p style="margin-top: 20px">剩余授权时间: {{time / 1000}} 秒</p>
+      <div>
+        <button class="button" v-on:click="pay" :disabled="isDisabled" :style="{background: isDisabled ? '#ccc' : '#00a7ef'}">{{btnText}}</button>
+      </div>
+    </div>
+  </div>
+</body>
+<script src="./vue.min.js"></script>
+<script src="./polyfill.min.js"></script>
+<script type='text/javascript' src='./qrcode.min1.js' charset='utf-8'></script>
+<script>
+
+  function ready(callback) {
+    // 如果jsbridge已经注入则直接调用
+    if (window.AlipayJSBridge) {
+      callback && callback();
+    } else {
+      // 如果没有注入则监听注入的事件
+      document.addEventListener('AlipayJSBridgeReady', callback, false);
+    }
+  }
+  let payVM = new Vue({
+    el: '#app',
+    data() {
+      return {
+        url: '',
+        config: {},
+        isAli: false,
+        btnText: '授权中, 请稍后...',
+        isDisabled: true,
+        time: 13000
+      }
+    },
+    mounted() {
+      let that = this;
+      let params = window.location.search.split('?')[1]
+      const config = this.config = JSON.parse(unescape(params))
+      var selfUrl = window.location.href.replace('localhost', '192.168.0.102')
+      var url = `alipays://platformapi/startapp?appId=20000067&url=${selfUrl}`
+      var aElement = document.getElementById('zzUrl')
+      aElement.setAttribute('href', url)
+
+      if (window.AlipayJSBridge) {
+        that.isAli = true
+        that.url = `alipays://platformapi/startapp?appId=09999988&actionType=toAccount&goBack=NO&amount=${config.amount}&userId=${config.pId}&memo=${config.remark}`
+        AlipayJSBridge.call('setTitle', {
+          title: '自助充值',
+          subtitle: '安全支付'
+        });
+        var t = setInterval(() => {
+        if (this.time > 0) {
+          this.time = this.time - 1000
+        }  else {
+          clearInterval(t)
+          this.btnText = '支付'
+          this.isDisabled = false
+        }
+      }, 1000)
+        // this.pay();
+      } else {
+        // window.location.href = `alipays://platformapi/startapp?appId=20000067&url=${window.location.origin}/home/zhuanzhang.html${window.location.search}`
+        window.location.href = url
+        var self = this
+        ready(function () {
+          self.isAli = true
+          AlipayJSBridge.call('setTitle', {
+            title: '自助充值',
+            subtitle: '安全支付'
+          });
+        })
+        // document.addEventListener('AlipayJSBridgeReady', this.pay, false);
+      }
+
+
+
+
+      setTimeout(() => {
+        new QRCode(document.getElementById("qrcode"), {
+          text: url,
+          width: 250,
+          height: 250,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+        });
+      }, 500)
+
+    },
+    methods: {
+      pay() {
+
+        let that = this;
+        try {
+          const config = this.config
+          if (!config.amount || !config.remark || !config.pId) {
+            throw ('参数错误,请检查参数')
+          }
+          const u = navigator.userAgent;
+          alert(JSON.stringify(u))
+
+          const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+          // const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+          if (isAndroid) {
+            let data = {
+              actionType: 'scan',
+              u: config.pId,
+              a: config.amount,
+              m: config.remark,
+              biz_data: {
+                s: 'money',
+                u: config.pId,
+                a: config.amount,
+                m: config.remark
+              }
+            }
+            AlipayJSBridge.call('startApp', {
+              appId: '20000123',
+              param: data
+            }, function (e) {
+              if (e.errorCode > 0) {
+                alert(JSON.stringify(a));
+              }
+            });
+          } else {
+            location.href = that.url
+          }
+        } catch (err) {
+          alert(err)
+        }
+      }
+    },
+  })
+
+</script>
+
+</html>

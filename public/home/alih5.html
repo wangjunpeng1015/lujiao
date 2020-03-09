@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+  _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+  var Base64 = {
+
+  }
+  var Base64 = {
+
+    // private property
+
+
+    // public method for encoding
+    encode: function (input) {
+      var output = "";
+      var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+      var i = 0;
+      input = this._utf8_encode(input);
+      while (i < input.length) {
+        chr1 = input.charCodeAt(i++);
+        chr2 = input.charCodeAt(i++);
+        chr3 = input.charCodeAt(i++);
+        enc1 = chr1 >> 2;
+        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+        enc4 = chr3 & 63;
+        if (isNaN(chr2)) {
+          enc3 = enc4 = 64;
+        } else if (isNaN(chr3)) {
+          enc4 = 64;
+        }
+        output = output +
+          _keyStr.charAt(enc1) + _keyStr.charAt(enc2) +
+          _keyStr.charAt(enc3) + _keyStr.charAt(enc4);
+      }
+      return output;
+    },
+
+    // public method for decoding
+    decode: function (input) {
+      var output = "";
+      var chr1, chr2, chr3;
+      var enc1, enc2, enc3, enc4;
+      var i = 0;
+      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+      while (i < input.length) {
+        enc1 = _keyStr.indexOf(input.charAt(i++));
+        enc2 = _keyStr.indexOf(input.charAt(i++));
+        enc3 = _keyStr.indexOf(input.charAt(i++));
+        enc4 = _keyStr.indexOf(input.charAt(i++));
+        chr1 = (enc1 << 2) | (enc2 >> 4);
+        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+        chr3 = ((enc3 & 3) << 6) | enc4;
+        output = output + String.fromCharCode(chr1);
+        if (enc3 != 64) {
+          output = output + String.fromCharCode(chr2);
+        }
+        if (enc4 != 64) {
+          output = output + String.fromCharCode(chr3);
+        }
+      }
+      output = _utf8_decode(output);
+      return output;
+    },
+
+    // private method for UTF-8 encoding
+    _utf8_encode:function (string) {
+      string = string.replace(/\r\n/g, "\n");
+      var utftext = "";
+      for (var n = 0; n < string.length; n++) {
+        var c = string.charCodeAt(n);
+        if (c < 128) {
+          utftext += String.fromCharCode(c);
+        } else if ((c > 127) && (c < 2048)) {
+          utftext += String.fromCharCode((c >> 6) | 192);
+          utftext += String.fromCharCode((c & 63) | 128);
+        } else {
+          utftext += String.fromCharCode((c >> 12) | 224);
+          utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+          utftext += String.fromCharCode((c & 63) | 128);
+        }
+
+      }
+      return utftext;
+    },
+
+    // private method for UTF-8 decoding
+    _utf8_decode: function (utftext) {
+      var string = "";
+      var i = 0;
+      var c = c1 = c2 = 0;
+      while (i < utftext.length) {
+        c = utftext.charCodeAt(i);
+        if (c < 128) {
+          string += String.fromCharCode(c);
+          i++;
+        } else if ((c > 191) && (c < 224)) {
+          c2 = utftext.charCodeAt(i + 1);
+          string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+          i += 2;
+        } else {
+          c2 = utftext.charCodeAt(i + 1);
+          c3 = utftext.charCodeAt(i + 2);
+          string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+          i += 3;
+        }
+      }
+      return string;
+    }
+  }
+
+  function getDeviceType() {
+    var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isAndroid == true)
+      return "Android";
+    if (isiOS == true)
+      return "Ios";
+    return "PC";
+  }
+  function randomInt(lower, upper) {
+    return Math.floor(Math.random() * (upper - lower + 1)) + lower;
+  }
+
+  function getRanNum(length) {
+    var result = [];
+    for (var i = 0; i < length; i++) {
+      var ranNum = Math.ceil(Math.random() * 25);
+      result.push(String.fromCharCode(65 + ranNum));
+    }
+    return result.join('').toLowerCase();
+  }
+  let payOrderStr = "version=1.0&sign_type=RSA2&notify_url=https%3A%2F%2Fpay.qiushibaike.com%2Fapi%2Fwallet%2Fali_pay_callback&format=JSON&timestamp=2020-02-28+00%3A54%3A15&charset=utf-8&sign=VAkf49SgPpODP3tFNOQy8oRwW%2BqdhBPICPhBUrxKd7ILGg7w01zyqB58Z5UmBQE059YACUR7nGjlgufdFHzdfNYQ%2BhIoZgiEE%2BoCspfKOXjoqV71LKk0qxZGjg3SAx%2FHHN57%2BKGYIUi94DcgRT22N0uFjZh%2Fq8Ok7zjJR0K71kTqbndla%2BRP4bc9PaXdDGcmw7LVD86NRV8asom2IA%2BXKZv8xmkJyZjXgYphZjArAx9%2F7lb8WGkOt919oehN8d3uQPegGrHKq9fAz2kBdOptNlV4eaJ57dzLlnd8rP8agYXhIPt4XVOxnCksk1t8vlqEFTi1kYvQppmTpl3VQLSEdg%3D%3D&app_id=2019012163109220&biz_content=%7B%22passback_params%22%3A+%22%7B%5C%22a%5C%22%3A+1%2C+%5C%22p%5C%22%3A+2099814%2C+%5C%22c%5C%22%3A+50%2C+%5C%22r%5C%22%3A+296118745242189547%2C+%5C%22u%5C%22%3A+43467584%7D%22%2C+%22total_amount%22%3A+%220.10%22%2C+%22timeout_express%22%3A+%221d%22%2C+%22out_trade_no%22%3A+%222a9cf090009f477e2209b81a07428e31%22%2C+%22product_code%22%3A+%22QUICK_MSECURITY_PAY%22%2C+%22subject%22%3A+%22%5Cu7cd7%5Cu767e%5Cu7ea2%5Cu5305%5Cu652f%5Cu4ed8%22%7D&method=alipay.trade.app.pay"
+  function getOrderStr() {
+    tempCom = 'com.alibaba.mobileim';
+    if (getDeviceType() == "Ios") {
+      var jsonObj = {
+        'requestType': "SafePay",
+        'fromAppUrlScheme': "com.alibaba.mobileim" //alisdkdemo
+      };
+      jsonObj.dataString = payOrderStr;
+      var alipaysUrl = 'alipaymatrixbwf0cml3://alipayclient/?' + encodeURIComponent(JSON.stringify(jsonObj));
+      return alipaysUrl;
+    }
+    else {
+      // var tempSD = payOrderStr + '&bizcontext={"appkey":"2014052600006128","ty":"and_lite","sv":"h.a.3.6.5","an":"'+tempCom+'","av":"1.0","sdk_start_time":' + Date.now() + '}';
+      var tempSD = payOrderStr
+      var dt = {
+        "sourcePid": randomInt(1000, 99999),
+        "pkgName": tempCom,
+        "session": getRanNum(10),
+        "external_info": tempSD
+      };
+      var alipaysUrl = 'alipays://platformapi/startapp?appId=20000125&mqpSchemePay=' + Base64.encode(JSON.stringify(dt)) + '#Intent;scheme=alipays;package=com.eg.android.AlipayGphone;end';
+      return alipaysUrl;
+    }
+  }
+  function goPay() {
+    try {
+      window.location.href = getOrderStr();
+
+    } catch (e) {
+      console.log('error', e.message, e.line);
+    }
+  }
+  window.onload = function () {
+    goPay()
+
+  }
+
+</script>
+
+</html>
