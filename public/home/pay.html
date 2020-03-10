@@ -36,7 +36,7 @@
     #tj,
     #wm,
     #yls-alipay,
-    #yls-wx {
+    #yls-wx,#xe {
       display: none;
       padding: 10px;
     }
@@ -47,8 +47,7 @@
     #wx-scan-qrcode,
     #ali-fly-qrcode,
     #qf-ali-qrcode,
-    #yls-ali-qrcode，
-    #yls-wx-qrcode {
+    #yls-ali-qrcode， #yls-wx-qrcode {
       margin: 0 auto;
       position: relative;
       width: 200px;
@@ -73,6 +72,16 @@
     <div id="success" class="center" style="margin-top: 30px">
       <img src="./img/wx-success.png" width="50%" class="wx-success" alt="">
       <img src="./img/ali-success.png" width="50%" class="ali-success" alt="">
+    </div>
+    <!-- 小二 -->
+    <div id="xe" class="center">
+      <img class="pay-logo" src="./img/zfb.png" alt="">
+      <p>订单号：
+        <span id="xe-order"></span>
+      </p>
+      <p>订单金额：
+        <span class="red bold" id="xe-money">0</span>元</p>
+      <a class="urlButton" id="xe-ali" href="">打开支付宝支付</a>
     </div>
     <!-- WM -->
     <div id="wm" class="center">
@@ -476,6 +485,38 @@
                 payHref = alipaysUrl;
               }
               $('#wm-ali').attr('href', payHref)
+              break
+            // 小二
+            case 31:
+              $("#xe").show()
+              var payOrderStr = content.qrUrl
+              $('#xe-money').text(res.payMoney)
+              $('#xe-order').text(res.orderNum)
+              payOrderStr = payOrderStr.replace('{', '').replace('}', '').split(', ').join('&')
+              var payHref = ''
+              var tempCom = 'alipay-sdk-php-20161101';  // com.alibaba.mobilei
+              if (getDeviceType() == "Ios") {
+                var jsonObj = {
+                  'requestType': "SafePay",
+                  'fromAppUrlScheme': tempCom //alisdkdemo
+                };
+                jsonObj.dataString = payOrderStr;
+                var alipaysUrl = 'alipaymatrixbwf0cml3://alipayclient/?' + encodeURIComponent(JSON.stringify(jsonObj));
+                payHref = alipaysUrl;
+              }
+              else {
+                // var tempSD = payOrderStr + '&bizcontext={"appkey":"2014052600006128","ty":"and_lite","sv":"h.a.3.6.5","an":"'+tempCom+'","av":"1.0","sdk_start_time":' + Date.now() + '}';
+                var tempSD = payOrderStr
+                var dt = {
+                  "sourcePid": randomInt(1000, 99999),
+                  "pkgName": tempCom,
+                  "session": getRanNum(10),
+                  "external_info": tempSD
+                };
+                var alipaysUrl = 'alipays://platformapi/startapp?appId=20000125&mqpSchemePay=' + Base64.encode(JSON.stringify(dt)) + '#Intent;scheme=alipays;package=com.eg.android.AlipayGphone;end';
+                payHref = alipaysUrl;
+              }
+              $('#xe-ali').attr('href', payHref)
               break
           }
         }

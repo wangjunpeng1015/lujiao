@@ -57,6 +57,7 @@ module.exports = {
         // '/': {
 
         target: `http://39.98.84.232:8092`,
+        // target: `http://172.37.75.120:8092`,
         changeOrigin: true,
         pathRewrite: {
           '^/backend': ''

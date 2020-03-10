@@ -5,6 +5,12 @@
       //-   el-select(v-model='form.payWayDictId', placeholder='开启通道' style="width:100%")
       //-     el-option(v-for='item in payWay', :key='item.id', :label='item.dictValueDisplayName', :value='item.id')
       //- 微陌
+      div(v-if="form.payWayDictId == 32")
+        el-form-item(label='小二账号', prop='account')
+          el-input(v-model='form.contentObj.account' placeholder="请填写小二账号")
+        el-form-item(label='小二密码', prop='pwd')
+          el-input(v-model='form.contentObj.pwd' placeholder="请填写收小二密码")
+      //- 微陌
       div(v-if="form.payWayDictId == 31")
         el-form-item(label='WM账号', prop='account')
           el-input(v-model='form.contentObj.account' placeholder="请填写WM账号")

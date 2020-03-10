@@ -130,19 +130,19 @@ export const constantRoutes = [
 ]
 export const asyncRoutes = [
   {
-    path: '/wmPay',
+    path: '/xiaoerPay',
     component: Layout,
-    redirect: '/wmPay/orders',
-    name: 'wmPay',
+    redirect: '/xiaoerPay/orders',
+    name: 'xiaoerPay',
     meta: {
-      title: 'WM原生通道(ali个码)',
+      title: '小二原生',
       icon: 'iconfont iconshangjia',
     },
     children: [
       {
         path: 'set',
         name: 'set',
-        component: () => import('@/views/wmPay/set'),
+        component: () => import('@/views/xiaoerPay/set'),
         meta: {
           title: '通道配置',
           icon: 'iconfont iconzhifubao1',
@@ -152,108 +152,140 @@ export const asyncRoutes = [
       {
         path: 'orders',
         name: 'orders',
-        component: () => import('@/views/wmPay/Orders'),
+        component: () => import('@/views/xiaoerPay/Orders'),
         meta: {
-          title: 'WM个码原生订单',
+          title: '小二原生订单',
           icon: 'el-icon-s-order',
         }
       }
     ]
   },
-  {
-    path: '/tjPay',
-    component: Layout,
-    redirect: '/tjPay/orders',
-    name: 'tjPay',
-    meta: {
-      title: 'TJ微信原生通道(wx个码)',
-      icon: 'iconfont iconshangjia',
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/tjPay/set'),
-        meta: {
-          title: '微信通道配置',
-          icon: 'iconfont iconzhifubao1',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/tjPay/Orders'),
-        meta: {
-          title: 'TJ微信红包订单',
-          icon: 'el-icon-s-order',
-        }
-      }
-    ]
-  },
-  {
-    path: '/qbPay',
-    component: Layout,
-    redirect: '/qbPay/orders',
-    name: 'qbPay',
-    meta: {
-      title: 'QB红包通道(ali个码)',
-      icon: 'iconfont iconshangjia',
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/qbPay/set'),
-        meta: {
-          title: '支付宝通道配置',
-          icon: 'iconfont iconzhifubao1',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/qbPay/Orders'),
-        meta: {
-          title: 'QB红包订单',
-          icon: 'el-icon-s-order',
-        }
-      }
-    ]
-  },
-  {
-    path: '/aliWeb',
-    component: Layout,
-    redirect: '/aliWeb/orders',
-    name: 'aliWeb',
-    meta: {
-      title: '支付宝手机网站支付',
-      icon: 'iconfont iconshangjia',
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/aliWeb/set'),
-        meta: {
-          title: '通道配置',
-          icon: 'iconfont iconzhifubao1',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/aliWeb/Orders'),
-        meta: {
-          title: '支付宝手机网站订单',
-          icon: 'el-icon-s-order',
-        }
-      }
-    ]
-  },
-  云靓刷
+
+  // {
+  //   path: '/wmPay',
+  //   component: Layout,
+  //   redirect: '/wmPay/orders',
+  //   name: 'wmPay',
+  //   meta: {
+  //     title: 'WM原生通道(ali个码)',
+  //     icon: 'iconfont iconshangjia',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'set',
+  //       name: 'set',
+  //       component: () => import('@/views/wmPay/set'),
+  //       meta: {
+  //         title: '通道配置',
+  //         icon: 'iconfont iconzhifubao1',
+  //         roles: [1, 3, 4],
+  //       }
+  //     },
+  //     {
+  //       path: 'orders',
+  //       name: 'orders',
+  //       component: () => import('@/views/wmPay/Orders'),
+  //       meta: {
+  //         title: 'WM个码原生订单',
+  //         icon: 'el-icon-s-order',
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/tjPay',
+  //   component: Layout,
+  //   redirect: '/tjPay/orders',
+  //   name: 'tjPay',
+  //   meta: {
+  //     title: 'TJ微信原生通道(wx个码)',
+  //     icon: 'iconfont iconshangjia',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'set',
+  //       name: 'set',
+  //       component: () => import('@/views/tjPay/set'),
+  //       meta: {
+  //         title: '微信通道配置',
+  //         icon: 'iconfont iconzhifubao1',
+  //         roles: [1, 3, 4],
+  //       }
+  //     },
+  //     {
+  //       path: 'orders',
+  //       name: 'orders',
+  //       component: () => import('@/views/tjPay/Orders'),
+  //       meta: {
+  //         title: 'TJ微信红包订单',
+  //         icon: 'el-icon-s-order',
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/qbPay',
+  //   component: Layout,
+  //   redirect: '/qbPay/orders',
+  //   name: 'qbPay',
+  //   meta: {
+  //     title: 'QB红包通道(ali个码)',
+  //     icon: 'iconfont iconshangjia',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'set',
+  //       name: 'set',
+  //       component: () => import('@/views/qbPay/set'),
+  //       meta: {
+  //         title: '支付宝通道配置',
+  //         icon: 'iconfont iconzhifubao1',
+  //         roles: [1, 3, 4],
+  //       }
+  //     },
+  //     {
+  //       path: 'orders',
+  //       name: 'orders',
+  //       component: () => import('@/views/qbPay/Orders'),
+  //       meta: {
+  //         title: 'QB红包订单',
+  //         icon: 'el-icon-s-order',
+  //       }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/aliWeb',
+  //   component: Layout,
+  //   redirect: '/aliWeb/orders',
+  //   name: 'aliWeb',
+  //   meta: {
+  //     title: '支付宝手机网站支付',
+  //     icon: 'iconfont iconshangjia',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'set',
+  //       name: 'set',
+  //       component: () => import('@/views/aliWeb/set'),
+  //       meta: {
+  //         title: '通道配置',
+  //         icon: 'iconfont iconzhifubao1',
+  //         roles: [1, 3, 4],
+  //       }
+  //     },
+  //     {
+  //       path: 'orders',
+  //       name: 'orders',
+  //       component: () => import('@/views/aliWeb/Orders'),
+  //       meta: {
+  //         title: '支付宝手机网站订单',
+  //         icon: 'el-icon-s-order',
+  //       }
+  //     }
+  //   ]
+  // },
+  // 云靓刷
   {
     path: '/ylsPay',
     component: Layout,
@@ -292,16 +324,7 @@ export const asyncRoutes = [
           title: '云靓刷订单',
           icon: 'el-icon-s-order',
         }
-      },
-      // {
-      //   path: 'introduce',
-      //   name: 'introduce',
-      //   component: () => import('@/views/ylsPay/Introduce'),
-      //   meta: {
-      //     title: '云靓刷通道介绍',
-      //     icon: 'el-icon-info',
-      //   }
-      // }
+      }
     ]
   },
   // 钱方H5
@@ -419,153 +442,6 @@ export const asyncRoutes = [
       }
     ]
   },
-  // 钱方
-  // {
-  //   path: '/personalCode',
-  //   component: Layout,
-  //   redirect: '/personalCode/orders',
-  //   name: 'personalCode',
-  //   meta: {
-  //     icon: 'iconfont iconshangjia',
-  //     title: '钱方固码通道',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'set',
-  //       name: 'set',
-  //       component: () => import('@/views/personalCode/set'),
-  //       meta: {
-  //         title: '通道配置',
-  //         icon: 'el-icon-s-tools',
-  //         roles: [1, 3, 4],
-  //       }
-  //     },
-  //     {
-  //       path: 'orders',
-  //       name: 'orders',
-  //       component: () => import('@/views/personalCode/orders'),
-  //       meta: {
-  //         title: '钱方固码订单',
-  //         icon: 'el-icon-s-order',
-  //       }
-  //     },
-  //     {
-  //       path: 'introduce',
-  //       name: 'introduce',
-  //       component: () => import('@/views/personalCode/Introduce'),
-  //       meta: {
-  //         title: '钱方通道介绍',
-  //         icon: 'el-icon-info',
-  //       }
-  //     }
-  //   ]
-  // },
-  // 宝转卡
-  {
-    path: '/aliCard',
-    component: Layout,
-    redirect: '/aliCard/orders',
-    name: 'personalCode',
-    meta: {
-      icon: 'iconfont iconshuaqiaqiapianyinhangqia',
-      title: '宝转卡通道',
-    },
-    children: [
-      {
-        path: 'set',
-        name: 'set',
-        component: () => import('@/views/aliCard/set'),
-        meta: {
-          title: '通道配置',
-          icon: 'el-icon-s-tools',
-          roles: [1, 3, 4],
-        }
-      },
-      {
-        path: 'orders',
-        name: 'orders',
-        component: () => import('@/views/aliCard/orders'),
-        meta: {
-          title: '宝转卡订单',
-          icon: 'iconfont iconshuaqiaqiapianyinhangqia',
-        }
-      }
-    ]
-  },
-  // 经费
-  // {
-  //   path: '/funds',
-  //   component: Layout,
-  //   redirect: '/funds/set',
-  //   name: 'funds',
-  //   meta: {
-  //     title: '经费通道',
-  //     icon: 'iconfont iconshuidi',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'set',
-  //       name: 'set',
-  //       component: () => import('@/views/Funds/Set'),
-  //       meta: {
-  //         title: '通道配置',
-  //         icon: 'el-icon-s-tools',
-  //         roles: [1, 3, 4],
-  //       }
-  //     },
-  //     {
-  //       path: 'orders',
-  //       name: 'orders',
-  //       component: () => import('@/views/Funds/Orders'),
-  //       meta: {
-  //         title: '经费订单',
-  //         icon: 'el-icon-s-order',
-  //       }
-  //     },
-  //     {
-  //       path: 'introduce',
-  //       name: 'introduce',
-  //       component: () => import('@/views/Funds/Introduce'),
-  //       meta: {
-  //         title: '经费模式介绍',
-  //         icon: 'el-icon-info',
-  //       }
-  //     }
-  //   ]
-  // },
-  // 转账
-  // {
-  //   path: '/transfer',
-  //   component: Layout,
-  //   redirect: '/transfer/set',
-  //   name: 'transfer',
-  //   meta: {
-  //     title: '转账码',
-  //     icon: 'iconfont iconzhuanzhang',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'set',
-  //       name: 'set',
-  //       component: () => import('@/views/transfer/set'),
-  //       meta: {
-  //         title: '通道配置',
-  //         icon: 'el-icon-s-tools',
-  //         roles: [1, 3, 4],
-  //       }
-  //     },
-  //     {
-  //       path: 'orders',
-  //       name: 'orders',
-  //       component: () => import('@/views/transfer/Orders'),
-  //       meta: {
-  //         title: '转账码订单',
-  //         icon: 'iconfont iconzhuanzhang',
-  //       }
-  //     }
-  //   ]
-  // },
-
   // 当面付
   // {
   //   path: '/facePay',
@@ -598,35 +474,35 @@ export const asyncRoutes = [
   //     }
   //   ]
   // },
-    //USDT结算
-    {
-      path: '/usdtSettlement',
-      component: Layout,
-      meta: {
-        title: 'USDT单笔分账',
-        icon: 'iconfont iconziyuan',
-      },
-      children: [
-        {
-          path: 'index',
-          name: 'settlement',
-          component: () => import('@/views/usdtSettlement/index'),
-          meta: { title: 'USDT分账配置', icon: 'el-icon-money', roles: [1] }
-        },
-        {
-          path: 'records',
-          name: 'records',
-          component: () => import('@/views/usdtSettlement/records'),
-          meta: { title: 'USDT分账记录', icon: 'el-icon-coin', roles: [1] }
-        },
-        {
-          path: 'Introduce',
-          name: 'Introduce',
-          component: () => import('@/views/usdtSettlement/Introduce'),
-          meta: { title: 'USDT分账使用说明', icon: 'el-icon-coin', roles: [1] }
-        }
-      ]
-    },
+  //USDT结算
+  // {
+  //   path: '/usdtSettlement',
+  //   component: Layout,
+  //   meta: {
+  //     title: 'USDT单笔分账',
+  //     icon: 'iconfont iconziyuan',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'settlement',
+  //       component: () => import('@/views/usdtSettlement/index'),
+  //       meta: { title: 'USDT分账配置', icon: 'el-icon-money', roles: [1] }
+  //     },
+  //     {
+  //       path: 'records',
+  //       name: 'records',
+  //       component: () => import('@/views/usdtSettlement/records'),
+  //       meta: { title: 'USDT分账记录', icon: 'el-icon-coin', roles: [1] }
+  //     },
+  //     {
+  //       path: 'Introduce',
+  //       name: 'Introduce',
+  //       component: () => import('@/views/usdtSettlement/Introduce'),
+  //       meta: { title: 'USDT分账使用说明', icon: 'el-icon-coin', roles: [1] }
+  //     }
+  //   ]
+  // },
   //结算
   {
     path: '/settlement',
